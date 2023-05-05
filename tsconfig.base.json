@@ -15,8 +15,15 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@result-system/shared-types": ["libs/shared-types/src/index.ts"]
-    }
+      "@result-system/backend-user": ["libs/backend-user/src/index.ts"],
+      "@result-system/backend-utilities": [
+        "libs/backend-utilities/src/index.ts"
+      ],
+      "@result-system/shared-types": ["libs/shared-types/src/index.ts"],
+      "@result-system/shared-utility": ["libs/shared-utility/src/index.ts"]
+    },
+    "strict": true,
+    "esModuleInterop": true
   },
   "exclude": ["node_modules", "tmp"]
 }
