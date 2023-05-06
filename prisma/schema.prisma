@@ -11,7 +11,96 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id              String        @id @default(cuid())
+  username        String        @unique
+  firstName       String
+  lastName        String
+  password        String
+  role            UserRole      @default(STUDENT)
+  status          UserStatus    @default(PENDING)
+  avatar          Picture?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  classRoom       ClassRoom?    @relation(fields: [classRoomId], references: [id])
+  classRoomId     String?
+  subjects        Subject[]
+  examinations    Examination[]
+  examineeResults Result[]      @relation(name: "examinee")
+  examinerResults Result[]      @relation(name: "examiner")
+}
+
+model ClassRoom {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  students  User[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  subjects  Subject[]
+}
+
+model Subject {
+  id               String        @id @default(cuid())
+  name             String        @unique
+  status           SubjectStatus @default(ACTIVE)
+  classRoom        ClassRoom     @relation(fields: [classRoomId], references: [id], onDelete: Cascade)
+  classRoomId      String
+  teacher          User          @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  teacherId        String
+  subjectWithClass String
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  examinations     Examination[]
+}
+
+model Examination {
+  id              String   @id @default(cuid())
+  name            String
+  examDate        DateTime
+  teacher         User     @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  teacherId       String
+  subject         Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  subjectId       String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  examineeResults Result[]
+}
+
+model Result {
+  id            String      @id @default(cuid())
+  grade         Float
+  student       User        @relation(name: "examinee", fields: [studentId], references: [id], onDelete: Cascade)
+  studentId     String
+  teacher       User        @relation(name: "examiner", fields: [teacherId], references: [id], onDelete: Cascade)
+  teacherId     String
+  examination   Examination @relation(fields: [examinationId], references: [id], onDelete: Cascade)
+  examinationId String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Picture {
+  id        String   @id @default(cuid())
+  height    Int      @default(200)
+  width     Int      @default(100)
+  url       String   @unique
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserRole {
+  ADMIN
+  TEACHER
+  STUDENT
+}
+
+enum UserStatus {
+  PENDING
+  VERIFIED
+}
+
+enum SubjectStatus {
+  ARCHIVED
+  ACTIVE
 }

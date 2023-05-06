@@ -4,8 +4,8 @@ import {
   environment,
   logger,
   redisClient,
-} from "@result-system/backend-utilities";
-import { isDev } from "@result-system/shared-types";
+} from "@result-system/backend/utility";
+import { isDev } from "@result-system/shared/utility";
 
 import app from "./app";
 

@@ -1,9 +1,9 @@
 import { Router } from "express";
 
-import { userRoutes } from "@result-system/backend-user";
+import { adminRoutes } from "@result-system/backend/admin";
 
 const router = Router();
 
-router.use("/user", userRoutes);
+router.use("/admin", adminRoutes);
 
 export default router;

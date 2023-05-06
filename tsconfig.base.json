@@ -15,12 +15,11 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@result-system/backend-user": ["libs/backend-user/src/index.ts"],
-      "@result-system/backend-utilities": [
-        "libs/backend-utilities/src/index.ts"
-      ],
-      "@result-system/shared-types": ["libs/shared-types/src/index.ts"],
-      "@result-system/shared-utility": ["libs/shared-utility/src/index.ts"]
+      "@result-system/backend/admin": ["libs/backend/admin/src/index.ts"],
+      "@result-system/backend/student": ["libs/backend/student/src/index.ts"],
+      "@result-system/backend/teacher": ["libs/backend/teacher/src/index.ts"],
+      "@result-system/backend/utility": ["libs/backend/utility/src/index.ts"],
+      "@result-system/shared/utility": ["libs/shared/utility/src/index.ts"]
     },
     "strict": true,
     "esModuleInterop": true

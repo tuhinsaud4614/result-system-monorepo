@@ -4,7 +4,10 @@
   "license": "MIT",
   "scripts": {
     "serve:web": "nx serve web",
-    "serve:backend": "nx serve backend"
+    "serve:backend": "nx serve backend",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "docker": "docker-compose -f docker-compose.yml up -d --build"
   },
   "private": true,
   "dependencies": {

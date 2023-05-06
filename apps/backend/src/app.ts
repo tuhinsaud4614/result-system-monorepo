@@ -10,7 +10,7 @@ import {
   errorHandler,
   notFoundHandler,
   swaggerSpec,
-} from "@result-system/backend-utilities";
+} from "@result-system/backend/utility";
 
 import routes from "./routes";
 
