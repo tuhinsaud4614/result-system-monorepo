@@ -84,7 +84,7 @@ const diskStore = (dest: string) => {
     },
     filename(_, { fieldname, originalname }, cb) {
       const now = Date.now();
-      const digit = Math.pow(10, Math.floor(Math.log10(now)) + 1);
+      const digit = Math.pow(10, Math.floor(Math.log10(now)));
 
       const imageName = `${fieldname}-${now}-${Math.floor(
         Math.random() * digit,
