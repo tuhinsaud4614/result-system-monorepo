@@ -1,22 +1,22 @@
-import { z } from "zod";
+import * as yup from "yup";
 
-const envSchema = z.object({
-  POSTGRES_HOST: z.string().nonempty(),
-  POSTGRES_PORT: z.string(),
-  POSTGRES_USER: z.string().nonempty(),
-  POSTGRES_PASSWORD: z.string().nonempty(),
-  POSTGRES_DB: z.string().nonempty(),
-  DATABASE_URL: z.string().nonempty(),
-  APP_VERSION: z.string().optional(),
-  ACCESS_TOKEN_SECRET_KEY: z.string().nonempty(),
-  REFRESH_TOKEN_SECRET_KEY: z.string().nonempty(),
-  ACCESS_TOKEN_EXPIRES: z.string().nonempty(),
-  REFRESH_TOKEN_EXPIRES: z.string().nonempty(),
-  REDIS_HOST: z.string().nonempty(),
-  REDIS_PORT: z.string().nonempty(),
-  HOST: z.string().nonempty(),
-  PORT: z.string().nonempty(),
+const envSchema = yup.object({
+  POSTGRES_HOST: yup.string().required(),
+  POSTGRES_PORT: yup.string(),
+  POSTGRES_USER: yup.string().required(),
+  POSTGRES_PASSWORD: yup.string().required(),
+  POSTGRES_DB: yup.string().required(),
+  DATABASE_URL: yup.string().required(),
+  APP_VERSION: yup.string().optional(),
+  ACCESS_TOKEN_SECRET_KEY: yup.string().required(),
+  REFRESH_TOKEN_SECRET_KEY: yup.string().required(),
+  ACCESS_TOKEN_EXPIRES: yup.string().required(),
+  REFRESH_TOKEN_EXPIRES: yup.string().required(),
+  REDIS_HOST: yup.string().required(),
+  REDIS_PORT: yup.string().required(),
+  HOST: yup.string().required(),
+  PORT: yup.string().required(),
 });
 
-const environment = envSchema.parse(process.env);
+const environment = envSchema.validateSync(process.env);
 export default environment;

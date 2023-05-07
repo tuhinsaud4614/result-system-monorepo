@@ -1,4 +1,5 @@
 import { has } from "lodash";
+import sanitizeHtml from "sanitize-html";
 import * as yup from "yup";
 
 import { IMAGE_MIMES, PASSWORD_REGEX } from "./constants";
@@ -8,6 +9,7 @@ import {
   generateMatchedErrorMessage,
   generateNotImageErrorMessage,
   generateRequiredErrorMessage,
+  generateSanitizeErrorMessage,
   generateTooLargeFileErrorMessage,
 } from "./response-message";
 import type { NonAdminUserRole } from "./types";
@@ -36,8 +38,18 @@ export const generateImageFileSchema = (key: string, maxSize = 5) =>
     );
 
 export const registerInputSchema = yup.object({
-  firstName: yup.string().required(generateRequiredErrorMessage("First name")),
-  lastName: yup.string().required(generateRequiredErrorMessage("Last name")),
+  firstName: yup
+    .string()
+    .required(generateRequiredErrorMessage("First name"))
+    .test("sanitize", generateSanitizeErrorMessage("first name"), (value) => {
+      return !!value && !!sanitizeHtml(value);
+    }),
+  lastName: yup
+    .string()
+    .required(generateRequiredErrorMessage("Last name"))
+    .test("sanitize", generateSanitizeErrorMessage("last name"), (value) => {
+      return !!value && !!sanitizeHtml(value);
+    }),
   role: yup
     .string()
     .required(generateRequiredErrorMessage("Role"))

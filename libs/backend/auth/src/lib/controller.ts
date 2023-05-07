@@ -1,7 +1,7 @@
 import type { RequestHandler, Response } from "express";
 
 import {
-  UserRegistrationBody,
+  type UserRegistrationBody,
   generateUserName,
   responseAsObj,
 } from "@result-system/backend/utility";

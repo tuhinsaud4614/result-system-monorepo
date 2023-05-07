@@ -125,3 +125,7 @@ export function generateTooLargeFileErrorMessage(
 ): string {
   return `${field} size should be less than ${value}.`;
 }
+
+export function generateSanitizeErrorMessage(field: string): string {
+  return `Malicious value entered in the ${field} field`;
+}
