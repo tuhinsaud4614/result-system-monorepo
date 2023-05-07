@@ -50,24 +50,6 @@ services:
     networks:
       - shared-network
 
-  # web:
-  #   build:
-  #     dockerfile: ./apps/web/Dockerfile
-  #     target: development
-  #     context: .
-  #   restart: always
-  #   env_file:
-  #     - ./.env
-  #     - ./apps/web/.env.local
-  #   volumes:
-  #     - .:/app
-  #     - /app/node_modules
-  #   depends_on:
-  #     - backend
-  #   ports:
-  #     - "3010:4200"
-  #   command: bash -c 'npm run serve:web'
-
 volumes:
   pgdata:
   rediscache:

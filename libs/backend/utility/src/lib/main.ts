@@ -1,4 +1,5 @@
-import { UserRole } from "@prisma/client";
+import type { UserRole } from "@prisma/client";
+import sharp from "sharp";
 
 import type { SuccessResponse } from "@result-system/shared/utility";
 
@@ -61,4 +62,27 @@ export function generateUserName(role: UserRole, count: number) {
     return `${getSemester()}-${1000 + count}`;
   }
   return `${role.charAt(0)}-${10000 + count}`;
+}
+
+/**
+ * This TypeScript function takes a buffer as input and returns a Promise that resolves to an object
+ * containing the width and height of an image using the sharp library.
+ * @param buffer - The `buffer` parameter is the input image data in the form of a `Buffer` object. It
+ * is passed as the first argument to the `sharp` function, which is a popular image processing library
+ * for Node.js. The `getImageSize` function uses `sharp` to extract the metadata of
+ * @returns The function `getImageSize` returns a Promise that resolves to an object with `width` and
+ * `height` properties, which represent the dimensions of an image. If the dimensions cannot be
+ * determined, an empty object is returned.
+ */
+export function getImageSize(buffer: Parameters<typeof sharp>["0"]): Promise<{
+  width?: number;
+  height?: number;
+}> {
+  return sharp(buffer)
+    .metadata()
+    .then(({ width, height }) => ({
+      width: width,
+      height: height,
+    }))
+    .catch(() => ({}));
 }

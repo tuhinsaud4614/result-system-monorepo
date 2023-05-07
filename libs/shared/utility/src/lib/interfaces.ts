@@ -41,11 +41,7 @@ export interface ErrorResponse {
    */
   detail?: string;
   /** If throws multiple errors for different fields */
-  paths?: {
-    [x: string]: string[] | undefined;
-    [x: number]: string[] | undefined;
-    [x: symbol]: string[] | undefined;
-  };
+  paths?: string[];
   /**
    * The time when the errors occurred
    */
