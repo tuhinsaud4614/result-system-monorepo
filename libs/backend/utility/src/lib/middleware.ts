@@ -84,9 +84,12 @@ const diskStore = (dest: string) => {
     },
     filename(_, { fieldname, originalname }, cb) {
       const now = Date.now();
-      const imageName = `${fieldname}-${now}-${Math.round(
-        Math.random() * `${now}`.length,
-      )}.${path.extname(originalname)}`;
+      const digit = Math.pow(10, Math.floor(Math.log10(now)) + 1);
+
+      const imageName = `${fieldname}-${now}-${Math.floor(
+        Math.random() * digit,
+      )}${path.extname(originalname)}`;
+
       cb(null, imageName);
     },
   });
@@ -109,8 +112,8 @@ const diskStore = (dest: string) => {
  */
 export const imageUpload = (dest?: string, maxSize = 1) => {
   return multer({
-    limits: { fileSize: maxFileSize(maxSize) },
     storage: dest ? diskStore(dest) : undefined,
+    limits: { fileSize: maxFileSize(maxSize) },
     fileFilter(_req, file, cb) {
       try {
         generateImageFileSchema(file.fieldname).validateSync(file);
@@ -173,6 +176,8 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   }
 
   if (err instanceof MulterError) {
+    console.log("Multer", err);
+
     if (req.file) {
       unlink(req.file.path, (linkErr) => {
         if (linkErr) {
