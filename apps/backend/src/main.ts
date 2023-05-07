@@ -1,5 +1,5 @@
 import {
-  API_START_ROUTE,
+  API_ROUTE,
   SIGNALS,
   environment,
   logger,
@@ -52,7 +52,7 @@ function unexpectedErrorHandler(
       logger.info(`App running on ${environment.HOST}:${environment.PORT}`);
       if (isDev()) {
         logger.info(
-          `Docs available at ${environment.HOST}:${environment.PORT}${API_START_ROUTE.v1}/docs`,
+          `Docs available at ${environment.HOST}:${environment.PORT}${API_ROUTE.v1}/docs`,
         );
       }
     });

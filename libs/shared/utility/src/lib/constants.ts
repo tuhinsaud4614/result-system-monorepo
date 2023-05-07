@@ -15,3 +15,16 @@ export const CODE = {
   431: "REQUEST_HEADER_FIELDS_TOO_LARGE", // code: 431
   500: "INTERNAL_SERVER_ERROR",
 } as const;
+
+export const IMAGE_MIMES = {
+  "image/gif": "gif",
+  "image/svg+xml": "svg",
+  "image/jpeg": "jpeg",
+  "image/jpg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+} as const;
+
+// Regex
+export const PASSWORD_REGEX =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,64}$/;

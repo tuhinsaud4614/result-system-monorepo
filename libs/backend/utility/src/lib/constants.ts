@@ -2,4 +2,10 @@
 export const SIGNALS = ["SIGINT", "SIGTERM", "SIGHUP"] as const;
 
 /**  Name of the rest api route. */
-export const API_START_ROUTE = { v1: "/api/v1" } as const;
+export const API_ROUTE = {
+  v1: "/api/v1",
+  auth: {
+    main: "/auth",
+    registerUser: "/register",
+  },
+} as const;

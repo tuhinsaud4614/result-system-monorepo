@@ -5,4 +5,6 @@ export * from "./lib/main";
 export * from "./lib/middleware";
 export { default as prismaClient } from "./lib/prisma-client";
 export { default as redisClient } from "./lib/redis-client";
+export * from "./lib/schema";
 export * from "./lib/swagger";
+export * from "./lib/types";
