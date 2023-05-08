@@ -1,7 +1,6 @@
-import { UserRole } from "@prisma/client";
-
 import { IMAGE_MIMES } from "./constants";
 import { isVowel } from "./type-guard";
+import { UserRole } from "./types";
 
 /**
  * Generates an error message indicating that a key is required.
@@ -126,6 +125,26 @@ export function generateTooLargeFileErrorMessage(
   return `${field} size should be less than ${value}.`;
 }
 
+/**
+ * This function generates an error message for a potentially malicious value entered in a
+ * specific field.
+ * @param {string} field - The field parameter is a string that represents the name or label of a field
+ * in a form or data input. The function generates an error message that indicates that a malicious
+ * value has been entered in that field.
+ * @returns A string message is being returned. The message indicates that a malicious value has been
+ * entered in a specific field, which is passed as an argument to the function.
+ */
 export function generateSanitizeErrorMessage(field: string): string {
   return `Malicious value entered in the ${field} field`;
+}
+
+/**
+ * This function generates a message indicating that a file upload has failed for a specific field.
+ * @param {string} field - The parameter "field" is a string that represents the name or description of
+ * the file that failed to upload.
+ * @returns a string message that says "Failed to upload the [field]", where [field] is the value of
+ * the parameter passed to the function.
+ */
+export function generateFileUploadFailedMessage(field: string): string {
+  return `Failed to upload the ${field}`;
 }

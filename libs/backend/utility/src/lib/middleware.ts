@@ -5,13 +5,15 @@ import type {
   RequestHandler,
   Response,
 } from "express";
-import { mkdirSync, unlink } from "fs";
+import { unlink } from "fs";
+import { mkdir } from "fs/promises";
 import multer, { MulterError, diskStorage } from "multer";
 import path from "path";
 import * as yup from "yup";
 
 import {
   Code,
+  generateFileUploadFailedMessage,
   generateImageFileSchema,
   maxFileSize,
 } from "@result-system/shared/utility";
@@ -48,39 +50,43 @@ export const validateRequest = (schema: yup.AnySchema, code: Code = 500) => {
       );
       return next();
     } catch (err) {
-      if (err instanceof yup.ValidationError) {
-        const { errors, message } = err;
-        return next(
-          new HttpError({
-            message,
-            code,
-            paths: errors,
-          }),
-        );
-      }
-      return next(err);
+      const { errors, message } = err as yup.ValidationError;
+      return next(
+        new HttpError({
+          message,
+          code,
+          paths: errors,
+        }),
+      );
     }
   };
 };
 
 /**
- * The function creates a disk storage configuration for storing files with a unique filename in a
- * specified destination directory.
- * @param {string} dest - The `dest` parameter is a string that represents the destination directory
- * where the uploaded files will be stored. It is used in the `destination` function of the
- * `diskStorage` configuration object to create the directory if it doesn't exist and to pass it to the
- * callback function.
+ * This is a function that returns a disk storage configuration for file uploads, including
+ * destination and filename generation.
+ * @param {string} dest - The `dest` parameter is a string representing the destination directory where
+ * uploaded files will be stored on disk.
  * @returns The `diskStore` function is returning an instance of `diskStorage` from the `multer`
- * library, which is used to configure the destination and filename for storing uploaded files on disk.
- * The `destination` function creates the destination directory if it doesn't exist and returns the
- * path to it. The `filename` function generates a unique filename for the uploaded file based on the
- * fieldname, original
+ * library. This instance has two methods defined: `destination` and `filename`. The `destination`
+ * method creates a directory at the specified `dest` path and returns the path to the directory. If an
+ * error occurs during the creation of the directory, it returns an instance of `HttpError`
  */
 const diskStore = (dest: string) => {
   return diskStorage({
-    destination(_req, _file, cb) {
-      mkdirSync(dest, { recursive: true });
-      cb(null, dest);
+    async destination(_req, _file, cb) {
+      try {
+        await mkdir(dest, { recursive: true });
+        cb(null, dest);
+      } catch (error) {
+        cb(
+          new HttpError({
+            message: generateFileUploadFailedMessage("File"),
+            code: 500,
+          }),
+          dest,
+        );
+      }
     },
     filename(_, { fieldname, originalname }, cb) {
       const now = Date.now();
@@ -96,27 +102,30 @@ const diskStore = (dest: string) => {
 };
 
 /**
- * This is a TypeScript function that returns a multer middleware for uploading images with size and
- * file validation.
- * @param {string} [dest] - The destination folder where the uploaded image file will be stored. If
- * this parameter is not provided, the file will not be stored and will only be validated and
- * processed.
- * @param [maxSize=1] - The maximum allowed size (in megabytes) for the uploaded image file. If the
- * file size exceeds this limit, the multer middleware will reject the upload. The default value is 1
- * MB if no value is provided.
- * @returns A function that uses the multer library to handle file uploads with options for setting a
- * maximum file size and destination storage location. The function also includes a file filter that
- * uses the yup library to validate the uploaded file against a generated image file schema. If the
- * file passes validation, the function returns a callback with no errors. If the file fails
- * validation, the function returns a callback with an HttpError object containing
+ * This is a function that returns a multer middleware for uploading images with optional
+ * destination and maximum file size parameters, and includes validation using a generated image file
+ * schema.
+ * @param {string} [dest] - The destination folder where the uploaded files will be stored. If no
+ * destination is provided, the files will not be stored and will only be processed by the fileFilter
+ * function.
+ * @param [maxSize=1] - The `maxSize` parameter is a number that represents the maximum allowed file
+ * size in megabytes (MB) for the uploaded image. It is used to set the `fileSize` limit in the
+ * `limits` option of the `multer` middleware. If the uploaded file exceeds this limit,
+ * @returns A function that uses the multer library to handle file uploads. The function takes in two
+ * optional parameters: `dest` (a string representing the destination folder for uploaded files) and
+ * `maxSize` (a number representing the maximum file size in megabytes). The function returns a multer
+ * middleware that handles file storage, file size limits, and file validation using a Yup schema. If
+ * the file passes validation,
  */
 export const imageUpload = (dest?: string, maxSize = 1) => {
   return multer({
     storage: dest ? diskStore(dest) : undefined,
     limits: { fileSize: maxFileSize(maxSize) },
-    fileFilter(_req, file, cb) {
+    async fileFilter(_req, file, cb) {
       try {
-        generateImageFileSchema(file.fieldname).validateSync(file);
+        await generateImageFileSchema(file.fieldname).validate(file, {
+          abortEarly: false,
+        });
         cb(null, true);
       } catch (err) {
         const { errors, message } = err as yup.ValidationError;
@@ -176,8 +185,6 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   }
 
   if (err instanceof MulterError) {
-    console.log("Multer", err);
-
     if (req.file) {
       unlink(req.file.path, (linkErr) => {
         if (linkErr) {

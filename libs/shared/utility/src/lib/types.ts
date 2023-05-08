@@ -10,3 +10,6 @@ export type IMAGE_MIME = keyof typeof IMAGE_MIMES;
 
 // Auth
 export type RegisterInput = InferType<typeof registerInputSchema>;
+
+// User
+export type UserRole = "ADMIN" | "TEACHER" | "STUDENT";
