@@ -21,7 +21,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(compression());
-app.use("/assets", express.static(path.join(__dirname, "assets")));
+app.use("/" + API_ROUTE.assets, express.static(path.join(__dirname, "assets")));
 
 app.use(API_ROUTE.v1, routes);
 

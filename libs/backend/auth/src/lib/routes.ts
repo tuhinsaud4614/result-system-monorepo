@@ -1,8 +1,8 @@
 import { Router } from "express";
-import path from "path";
 
 import {
   API_ROUTE,
+  ASSETS_DESTINATION,
   imageUpload,
   userRegistrationSchema,
   validateRequest,
@@ -14,7 +14,7 @@ const router = Router();
 
 router.post(
   API_ROUTE.auth.registerUser,
-  imageUpload(path.join(__dirname, "assets"), 5).single("avatar"),
+  imageUpload(ASSETS_DESTINATION, 5).single("avatar"),
   validateRequest(userRegistrationSchema, 422),
   userRegistration,
 );

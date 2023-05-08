@@ -28,7 +28,7 @@ export function generateRoleErrorMessage(
   if (orRole) {
     message += ` Alternatively, you must be ${
       isVowel(orRole) ? "an" : "a"
-    } ${orRole}.`;
+    } ${orRole}`;
   }
 
   return message;
@@ -50,7 +50,7 @@ export function generateEitherErrorMessage<TValue extends string>(
   values: TValue[],
 ): string {
   const result = values.map((value) => `"${value}"`).join(" or ");
-  return `${key} should be either ${result}.`;
+  return `${key} should be either ${result}`;
 }
 
 /**
@@ -73,7 +73,7 @@ export function generateArrayLengthErrorMessage(
   length: number,
 ): string {
   const verb = mode === "min" ? "at least" : "at most";
-  return `The ${field} field must contain ${verb} ${length} items.`;
+  return `The ${field} field must contain ${verb} ${length} items`;
 }
 
 /**
@@ -83,7 +83,7 @@ export function generateArrayLengthErrorMessage(
  * @returns The error message.
  */
 export function generateInvalidErrorMessage(key: string): string {
-  return `Please enter a valid ${key}.`;
+  return `Please enter a valid ${key}`;
 }
 
 /**
@@ -93,7 +93,7 @@ export function generateInvalidErrorMessage(key: string): string {
  * @returns The error message.
  */
 export function generateMatchedErrorMessage(key: string): string {
-  return `${key} must match.`;
+  return `${key} must match`;
 }
 
 /**
@@ -122,7 +122,7 @@ export function generateTooLargeFileErrorMessage(
   field: string,
   value: string,
 ): string {
-  return `${field} size should be less than ${value}.`;
+  return `${field} size should be less than ${value}`;
 }
 
 /**
@@ -139,12 +139,19 @@ export function generateSanitizeErrorMessage(field: string): string {
 }
 
 /**
- * This function generates a message indicating that a file upload has failed for a specific field.
- * @param {string} field - The parameter "field" is a string that represents the name or description of
- * the file that failed to upload.
- * @returns a string message that says "Failed to upload the [field]", where [field] is the value of
- * the parameter passed to the function.
+ * This function generates an error message indicating that a given key already exists.
+ * @param {string} key - The key parameter is a string that represents the identifier or name of a
+ * resource or object that already exists. The function generates an error message indicating that the
+ * resource or object with the given key already exists.
+ * @returns A string message that includes the key parameter and the phrase "already exists."
  */
-export function generateFileUploadFailedMessage(field: string): string {
-  return `Failed to upload the ${field}`;
+export function generateExistErrorMessage(key: string): string {
+  return `${key} already exists`;
+}
+
+export function generateCRUDFailedErrorMessage(
+  key: string,
+  mode: "create" | "delete" | "fetch" | "update" | "upload" = "fetch",
+): string {
+  return `Failed to ${mode} the ${key}`;
 }

@@ -1,7 +1,16 @@
-import type { UserRole } from "@prisma/client";
+import type { Picture, UserRole } from "@prisma/client";
+import { unlink } from "fs/promises";
+import path from "path";
 import sharp from "sharp";
 
-import type { SuccessResponse } from "@result-system/shared/utility";
+import {
+  IMAGE_MIME,
+  IMAGE_MIMES,
+  SuccessResponse,
+} from "@result-system/shared/utility";
+
+import { API_ROUTE } from "./constants";
+import { Pretty } from "./types";
 
 /**
  * It returns an object with a success property set to true, a message property set to the message
@@ -65,24 +74,69 @@ export function generateUserName(role: UserRole, count: number) {
 }
 
 /**
- * This TypeScript function takes a buffer as input and returns a Promise that resolves to an object
- * containing the width and height of an image using the sharp library.
- * @param buffer - The `buffer` parameter is the input image data in the form of a `Buffer` object. It
- * is passed as the first argument to the `sharp` function, which is a popular image processing library
- * for Node.js. The `getImageSize` function uses `sharp` to extract the metadata of
- * @returns The function `getImageSize` returns a Promise that resolves to an object with `width` and
- * `height` properties, which represent the dimensions of an image. If the dimensions cannot be
- * determined, an empty object is returned.
+ * This function uses the sharp library to retrieve the width and height of an image file. This will work for after save in diskStorage.
+ * @param {string} imgPath - imgPath is a string parameter that represents the path of the image file after save in the `disk storage`
+ * for which we want to get the size.
+ * @returns The function `getImageSize` returns an object containing the width and height of an image
+ * file specified by the `imgPath` parameter. The values are obtained using the `sharp` library's
+ * `metadata` method, which returns a Promise that resolves to an object containing metadata about the
+ * image, including its dimensions. The function uses `await` to wait for the Promise to resolve before
+ * returning the object with
  */
-export function getImageSize(buffer: Parameters<typeof sharp>["0"]): Promise<{
-  width?: number;
-  height?: number;
-}> {
-  return sharp(buffer)
-    .metadata()
-    .then(({ width, height }) => ({
-      width: width,
-      height: height,
-    }))
-    .catch(() => ({}));
+export async function getImageSize(imgPath: string) {
+  const { width, height } = await sharp(imgPath).metadata();
+  return { width, height };
+}
+
+/**
+ * This TypeScript function generates a unique image name with a fieldname, timestamp, and random
+ * number, and returns the name with its original file extension.
+ * @param {string} fieldname - The name of the field in the form that contains the file being uploaded.
+ * For example, if the file input field in the form has the name "profile-picture", then
+ * "profile-picture" would be the fieldname parameter in this function.
+ * @param {string} originalname - The `originalname` parameter is a string that represents the original
+ * name of the file being uploaded. It is used to generate a new name for the file that includes a
+ * timestamp and a random number to ensure uniqueness.
+ * @returns An object with two properties: "name" and "withExt". "name" is a string that includes the
+ * fieldname, the current timestamp, and a random number. "withExt" is the same string as "name", but
+ * with the file extension of the original file name appended to it.
+ */
+export function generateImageName(fieldname: string, originalname: string) {
+  const now = Date.now();
+  const digit = Math.pow(10, Math.floor(Math.log10(now)));
+
+  const name = `${fieldname}-${now}-${Math.floor(Math.random() * digit)}`;
+
+  return { name, withExt: name + path.extname(originalname) };
+}
+
+/**
+ * This function generates an image with a specified location and returns its URL, width, and height. This will work for after save in diskStorage.
+ * @param file - The file parameter is an object that represents the uploaded image file. It is of type
+ * Express.Multer.File, which is a type definition for files uploaded using the Multer middleware in an
+ * Express.js application.
+ * @param {string} location - The location where the generated image will be saved. It is a string that
+ * represents the path to the directory where the image will be saved.
+ * @returns a Promise that resolves to an object with the properties "url", "width", and "height". The
+ * object is wrapped in a Pretty type, which likely adds some formatting or styling to the output.
+ */
+export async function generateImage(
+  file: Express.Multer.File,
+): Promise<Pretty<Pick<Picture, "url" | "width" | "height">>> {
+  const { height, width } = await getImageSize(file.path);
+  const url = path.join(API_ROUTE.assets, file.filename);
+
+  if (width && height) {
+    return { width, height, url };
+  }
+
+  await unlink(file.path);
+
+  const format = IMAGE_MIMES[file.mimetype as IMAGE_MIME];
+  const newImg = await sharp(file.path)
+    .resize(width || height || 200, height || width || 200)
+    .toFormat(format)
+    .toFile(file.path);
+
+  return { height: newImg.height, width: newImg.width, url };
 }

@@ -8,18 +8,18 @@ import type {
 import { unlink } from "fs";
 import { mkdir } from "fs/promises";
 import multer, { MulterError, diskStorage } from "multer";
-import path from "path";
 import * as yup from "yup";
 
 import {
   Code,
-  generateFileUploadFailedMessage,
+  generateCRUDFailedErrorMessage,
   generateImageFileSchema,
   maxFileSize,
 } from "@result-system/shared/utility";
 
 import logger from "./logger";
-import HttpError from "./model";
+import { generateImageName } from "./main";
+import { HttpError } from "./model";
 
 /**
  * The function validates a request using a given schema and returns an error if the validation
@@ -81,7 +81,7 @@ const diskStore = (dest: string) => {
       } catch (error) {
         cb(
           new HttpError({
-            message: generateFileUploadFailedMessage("File"),
+            message: generateCRUDFailedErrorMessage("file", "upload"),
             code: 500,
           }),
           dest,
@@ -89,14 +89,8 @@ const diskStore = (dest: string) => {
       }
     },
     filename(_, { fieldname, originalname }, cb) {
-      const now = Date.now();
-      const digit = Math.pow(10, Math.floor(Math.log10(now)));
-
-      const imageName = `${fieldname}-${now}-${Math.floor(
-        Math.random() * digit,
-      )}${path.extname(originalname)}`;
-
-      cb(null, imageName);
+      const { withExt } = generateImageName(fieldname, originalname);
+      cb(null, withExt);
     },
   });
 };

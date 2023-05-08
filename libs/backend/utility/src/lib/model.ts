@@ -2,7 +2,7 @@ import type { Code, ErrorResponse } from "@result-system/shared/utility";
 import { CODE } from "@result-system/shared/utility";
 
 /* It's a class that extends the Error class and has a code property */
-export default class HttpError extends Error {
+export class HttpError extends Error {
   code: Code;
   #paths: ErrorResponse["paths"];
   #detail?: string;
@@ -22,10 +22,17 @@ export default class HttpError extends Error {
     this.code = code;
     this.#paths = paths;
     this.#detail = detail;
-    // this is for instanceof behave properly
-    Object.setPrototypeOf(this, HttpError.prototype);
   }
 
+  /**
+   * The function returns an ErrorResponse object with specific properties.
+   * @returns A JavaScript object of type `ErrorResponse` is being returned. The object has the
+   * following properties:
+   * - `success`: a boolean value set to `false`
+   * - `message`: a string value set to the value of `this.message`
+   * - `code`: a string value corresponding to the value of `CODE[this.code]`
+   * - `timeStamp`: a string value representing the current date and time in
+   */
   toObj(): ErrorResponse {
     return {
       success: false,

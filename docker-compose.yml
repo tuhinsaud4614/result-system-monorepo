@@ -23,7 +23,7 @@ services:
     networks:
       - shared-network
     # command: bash -c 'npm run db:generate && npm run db:push && npm run serve:backend'
-    command: bash -c 'npm run db:generate && npm run serve:backend'
+    command: bash -c 'npm run db:push && npm run serve:backend'
 
   db:
     image: postgres:15.2-alpine

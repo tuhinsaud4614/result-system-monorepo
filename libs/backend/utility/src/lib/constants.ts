@@ -1,3 +1,5 @@
+import path from "path";
+
 /* The signals of the server. */
 export const SIGNALS = ["SIGINT", "SIGTERM", "SIGHUP"] as const;
 
@@ -8,4 +10,7 @@ export const API_ROUTE = {
     main: "/auth",
     registerUser: "/register",
   },
+  assets: "assets",
 } as const;
+
+export const ASSETS_DESTINATION = path.join(__dirname, API_ROUTE.assets);
