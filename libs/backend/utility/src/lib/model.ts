@@ -14,12 +14,12 @@ export class HttpError extends Error {
     paths,
   }: {
     message: string;
-    code: Code;
+    code?: Code;
     paths?: ErrorResponse["paths"];
     detail?: string;
   }) {
     super(message);
-    this.code = code;
+    this.code = code || 500;
     this.#paths = paths;
     this.#detail = detail;
   }

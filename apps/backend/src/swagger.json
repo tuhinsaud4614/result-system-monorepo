@@ -1,0 +1,255 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Result System REST API",
+    "version": "1.0",
+    "description": "This is the <b> Result System Backend</b> server."
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Success": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "default": true },
+          "message": { "type": "string" },
+          "detail": { "type": "string" },
+          "timestamp": { "type": "string" }
+        },
+        "required": ["success", "timestamp"]
+      },
+      "Error": {
+        "type": "object",
+        "required": ["success", "code", "message", "timestamp"],
+        "properties": {
+          "success": { "type": "boolean", "default": false },
+          "code": {
+            "type": "string",
+            "enum": [
+              "OK",
+              "CREATED",
+              "MOVED_PERMANENTLY",
+              "BAD_REQUEST",
+              "UNAUTHORIZED",
+              "PAYMENT_REQUIRED",
+              "FORBIDDEN",
+              "NOT_FOUND",
+              "CONFLICT",
+              "UNSUPPORTED_MEDIA_TYPE",
+              "BAD_USER_INPUT",
+              "TOO_MANY_REQUESTS",
+              "REQUEST_HEADER_FIELDS_TOO_LARGE",
+              "INTERNAL_SERVER_ERROR"
+            ]
+          },
+          "message": { "type": "string" },
+          "detail": { "type": "string" },
+          "paths": { "type": "array" },
+          "timestamp": { "type": "string" }
+        }
+      }
+    },
+    "responses": {
+      "BAD_REQUEST": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Error"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "default": "BAD_REQUEST"
+                    }
+                  },
+                  "required": ["code"]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "CONFLICT": {
+        "description": "CONFLICT",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Error"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "default": "CONFLICT"
+                    }
+                  },
+                  "required": ["code"]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "BAD_USER_INPUT": {
+        "description": "BAD USER INPUT",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Error"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "default": "BAD_USER_INPUT"
+                    }
+                  },
+                  "required": ["code"]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "INTERNAL_SERVER_ERROR": {
+        "description": "BAD USER INPUT",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Error"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "default": "INTERNAL_SERVER_ERROR"
+                    }
+                  },
+                  "required": ["code"]
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    { "name": "Auth", "description": "All routes of the authentication." }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/v1/auth/register": {
+      "post": {
+        "summary": "Admin can register user",
+        "description": "Admin can register \"STUDENT\" or \"TEACHER\" account.",
+        "tags": ["Auth"],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstName": {
+                    "type": "string",
+                    "description": "The first name of the user"
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "description": "The last name of the user"
+                  },
+                  "role": {
+                    "description": "The role of the user",
+                    "type": "string",
+                    "enum": ["STUDENT", "TEACHER"]
+                  },
+                  "password": {
+                    "description": "The password of the user",
+                    "type": "string"
+                  },
+                  "confirmPassword": {
+                    "description": "The confirm password of the user",
+                    "type": "string"
+                  },
+                  "avatar": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The profile picture of the user"
+                  }
+                },
+                "required": [
+                  "firstName",
+                  "lastName",
+                  "role",
+                  "password",
+                  "confirmPassword"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["data"]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BAD_REQUEST"
+          },
+          "409": {
+            "$ref": "#/components/responses/CONFLICT"
+          },
+          "422": {
+            "$ref": "#/components/responses/BAD_USER_INPUT"
+          },
+          "500": {
+            "$ref": "#/components/responses/INTERNAL_SERVER_ERROR"
+          }
+        }
+      }
+    }
+  }
+}

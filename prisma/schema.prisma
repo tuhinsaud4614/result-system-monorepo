@@ -17,7 +17,6 @@ model User {
   lastName        String
   password        String
   role            UserRole      @default(STUDENT)
-  status          UserStatus    @default(PENDING)
   avatar          Picture?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
@@ -93,11 +92,6 @@ enum UserRole {
   ADMIN
   TEACHER
   STUDENT
-}
-
-enum UserStatus {
-  PENDING
-  VERIFIED
 }
 
 enum SubjectStatus {

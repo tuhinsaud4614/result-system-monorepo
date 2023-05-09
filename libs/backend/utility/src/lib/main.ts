@@ -4,13 +4,13 @@ import path from "path";
 import sharp from "sharp";
 
 import {
-  IMAGE_MIME,
+  type IMAGE_MIME,
   IMAGE_MIMES,
-  SuccessResponse,
+  type SuccessResponse,
 } from "@result-system/shared/utility";
 
 import { API_ROUTE } from "./constants";
-import { Pretty } from "./types";
+import type { Pretty } from "./types";
 
 /**
  * It returns an object with a success property set to true, a message property set to the message

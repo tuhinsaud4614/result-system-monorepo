@@ -8,5 +8,4 @@ export { default as prismaClient } from "./lib/prisma-client";
 export { default as redisClient } from "./lib/redis-client";
 export * from "./lib/repository";
 export * from "./lib/schema";
-export * from "./lib/swagger";
 export * from "./lib/types";

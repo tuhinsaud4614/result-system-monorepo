@@ -68,7 +68,7 @@ export async function userRegistrationService(
       error.code === "P2002"
     ) {
       message = generateExistErrorMessage("User");
-      code = 400;
+      code = 409;
     }
     return new HttpError({ code, message });
   }

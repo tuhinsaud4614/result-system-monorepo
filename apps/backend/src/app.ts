@@ -9,10 +9,10 @@ import {
   API_ROUTE,
   errorHandler,
   notFoundHandler,
-  swaggerSpec,
 } from "@result-system/backend/utility";
 
 import routes from "./routes";
+import swaggerJson from "./swagger.json";
 
 const app = express();
 
@@ -25,10 +25,10 @@ app.use("/" + API_ROUTE.assets, express.static(path.join(__dirname, "assets")));
 
 app.use(API_ROUTE.v1, routes);
 
-app.use(`${API_ROUTE.v1}/docs`, swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+app.use(`${API_ROUTE.v1}/docs`, swaggerUI.serve, swaggerUI.setup(swaggerJson));
 app.get(`${API_ROUTE.v1}/docs.json`, (_, res) => {
   res.setHeader("Content-Type", "application/json");
-  res.send(swaggerSpec);
+  res.send(swaggerJson);
 });
 
 app.use(notFoundHandler);
