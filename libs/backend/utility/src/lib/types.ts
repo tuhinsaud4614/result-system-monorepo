@@ -1,4 +1,4 @@
-import type { Picture, UserRole } from "@prisma/client";
+import type { Picture, User, UserRole } from "@prisma/client";
 import sharp from "sharp";
 import type { InferType } from "yup";
 
@@ -20,9 +20,18 @@ export type UserRegistrationBody = InferType<
   typeof userRegistrationSchema
 >["body"];
 
+// Picture
+export type LeanPicture = Pick<Picture, "url" | "width" | "height">;
 // Auth
 export interface UserCreateInput
-  extends Pretty<Omit<UserRegistrationBody, "confirmPassword">> {
+  extends Omit<UserRegistrationBody, "confirmPassword"> {
   username: string;
-  avatar?: Pretty<Pick<Picture, "url" | "width" | "height">>;
+  avatar?: LeanPicture;
 }
+export type LeanUser = Omit<
+  User,
+  "password" | "classRoomId" | "createdAt" | "updatedAt"
+>;
+export type UserWithAvatar = LeanUser & {
+  avatar: LeanPicture | null;
+};

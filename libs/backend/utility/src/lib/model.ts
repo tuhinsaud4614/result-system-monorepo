@@ -1,5 +1,9 @@
-import type { Code, ErrorResponse } from "@result-system/shared/utility";
-import { CODE } from "@result-system/shared/utility";
+import {
+  CODE,
+  Code,
+  ErrorResponse,
+  generateUnAuthorizedErrorMessage,
+} from "@result-system/shared/utility";
 
 /* It's a class that extends the Error class and has a code property */
 export class HttpError extends Error {
@@ -42,5 +46,11 @@ export class HttpError extends Error {
       paths: this.#paths,
       detail: this.#detail,
     };
+  }
+}
+
+export class AuthenticationError extends HttpError {
+  constructor(message = generateUnAuthorizedErrorMessage()) {
+    super({ code: 401, message });
   }
 }

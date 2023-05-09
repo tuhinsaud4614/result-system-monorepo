@@ -155,3 +155,7 @@ export function generateCRUDFailedErrorMessage(
 ): string {
   return `Failed to ${mode} the ${key}`;
 }
+
+export function generateUnAuthorizedErrorMessage(name = "You"): string {
+  return `${name} are not authorized.`;
+}

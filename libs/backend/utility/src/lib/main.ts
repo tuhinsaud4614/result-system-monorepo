@@ -1,5 +1,6 @@
-import type { Picture, UserRole } from "@prisma/client";
+import type { UserRole } from "@prisma/client";
 import { unlink } from "fs/promises";
+import { type JwtPayload } from "jsonwebtoken";
 import path from "path";
 import sharp from "sharp";
 
@@ -10,7 +11,8 @@ import {
 } from "@result-system/shared/utility";
 
 import { API_ROUTE } from "./constants";
-import type { Pretty } from "./types";
+import { AuthenticationError } from "./model";
+import type { LeanPicture, UserWithAvatar } from "./types";
 
 /**
  * It returns an object with a success property set to true, a message property set to the message
@@ -122,7 +124,7 @@ export function generateImageName(fieldname: string, originalname: string) {
  */
 export async function generateImage(
   file: Express.Multer.File,
-): Promise<Pretty<Pick<Picture, "url" | "width" | "height">>> {
+): Promise<LeanPicture> {
   const { height, width } = await getImageSize(file.path);
   const url = path.join(API_ROUTE.assets, file.filename);
 
@@ -139,4 +141,39 @@ export async function generateImage(
     .toFile(file.path);
 
   return { height: newImg.height, width: newImg.width, url };
+}
+
+/**
+ * This function generates a Redis key by concatenating a prefix ("REFRESH_TOKEN") and a suffix.
+ * @param prefix - The prefix parameter is a string that is used as a prefix for the generated Redis
+ * key. In this specific case, the prefix is "REFRESH_TOKEN".
+ * @param {string} suffix - The `suffix` parameter is a string that will be appended to the `prefix`
+ * parameter to generate a Redis key.
+ */
+export const generateRedisKey = (prefix: "REFRESH_TOKEN", suffix: string) =>
+  `${prefix}@${suffix}`;
+
+export function deserializeUserWithAvatar(
+  decoded: string | JwtPayload,
+): UserWithAvatar {
+  if (
+    typeof decoded === "object" &&
+    "id" in decoded &&
+    "firstName" in decoded &&
+    "lastName" in decoded &&
+    "username" in decoded &&
+    "role" in decoded &&
+    "avatar" in decoded
+  ) {
+    return {
+      id: decoded.id,
+      firstName: decoded.firstName,
+      lastName: decoded.lastName,
+      username: decoded.username,
+      role: decoded.role,
+      avatar: decoded.avatar,
+    };
+  }
+
+  throw new AuthenticationError();
 }
