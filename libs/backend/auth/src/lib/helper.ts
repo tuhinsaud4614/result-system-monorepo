@@ -3,12 +3,12 @@ import ms from "ms";
 
 import {
   AuthenticationError,
-  UserWithAvatar,
   deserializeUserWithAvatar,
   environment,
   generateRedisKey,
   redisClient,
 } from "@result-system/backend/utility";
+import { UserWithAvatar } from "@result-system/shared/utility";
 
 /**
  * This function generates a JWT token for a user with an optional refresh token and sets it in Redis
@@ -80,6 +80,15 @@ export async function generateJwtTokensService(user: UserWithAvatar) {
   return { accessToken, refreshToken } as const;
 }
 
+/**
+ * This function verifies a JWT refresh token by decoding it, checking if it matches a stored value in
+ * Redis, and returning the payload if it does, or throwing an error if it doesn't.
+ * @param {string} token - The `token` parameter is a string representing a refresh token that needs to
+ * be verified.
+ * @returns If the `token` is valid and matches the one stored in Redis, the function will return the
+ * `payload` object. If the `token` is invalid or does not match the one stored in Redis, the function
+ * will throw an `AuthenticationError`.
+ */
 export async function verifyJwtRefreshToken(token: string) {
   const decoded = jwtVerify(token, environment.REFRESH_TOKEN_SECRET_KEY);
   const payload = deserializeUserWithAvatar(decoded);

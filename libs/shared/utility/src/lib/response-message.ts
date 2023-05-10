@@ -1,6 +1,7 @@
+import { UserRole } from "@prisma/client";
+
 import { IMAGE_MIMES } from "./constants";
 import { isVowel } from "./type-guard";
-import { UserRole } from "./types";
 
 /**
  * Generates an error message indicating that a key is required.
@@ -149,6 +150,18 @@ export function generateExistErrorMessage(key: string): string {
   return `${key} already exists`;
 }
 
+/**
+ * This function generates a failed error message for CRUD operations.
+ * @param {string} key - The key is a string parameter that represents the name or identifier of the
+ * resource that the CRUD operation is being performed on. For example, if the CRUD operation is being
+ * performed on a user resource, the key could be "user".
+ * @param {"create" | "delete" | "fetch" | "update" | "upload"} [mode=fetch] - The `mode` parameter is
+ * a string literal type that specifies the CRUD operation that failed. It can be one of the following
+ * values: "create", "delete", "fetch", "update", or "upload". The default value is "fetch".
+ * @returns A string message is being returned that says "Failed to [mode] the [key]". The mode
+ * parameter is optional and defaults to "fetch". The key parameter is a string that represents the
+ * resource being acted upon (e.g. "user", "product", etc.).
+ */
 export function generateCRUDFailedErrorMessage(
   key: string,
   mode: "create" | "delete" | "fetch" | "update" | "upload" = "fetch",
@@ -156,6 +169,16 @@ export function generateCRUDFailedErrorMessage(
   return `Failed to ${mode} the ${key}`;
 }
 
-export function generateUnAuthorizedErrorMessage(name = "You"): string {
-  return `${name} are not authorized.`;
+/**
+ * This function generates an error message for unauthorized access with a customizable
+ * subject.
+ * @param [subjectWIthAuxiliary=You are] - A string that represents the subject of the error message,
+ * with an optional auxiliary verb. The default value is "You are".
+ * @returns A string message that says "You are not authorized" by default, but the subject can be
+ * customized by passing a string as an argument to the function.
+ */
+export function generateUnAuthorizedErrorMessage(
+  subjectWIthAuxiliary = "You are",
+): string {
+  return `${subjectWIthAuxiliary} not authorized`;
 }

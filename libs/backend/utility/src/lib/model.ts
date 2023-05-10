@@ -49,6 +49,8 @@ export class HttpError extends Error {
   }
 }
 
+/* The AuthenticationError class extends the HttpError class and represents an error that occurs when
+authentication fails with a default message of "Unauthorized". */
 export class AuthenticationError extends HttpError {
   constructor(message = generateUnAuthorizedErrorMessage()) {
     super({ code: 401, message });

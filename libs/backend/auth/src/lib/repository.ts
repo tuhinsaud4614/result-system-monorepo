@@ -1,6 +1,5 @@
 import {
-  Pretty,
-  UserCreateInput,
+  type UserCreateInput,
   prismaClient,
 } from "@result-system/backend/utility";
 
@@ -16,7 +15,7 @@ import {
  * object passed as an argument to the function, with the `avatar` property being handled separately to
  * create a new avatar object if it exists.
  */
-export function createUser(inputs: Pretty<UserCreateInput>) {
+export function createUser(inputs: UserCreateInput) {
   const { avatar, ...rest } = inputs;
   return prismaClient.user.create({
     data: {

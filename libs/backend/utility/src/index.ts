@@ -1,5 +1,6 @@
 export * from "./lib/constants";
 export { default as environment } from "./lib/environment";
+export * from "./lib/interfaces";
 export { default as logger } from "./lib/logger";
 export * from "./lib/main";
 export * from "./lib/middleware";

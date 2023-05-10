@@ -3,11 +3,15 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "serve:web": "nx serve web",
+    "web:dev": "nx serve web",
     "serve:backend": "nx serve backend",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "docker": "docker-compose -f docker-compose.yml up -d --build"
+    "docker": "docker-compose -f docker-compose.yml up -d --build",
+    "lint:backend": "nx lint backend",
+    "lint-fix:backend": "nx lint backend --fix",
+    "lint:web": "nx lint web",
+    "lint-fix:web": "nx lint web --fix"
   },
   "private": true,
   "dependencies": {

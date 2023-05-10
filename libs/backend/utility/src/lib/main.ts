@@ -7,12 +7,13 @@ import sharp from "sharp";
 import {
   type IMAGE_MIME,
   IMAGE_MIMES,
-  type SuccessResponse,
+  LeanPicture,
+  SuccessResponse,
+  UserWithAvatar,
 } from "@result-system/shared/utility";
 
 import { API_ROUTE } from "./constants";
 import { AuthenticationError } from "./model";
-import type { LeanPicture, UserWithAvatar } from "./types";
 
 /**
  * It returns an object with a success property set to true, a message property set to the message
@@ -153,6 +154,17 @@ export async function generateImage(
 export const generateRedisKey = (prefix: "REFRESH_TOKEN", suffix: string) =>
   `${prefix}@${suffix}`;
 
+/**
+ * This function deserializes a user object with an avatar from a decoded JWT payload.
+ * @param {string | JwtPayload} decoded - The `decoded` parameter is either a string or a `JwtPayload`
+ * object. It is used to deserialize a user object with an avatar from a JSON Web Token (JWT). The
+ * function checks if the `decoded` object has the required properties (`id`, `firstName`, `lastName`,
+ * `username
+ * @returns The function `deserializeUserWithAvatar` returns a `UserWithAvatar` object if the `decoded`
+ * parameter is an object that contains the properties `id`, `firstName`, `lastName`, `username`,
+ * `role`, and `avatar`. If the `decoded` parameter is not an object with these properties, the
+ * function throws an `AuthenticationError`.
+ */
 export function deserializeUserWithAvatar(
   decoded: string | JwtPayload,
 ): UserWithAvatar {
