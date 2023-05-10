@@ -104,6 +104,54 @@
           }
         }
       },
+      "FORBIDDEN": {
+        "description": "FORBIDDEN",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Error"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "default": "FORBIDDEN"
+                    }
+                  },
+                  "required": ["code"]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "TOO_MANY_REQUESTS": {
+        "description": "TOO MANY REQUESTS",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Error"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "default": "TOO_MANY_REQUESTS"
+                    }
+                  },
+                  "required": ["code"]
+                }
+              ]
+            }
+          }
+        }
+      },
       "BAD_USER_INPUT": {
         "description": "BAD USER INPUT",
         "content": {
@@ -129,7 +177,7 @@
         }
       },
       "INTERNAL_SERVER_ERROR": {
-        "description": "BAD USER INPUT",
+        "description": "INTERNAL SERVER ERROR",
         "content": {
           "application/json": {
             "schema": {
@@ -156,11 +204,6 @@
   },
   "tags": [
     { "name": "Auth", "description": "All routes of the authentication." }
-  ],
-  "security": [
-    {
-      "bearerAuth": []
-    }
   ],
   "paths": {
     "/api/v1/auth/register": {
@@ -244,6 +287,84 @@
           },
           "422": {
             "$ref": "#/components/responses/BAD_USER_INPUT"
+          },
+          "500": {
+            "$ref": "#/components/responses/INTERNAL_SERVER_ERROR"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "summary": "User can login",
+        "description": "User can login.",
+        "tags": ["Auth"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "description": "The username of the user"
+                  },
+
+                  "password": {
+                    "description": "The password of the user",
+                    "type": "string"
+                  }
+                },
+                "required": ["username", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully logged in user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "accessToken": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "required": ["data"]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/FORBIDDEN"
+          },
+          "409": {
+            "$ref": "#/components/responses/CONFLICT"
+          },
+          "422": {
+            "$ref": "#/components/responses/BAD_USER_INPUT"
+          },
+          "429": {
+            "$ref": "#/components/responses/TOO_MANY_REQUESTS"
           },
           "500": {
             "$ref": "#/components/responses/INTERNAL_SERVER_ERROR"

@@ -1,14 +1,19 @@
 import { Router } from "express";
+import rateLimit from "express-rate-limit";
+import ms from "ms";
 
 import {
   API_ROUTE,
   ASSETS_DESTINATION,
+  HttpError,
   imageUpload,
+  userLoginSchema,
   userRegistrationSchema,
   validateRequest,
 } from "@result-system/backend/utility";
+import { isDev } from "@result-system/shared/utility";
 
-import { userRegistration } from "./controller";
+import { userLoginController, userRegistrationController } from "./controller";
 
 const router = Router();
 
@@ -16,7 +21,25 @@ router.post(
   API_ROUTE.auth.registerUser,
   imageUpload(ASSETS_DESTINATION, 5).single("avatar"),
   validateRequest(userRegistrationSchema, 422),
-  userRegistration,
+  userRegistrationController,
+);
+
+router.post(
+  API_ROUTE.auth.loginUser,
+  rateLimit({
+    windowMs: ms(`${isDev() ? 5 : 15}m`), // 5 or 15 minutes
+    max: 5, // Maximum 5 login attempts
+    handler(_req, _res, next) {
+      return next(
+        new HttpError({
+          code: 429,
+          message: "Too many login attempts. Please try again later.",
+        }),
+      );
+    },
+  }),
+  validateRequest(userLoginSchema, 422),
+  userLoginController,
 );
 
 export default router;

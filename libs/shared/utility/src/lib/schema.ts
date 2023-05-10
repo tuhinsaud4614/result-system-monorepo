@@ -61,10 +61,25 @@ export const registerInputSchema = yup.object({
     .required(generateRequiredErrorMessage("Password"))
     .matches(
       PASSWORD_REGEX,
-      "Password must be 8-64 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character",
+      "Password must be 8-64 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character like @$!%*?&",
     ),
   confirmPassword: yup
     .string()
     .required(generateRequiredErrorMessage("Confirm password"))
     .oneOf([yup.ref("password")], generateMatchedErrorMessage("Password")),
+});
+
+export const loginInputSchema = yup.object({
+  username: yup
+    .string()
+    .required(generateRequiredErrorMessage("Username"))
+    .test("sanitize", generateSanitizeErrorMessage("username"), (value) => {
+      return !!value && !!sanitizeHtml(value);
+    }),
+  password: yup
+    .string()
+    .required(generateRequiredErrorMessage("Password"))
+    .test("sanitize", generateSanitizeErrorMessage("password"), (value) => {
+      return !!value && !!sanitizeHtml(value);
+    }),
 });

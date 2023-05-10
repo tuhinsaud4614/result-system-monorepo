@@ -150,6 +150,14 @@ export function generateExistErrorMessage(key: string): string {
   return `${key} already exists`;
 }
 
+/** Generates an error message indicating that a key does not exist.
+ * @param key The name of the key.
+ * @returns The error message.
+ */
+export function generateNotExistErrorMessage(key: string): string {
+  return `${key} does not exist.`;
+}
+
 /**
  * This function generates a failed error message for CRUD operations.
  * @param {string} key - The key is a string parameter that represents the name or identifier of the
@@ -181,4 +189,27 @@ export function generateUnAuthorizedErrorMessage(
   subjectWIthAuxiliary = "You are",
 ): string {
   return `${subjectWIthAuxiliary} not authorized`;
+}
+
+/**
+ * This function generates an error message for invalid credentials with a specific action.
+ * @param {string} action - The `action` parameter is a string that represents the action for which the
+ * credentials are invalid. It is used to generate an error message indicating that the credentials
+ * provided for that action are invalid.
+ * @returns A string message is being returned. The message is "Invalid credentials for {action}" where
+ * {action} is the parameter passed to the function.
+ */
+export function generateInvalidCredentialErrorMessage(action: string) {
+  return `Invalid credentials for ${action}`;
+}
+
+/**
+ * This function generates an error message for a failed action.
+ * @param {string} action - The `action` parameter is a string that represents the action that failed.
+ * It is used to generate an error message indicating that the action failed.
+ * @returns A string message that says "Failed to [action]". The specific action being passed as a
+ * parameter will be inserted into the message.
+ */
+export function generateActionFailedErrorMessage(action: string) {
+  return `Failed to ${action}`;
 }

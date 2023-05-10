@@ -57,13 +57,13 @@ export async function generateJwtToken(
  * @param {UserWithAvatar} user - The `user` parameter is an object of type `UserWithAvatar`, which
  * likely contains information about a user, such as their ID, name, email, and possibly an avatar
  * image. This object is used to generate JWT tokens for the user.
- * @returns The function `generateJwtTokensService` returns an object with two properties:
- * `accessToken` and `refreshToken`. These tokens are generated using the `generateJwtToken` function
- * with the provided `user` object, secret keys, and expiration times. The `refreshToken` is generated
- * with an additional parameter `true` to indicate that it is a refresh token. The `as const` assertion
- * is
+ * @returns An object with two properties: `accessToken` and `refreshToken`, both of which are
+ * generated using the `generateJwtToken` function with different parameters. The `accessToken` is
+ * generated using the `ACCESS_TOKEN_SECRET_KEY` and `ACCESS_TOKEN_EXPIRES` values from the
+ * `environment` object, while the `refreshToken` is generated using the `REFRESH_TOKEN_SECRET_KEY` and
+ * `REF
  */
-export async function generateJwtTokensService(user: UserWithAvatar) {
+export async function generateJwtTokens(user: UserWithAvatar) {
   const accessToken = await generateJwtToken(
     user,
     environment.ACCESS_TOKEN_SECRET_KEY,

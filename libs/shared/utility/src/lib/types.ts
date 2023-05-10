@@ -2,7 +2,7 @@ import { Picture, User, UserRole } from "@prisma/client";
 import { InferType } from "yup";
 
 import { CODE, IMAGE_MIMES } from "./constants";
-import { registerInputSchema } from "./schema";
+import { loginInputSchema, registerInputSchema } from "./schema";
 
 export type Code = keyof typeof CODE;
 export type CodeValue = (typeof CODE)[Code];
@@ -17,6 +17,7 @@ export type Pretty<T extends {}> = {
 
 // Auth
 export type RegisterInput = InferType<typeof registerInputSchema>;
+export type LoginInput = InferType<typeof loginInputSchema>;
 
 // User
 export type NonAdminUserRole = Exclude<UserRole, "ADMIN">;

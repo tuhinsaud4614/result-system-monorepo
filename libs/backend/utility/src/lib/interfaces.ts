@@ -1,10 +1,8 @@
-import { LeanPicture } from "@result-system/shared/utility";
-
-import { UserRegistrationBody } from "./types";
+import type { LeanPicture, RegisterInput } from "@result-system/shared/utility";
 
 // Auth
 export interface UserCreateInput
-  extends Omit<UserRegistrationBody, "confirmPassword"> {
+  extends Omit<RegisterInput, "confirmPassword"> {
   username: string;
   avatar?: LeanPicture;
 }

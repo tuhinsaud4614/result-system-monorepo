@@ -4,23 +4,40 @@ import {
 } from "@result-system/backend/utility";
 
 /**
- * This function creates a user in a Prisma database, including an optional avatar.
- * @param {PrismaClient} prisma - PrismaClient is an instance of the Prisma client used to interact
- * with the database.
- * @param inputs - The `inputs` parameter is an object of type `Pretty<UserCreateInput>`, which
- * contains the data needed to create a new user in the database. The `UserCreateInput` type is likely
- * defined in the Prisma schema and contains fields such as `name`, `email`, `password`,
- * @returns The `createUser` function is returning a Promise that resolves to a newly created user
- * object in the database using the `prisma` client. The user object is created using the `inputs`
- * object passed as an argument to the function, with the `avatar` property being handled separately to
- * create a new avatar object if it exists.
+ * This function creates a user repository with an optional avatar input.
+ * @param {UserCreateInput} inputs - The `inputs` parameter is an object of type `UserCreateInput`
+ * which contains the data needed to create a new user in the database. It may include properties such
+ * as `name`, `email`, `password`, and `avatar`. The `avatar` property is optional and may contain an
+ * object
+ * @returns The function `createUserRepository` is returning a Promise that resolves to the result of
+ * creating a new user in the database using the `prismaClient` instance. The user data is taken from
+ * the `inputs` parameter, and if an `avatar` is provided, it is also created and associated with the
+ * user.
  */
-export function createUser(inputs: UserCreateInput) {
+export function createUserRepository(inputs: UserCreateInput) {
   const { avatar, ...rest } = inputs;
   return prismaClient.user.create({
     data: {
       ...rest,
       avatar: avatar && { create: { ...avatar } },
+    },
+  });
+}
+
+/**
+ * This function retrieves a user by their username and includes their avatar information.
+ * @param {string} username - The `username` parameter is a string that represents the unique
+ * identifier of a user in the database. It is used as a filter to retrieve a specific user from the
+ * `user` table in the database.
+ * @returns a Promise that resolves to a user object with the specified username and includes the
+ * avatar object with its height, width, and URL properties. The user object and its avatar object are
+ * retrieved from a database using Prisma Client.
+ */
+export function getUserByUsernameWithAvatarRepository(username: string) {
+  return prismaClient.user.findUnique({
+    where: { username },
+    include: {
+      avatar: { select: { height: true, width: true, url: true } },
     },
   });
 }
