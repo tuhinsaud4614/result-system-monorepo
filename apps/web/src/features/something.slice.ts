@@ -42,7 +42,7 @@ export const somethingAdapter = createEntityAdapter<SomethingEntity>();
  */
 export const fetchSomething = createAsyncThunk(
   "something/fetchStatus",
-  async (_, thunkAPI) => {
+  async (_, _thunkAPI) => {
     /**
      * Replace this with your custom fetch call.
      * For example, `return myApi.getSomethings()`;

@@ -11,7 +11,8 @@
     "lint:backend": "nx lint backend",
     "lint-fix:backend": "nx lint backend --fix",
     "lint:web": "nx lint web",
-    "lint-fix:web": "nx lint web --fix"
+    "lint-fix:web": "nx lint web --fix",
+    "prepare": "husky install"
   },
   "private": true,
   "dependencies": {
@@ -93,12 +94,14 @@
     "eslint-plugin-jsx-a11y": "6.7.1",
     "eslint-plugin-react": "7.32.2",
     "eslint-plugin-react-hooks": "4.6.0",
+    "husky": "^8.0.0",
     "jest": "^29.4.1",
     "jest-environment-node": "^29.4.1",
     "jsdom": "~20.0.3",
+    "lint-staged": "^13.2.2",
     "nx": "16.1.0",
     "prettier": "^2.6.2",
-    "prisma": "^4.13.0",
+    "prisma": "^4.14.0",
     "react-test-renderer": "18.2.0",
     "ts-jest": "^29.1.0",
     "ts-node": "10.9.1",
@@ -107,5 +110,11 @@
     "vite-plugin-eslint": "^1.8.1",
     "vite-tsconfig-paths": "^4.0.2",
     "vitest": "^0.31.0"
+  },
+  "lint-staged": {
+    "{apps,libs}/**/*.{ts,js,jsx,json,css,html}": [
+      "nx format:write --uncommitted",
+      "nx affected --target lint --uncommitted"
+    ]
   }
 }
