@@ -17,6 +17,9 @@
     "paths": {
       "@result-system/backend/admin": ["libs/backend/admin/src/index.ts"],
       "@result-system/backend/auth": ["libs/backend/auth/src/index.ts"],
+      "@result-system/backend/repositories": [
+        "libs/backend/repositories/src/index.ts"
+      ],
       "@result-system/backend/student": ["libs/backend/student/src/index.ts"],
       "@result-system/backend/teacher": ["libs/backend/teacher/src/index.ts"],
       "@result-system/backend/utility": ["libs/backend/utility/src/index.ts"],

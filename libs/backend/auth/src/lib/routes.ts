@@ -13,7 +13,11 @@ import {
 } from "@result-system/backend/utility";
 import { isDev } from "@result-system/shared/utility";
 
-import { userLoginController, userRegistrationController } from "./controller";
+import {
+  tokenController,
+  userLoginController,
+  userRegistrationController,
+} from "./controller";
 
 const router = Router();
 
@@ -41,5 +45,7 @@ router.post(
   validateRequest(userLoginSchema, 422),
   userLoginController,
 );
+
+router.get(API_ROUTE.auth.token, tokenController);
 
 export default router;

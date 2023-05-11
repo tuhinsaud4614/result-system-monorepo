@@ -6,9 +6,9 @@ import {
   environment,
   responseAsObj,
 } from "@result-system/backend/utility";
-import { LoginInput, RegisterInput } from "@result-system/shared/utility";
+import type { LoginInput, RegisterInput } from "@result-system/shared/utility";
 
-import { loginService, userRegistrationService } from "./service";
+import { loginService, tokenService, userRegistrationService } from "./service";
 
 /**
  * This is a TypeScript function that handles user registration requests by calling a service and
@@ -74,4 +74,29 @@ export const userLoginController: RequestHandler<
   });
 
   return res.status(200).json(responseAsObj({ accessToken }));
+};
+
+/**
+ * This function handles requests for a token and returns a JSON response containing an access token.
+ * @param req - req stands for request and it is an object that contains information about the incoming
+ * HTTP request such as the request headers, request parameters, request body, cookies, etc.
+ * @param res - `res` is an object representing the HTTP response that will be sent back to the client.
+ * It contains methods and properties that allow you to set the response status, headers, and body. In
+ * this specific code snippet, `res` is used to send a JSON response with a status code of
+ * @param next - `next` is a function that is called to pass control to the next middleware function in
+ * the stack. It is typically used to handle errors or to move on to the next function in the chain of
+ * middleware functions.
+ * @returns The code is returning a JSON response with a status code of 201 (created) and an object
+ * containing an access token. The access token is obtained by calling the `tokenService` function with
+ * the JWT token stored in the `req.cookies.jwt` property. If the `tokenService` function returns an
+ * instance of `HttpError`, the error is passed to the `next` middleware function. Otherwise
+ */
+export const tokenController: RequestHandler = async (req, res, next) => {
+  const data = await tokenService(req.cookies.jwt);
+
+  if (data instanceof HttpError) {
+    return next(data);
+  }
+
+  return res.status(201).json(responseAsObj({ accessToken: data }));
 };

@@ -1,29 +1,28 @@
 version: "3.9"
 
 services:
-  # backend:
-  #   build:
-  #     context: .
-  #     dockerfile: ./apps/backend/Dockerfile
-  #     target: development
-  #   restart: always
-  #   env_file:
-  #     - ./.env
-  #     - ./apps/backend/.env.local
-  #   volumes:
-  #     - ./:/app
-  #     - /app/node_modules
-  #   depends_on:
-  #     - db
-  #     - cache
-  #   ports:
-  #     - "${PORT}:${PORT}"
-  #     # Prisma Studio port
-  #     - 5555:5555
-  #   networks:
-  #     - shared-network
-  #   # command: bash -c 'npm run db:generate && npm run db:push && npm run serve:backend'
-  #   command: bash -c 'npm run db:push && npm run serve:backend'
+  backend:
+    build:
+      context: .
+      dockerfile: ./apps/backend/Dockerfile
+      target: development
+    restart: always
+    env_file:
+      - ./.env
+      - ./apps/backend/.env.local
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    depends_on:
+      - db
+      - cache
+    ports:
+      - "${PORT}:${PORT}"
+      # Prisma Studio port
+      - 5555:5555
+    networks:
+      - shared-network
+    command: bash -c 'npm run db:push && npm run serve:backend'
 
   db:
     image: postgres:15.2-alpine

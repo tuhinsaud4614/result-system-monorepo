@@ -11,7 +11,10 @@ class DbClient {
     if (this.#instance) {
       return this.#instance;
     }
-    this.#instance = new PrismaClient({ log: isDev() ? ["query"] : undefined });
+    this.#instance = new PrismaClient({
+      log: isDev() ? ["query", "info", "error", "warn"] : undefined,
+      errorFormat: "pretty",
+    });
     return this.#instance;
   }
 }

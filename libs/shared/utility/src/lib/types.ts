@@ -1,5 +1,5 @@
-import { Picture, User, UserRole } from "@prisma/client";
-import { InferType } from "yup";
+import type { Picture, User, UserRole } from "@prisma/client";
+import type { InferType } from "yup";
 
 import { CODE, IMAGE_MIMES } from "./constants";
 import { loginInputSchema, registerInputSchema } from "./schema";
@@ -25,7 +25,9 @@ export type LeanUser = Omit<
   User,
   "password" | "classRoomId" | "createdAt" | "updatedAt"
 >;
-export type UserWithAvatar = LeanUser & {
+export type UserWithAvatar = User & { avatar: LeanPicture | null };
+
+export type AuthorizedUser = LeanUser & {
   avatar: LeanPicture | null;
 };
 

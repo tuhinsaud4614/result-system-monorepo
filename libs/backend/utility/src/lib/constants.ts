@@ -10,6 +10,7 @@ export const API_ROUTE = {
     main: "/auth",
     registerUser: "/register",
     loginUser: "/login",
+    token: "/token",
   },
   assets: "assets",
 } as const;

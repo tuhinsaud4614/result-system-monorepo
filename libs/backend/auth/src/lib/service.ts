@@ -3,10 +3,12 @@ import { hash as argonHash, verify as argonVerify } from "argon2";
 import { unlink } from "fs";
 import path from "path";
 
+import { UserRepository } from "@result-system/backend/repositories";
 import {
   ASSETS_DESTINATION,
+  AuthenticationError,
   HttpError,
-  UserRepository,
+  environment,
   generateImage,
   generateUserName,
   logger,
@@ -22,11 +24,12 @@ import {
   generateNotExistErrorMessage,
 } from "@result-system/shared/utility";
 
-import { generateJwtTokens } from "./helper";
 import {
-  createUserRepository,
-  getUserByUsernameWithAvatarRepository,
-} from "./repository";
+  convertToAuthorizedUser,
+  generateJwtToken,
+  generateJwtTokens,
+  verifyJwtRefreshToken,
+} from "./helper";
 
 /**
  * This is a function that handles user registration by creating a new user with hashed
@@ -47,7 +50,7 @@ export async function userRegistrationService(
   image: Express.Multer.File | undefined,
 ) {
   try {
-    const count = await UserRepository.countUser();
+    const count = await UserRepository.count();
 
     const { password, role, firstName, lastName } = data;
 
@@ -57,7 +60,7 @@ export async function userRegistrationService(
 
     const username = generateUserName(role, count);
 
-    const user = await createUserRepository({
+    const user = await UserRepository.create({
       role,
       username,
       firstName,
@@ -98,7 +101,7 @@ export async function loginService(data: LoginInput) {
   try {
     const { username, password } = data;
 
-    const user = await getUserByUsernameWithAvatarRepository(username);
+    const user = await UserRepository.getWithAvatarByUsername(username);
 
     if (!user) {
       return new HttpError({
@@ -116,11 +119,45 @@ export async function loginService(data: LoginInput) {
       });
     }
 
-    return await generateJwtTokens(user);
+    return await generateJwtTokens(convertToAuthorizedUser(user));
   } catch (error) {
     logger.error((error as Error).message);
     return new HttpError({
       message: generateActionFailedErrorMessage("login"),
     });
+  }
+}
+
+/**
+ * This function generates a new JWT token for an authorized user based on their refresh token.
+ * @param {string} [jwt] - The `jwt` parameter is a string representing a JSON Web Token (JWT) that is
+ * used for authentication and authorization purposes. It is passed as an argument to the
+ * `tokenService` function.
+ * @returns an instance of the `AuthenticationError` class if the `jwt` parameter is falsy or if the
+ * user does not exist in the database. If the `jwt` is valid and the user exists, the function
+ * generates a new JWT token using the `generateJwtToken` function and returns it. If an error occurs
+ * during the execution of the function, it logs the error message using
+ */
+export async function tokenService(jwt?: string) {
+  if (!jwt) {
+    return new AuthenticationError();
+  }
+
+  try {
+    const { username } = await verifyJwtRefreshToken(jwt);
+    const isUserExist = await UserRepository.getWithAvatarByUsername(username);
+
+    if (!isUserExist) {
+      return new AuthenticationError();
+    }
+
+    return await generateJwtToken(
+      convertToAuthorizedUser(isUserExist),
+      environment.ACCESS_TOKEN_SECRET_KEY,
+      environment.ACCESS_TOKEN_EXPIRES,
+    );
+  } catch (error) {
+    logger.error((error as Error).message);
+    return new AuthenticationError();
   }
 }

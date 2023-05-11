@@ -1,15 +1,17 @@
 import type { UserRole } from "@prisma/client";
 import { unlink } from "fs/promises";
 import { type JwtPayload } from "jsonwebtoken";
+import _ from "lodash";
 import path from "path";
 import sharp from "sharp";
 
 import {
+  type AuthorizedUser,
   type IMAGE_MIME,
   IMAGE_MIMES,
-  LeanPicture,
-  SuccessResponse,
-  UserWithAvatar,
+  type LeanPicture,
+  type SuccessResponse,
+  isObjectWithKeys,
 } from "@result-system/shared/utility";
 
 import { API_ROUTE } from "./constants";
@@ -157,34 +159,26 @@ export const generateRedisKey = (prefix: "REFRESH_TOKEN", suffix: string) =>
 /**
  * This function deserializes a user object with an avatar from a decoded JWT payload.
  * @param {string | JwtPayload} decoded - The `decoded` parameter is either a string or a `JwtPayload`
- * object. It is used to deserialize a user object with an avatar from a JSON Web Token (JWT). The
- * function checks if the `decoded` object has the required properties (`id`, `firstName`, `lastName`,
- * `username
- * @returns The function `deserializeUserWithAvatar` returns a `UserWithAvatar` object if the `decoded`
- * parameter is an object that contains the properties `id`, `firstName`, `lastName`, `username`,
- * `role`, and `avatar`. If the `decoded` parameter is not an object with these properties, the
- * function throws an `AuthenticationError`.
+ * object. It is used as input to the `deserializeUserWithAvatar` function.
+ * @returns The function `deserializeUserWithAvatar` returns an object of type `AuthorizedUser` which
+ * contains the properties `id`, `firstName`, `lastName`, `username`, `role`, and `avatar`. The
+ * function first checks if the `decoded` parameter is an object with all the required keys using the
+ * `isObjectWithKeys` function. If it is, the function returns a new object with only
  */
 export function deserializeUserWithAvatar(
   decoded: string | JwtPayload,
-): UserWithAvatar {
-  if (
-    typeof decoded === "object" &&
-    "id" in decoded &&
-    "firstName" in decoded &&
-    "lastName" in decoded &&
-    "username" in decoded &&
-    "role" in decoded &&
-    "avatar" in decoded
-  ) {
-    return {
-      id: decoded.id,
-      firstName: decoded.firstName,
-      lastName: decoded.lastName,
-      username: decoded.username,
-      role: decoded.role,
-      avatar: decoded.avatar,
-    };
+): AuthorizedUser {
+  const keys = [
+    "id",
+    "firstName",
+    "lastName",
+    "username",
+    "role",
+    "avatar",
+  ] as const;
+
+  if (isObjectWithKeys(decoded, keys)) {
+    return _.pick(decoded, keys);
   }
 
   throw new AuthenticationError();
