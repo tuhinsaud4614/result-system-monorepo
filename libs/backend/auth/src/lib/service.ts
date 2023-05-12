@@ -10,8 +10,10 @@ import {
   HttpError,
   environment,
   generateImage,
+  generateRedisKey,
   generateUserName,
   logger,
+  redisClient,
 } from "@result-system/backend/utility";
 import {
   type Code,
@@ -159,5 +161,20 @@ export async function tokenService(jwt?: string) {
   } catch (error) {
     logger.error((error as Error).message);
     return new AuthenticationError();
+  }
+}
+
+/**
+ * This function logs out a user by deleting their refresh token from Redis.
+ * @param {string} userId - The `userId` parameter is a string that represents the unique identifier of
+ * the user who is logging out. This identifier is used to generate a Redis key that will be used to
+ * delete the user's refresh token from the Redis cache.
+ * @returns If there is an error in deleting the refresh token from Redis, nothing is returned.
+ */
+export async function logoutService(userId: string) {
+  try {
+    await redisClient.del(generateRedisKey("REFRESH_TOKEN", userId));
+  } catch (error) {
+    return;
   }
 }

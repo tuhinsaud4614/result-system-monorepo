@@ -5,23 +5,51 @@ import {
   generateUnAuthorizedErrorMessage,
 } from "@result-system/shared/utility";
 
+interface Params {
+  message: string;
+  /**
+   * `200`: "OK"
+   *
+   * `201`: "CREATED"
+   *
+   * `204`: "No_CONTENT"
+   *
+   * `301`: "MOVED_PERMANENTLY"
+   *
+   * `400`: "BAD_REQUEST"
+   *
+   * `401`: "UNAUTHORIZED"
+   *
+   * `402`: "PAYMENT_REQUIRED"
+   *
+   * `403`: "FORBIDDEN"
+   *
+   * `404`: "NOT_FOUND"
+   *
+   * `409`: "CONFLICT"
+   *
+   * `415`: "UNSUPPORTED_MEDIA_TYPE"
+   *
+   * `422`: "BAD_USER_INPUT"
+   *
+   * `429`: "TOO_MANY_REQUESTS"
+   *
+   * `431`: "REQUEST_HEADER_FIELDS_TOO_LARGE"
+   *
+   * `500`: "INTERNAL_SERVER_ERROR"
+   */
+  code?: Code;
+  paths?: ErrorResponse["paths"];
+  detail?: string;
+}
+
 /* It's a class that extends the Error class and has a code property */
 export class HttpError extends Error {
   code: Code;
   #paths: ErrorResponse["paths"];
   #detail?: string;
 
-  constructor({
-    message,
-    code,
-    detail,
-    paths,
-  }: {
-    message: string;
-    code?: Code;
-    paths?: ErrorResponse["paths"];
-    detail?: string;
-  }) {
+  constructor({ message, code, detail, paths }: Params) {
     super(message);
     this.code = code || 500;
     this.#paths = paths;

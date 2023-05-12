@@ -4,6 +4,37 @@ import type { InferType } from "yup";
 import { CODE, IMAGE_MIMES } from "./constants";
 import { loginInputSchema, registerInputSchema } from "./schema";
 
+/**
+ * `200`: "OK"
+ *
+ * `201`: "CREATED"
+ *
+ * `204`: "No_CONTENT"
+ *
+ * `301`: "MOVED_PERMANENTLY"
+ *
+ * `400`: "BAD_REQUEST"
+ *
+ * `401`: "UNAUTHORIZED"
+ *
+ * `402`: "PAYMENT_REQUIRED"
+ *
+ * `403`: "FORBIDDEN"
+ *
+ * `404`: "NOT_FOUND"
+ *
+ * `409`: "CONFLICT"
+ *
+ * `415`: "UNSUPPORTED_MEDIA_TYPE"
+ *
+ * `422`: "BAD_USER_INPUT"
+ *
+ * `429`: "TOO_MANY_REQUESTS"
+ *
+ * `431`: "REQUEST_HEADER_FIELDS_TOO_LARGE"
+ *
+ * `500`: "INTERNAL_SERVER_ERROR"
+ */
 export type Code = keyof typeof CODE;
 export type CodeValue = (typeof CODE)[Code];
 export type IMAGE_MIME = keyof typeof IMAGE_MIMES;

@@ -14,6 +14,7 @@ import {
 import { isDev } from "@result-system/shared/utility";
 
 import {
+  logoutController,
   tokenController,
   userLoginController,
   userRegistrationController,
@@ -45,7 +46,7 @@ router.post(
   validateRequest(userLoginSchema, 422),
   userLoginController,
 );
-
 router.get(API_ROUTE.auth.token, tokenController);
+router.delete(API_ROUTE.auth.logoutUser, logoutController);
 
 export default router;

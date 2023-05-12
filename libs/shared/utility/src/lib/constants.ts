@@ -2,6 +2,7 @@
 export const CODE = {
   200: "OK", // code: 200
   201: "CREATED", // code: 201
+  204: "No_CONTENT", // code: 201
   301: "MOVED_PERMANENTLY", // code: 301
   400: "BAD_REQUEST", // code: 400
   401: "UNAUTHORIZED", // code: 401

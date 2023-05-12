@@ -11,6 +11,7 @@ export const API_ROUTE = {
     registerUser: "/register",
     loginUser: "/login",
     token: "/token",
+    logoutUser: "/logout",
   },
   assets: "assets",
 } as const;
