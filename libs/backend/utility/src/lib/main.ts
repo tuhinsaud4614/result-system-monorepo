@@ -43,7 +43,7 @@ export function responseAsObj<T>(
     message,
     success: true,
     timestamp: new Date().toISOString(),
-  } as const;
+  };
 }
 
 /**

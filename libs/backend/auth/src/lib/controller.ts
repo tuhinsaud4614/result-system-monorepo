@@ -133,5 +133,5 @@ export const logoutController: RequestHandler = async (req, res, next) => {
   await logoutService(userId);
 
   res.clearCookie("jwt", { httpOnly: true, secure: true, sameSite: "none" });
-  return res.status(204).json(responseAsObj(null, "You successfully logout"));
+  return res.status(204).json();
 };

@@ -19,6 +19,7 @@ import {
   userLoginController,
   userRegistrationController,
 } from "./controller";
+import { verifyJwtAccessToken } from "./middleware";
 
 const router = Router();
 
@@ -34,6 +35,8 @@ router.post(
   rateLimit({
     windowMs: ms(`${isDev() ? 5 : 15}m`), // 5 or 15 minutes
     max: 5, // Maximum 5 login attempts
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
     handler(_req, _res, next) {
       return next(
         new HttpError({
@@ -47,6 +50,6 @@ router.post(
   userLoginController,
 );
 router.get(API_ROUTE.auth.token, tokenController);
-router.delete(API_ROUTE.auth.logoutUser, logoutController);
+router.post(API_ROUTE.auth.logoutUser, verifyJwtAccessToken, logoutController);
 
 export default router;
