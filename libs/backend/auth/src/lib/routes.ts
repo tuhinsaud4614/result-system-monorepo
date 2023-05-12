@@ -19,16 +19,9 @@ import {
   userLoginController,
   userRegistrationController,
 } from "./controller";
-import { verifyJwtAccessToken } from "./middleware";
+import { verifyJwtAccessToken, verifyRoles } from "./middleware";
 
 const router = Router();
-
-router.post(
-  API_ROUTE.auth.registerUser,
-  imageUpload(ASSETS_DESTINATION, 5).single("avatar"),
-  validateRequest(userRegistrationSchema, 422),
-  userRegistrationController,
-);
 
 router.post(
   API_ROUTE.auth.loginUser,
@@ -50,6 +43,15 @@ router.post(
   userLoginController,
 );
 router.get(API_ROUTE.auth.token, tokenController);
+
+router.post(
+  API_ROUTE.auth.registerUser,
+  verifyJwtAccessToken,
+  verifyRoles(["ADMIN"]),
+  imageUpload(ASSETS_DESTINATION, 5).single("avatar"),
+  validateRequest(userRegistrationSchema, 422),
+  userRegistrationController,
+);
 router.post(API_ROUTE.auth.logoutUser, verifyJwtAccessToken, logoutController);
 
 export default router;

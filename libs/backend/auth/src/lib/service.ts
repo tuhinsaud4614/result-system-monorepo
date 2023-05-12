@@ -73,7 +73,6 @@ export async function userRegistrationService(
 
     return user.id;
   } catch (error) {
-    logger.error((error as Error).message);
     if (image) {
       unlink(path.join(ASSETS_DESTINATION, image.path), () => undefined);
     }
@@ -86,7 +85,11 @@ export async function userRegistrationService(
       message = generateExistErrorMessage("User");
       code = 409;
     }
-    return new HttpError({ code, message });
+    return new HttpError({
+      code,
+      message,
+      originalMessage: (error as Error).message,
+    });
   }
 }
 
@@ -123,9 +126,9 @@ export async function loginService(data: LoginInput) {
 
     return await generateJwtTokens(convertToAuthorizedUser(user));
   } catch (error) {
-    logger.error((error as Error).message);
     return new HttpError({
       message: generateActionFailedErrorMessage("login"),
+      originalMessage: (error as Error).message,
     });
   }
 }
@@ -160,7 +163,7 @@ export async function tokenService(jwt?: string) {
     );
   } catch (error) {
     logger.error((error as Error).message);
-    return new AuthenticationError();
+    return new AuthenticationError(undefined, (error as Error).message);
   }
 }
 

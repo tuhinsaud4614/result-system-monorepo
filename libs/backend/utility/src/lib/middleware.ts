@@ -83,6 +83,7 @@ const diskStore = (dest: string) => {
           new HttpError({
             message: generateCRUDFailedErrorMessage("file", "upload"),
             code: 500,
+            originalMessage: (error as Error).message,
           }),
           dest,
         );
@@ -178,36 +179,28 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     return next(err);
   }
 
+  let newError = new HttpError({
+    message: "Something went wrong",
+    code: 500,
+    detail: "An unknown error occurs",
+  });
+
   if (err instanceof MulterError) {
     if (req.file) {
-      unlink(req.file.path, (linkErr) => {
-        if (linkErr) {
-          logger.error(linkErr?.message);
-        }
-      });
+      unlink(req.file.path, (linkErr) => logger.error(linkErr?.message));
     }
-    logger.error(err.message);
-
-    return res.status(400).json(
-      new HttpError({
-        message: err.message,
-        code: 400,
-        detail: err.code,
-      }).toObj(),
-    );
+    newError = new HttpError({
+      message: err.message,
+      code: 400,
+      detail: err.code,
+    });
+  } else if (err instanceof HttpError) {
+    if (err.originalMessage) {
+      logger.error(`Original Message: ${err.originalMessage}`);
+    }
+    newError = err;
   }
 
-  if (err instanceof HttpError) {
-    logger.error(err.message);
-    return res.status(err.code).json(err.toObj());
-  }
-  logger.error(err.message);
-
-  return res.status(500).json(
-    new HttpError({
-      message: "Something went wrong",
-      code: 500,
-      detail: "An unknown error occurs",
-    }).toObj(),
-  );
+  logger.error(newError.message);
+  return res.status(newError.code).json(newError.toObj());
 };

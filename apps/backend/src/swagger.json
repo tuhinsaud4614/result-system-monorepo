@@ -235,6 +235,7 @@
         "summary": "Admin can register user",
         "description": "Admin can register \"STUDENT\" or \"TEACHER\" account.",
         "tags": ["Auth"],
+        "security": [{ "bearerAuth": [] }],
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -305,6 +306,9 @@
           },
           "400": {
             "$ref": "#/components/responses/BAD_REQUEST"
+          },
+          "401": {
+            "$ref": "#/components/responses/UNAUTHORIZED"
           },
           "409": {
             "$ref": "#/components/responses/CONFLICT"

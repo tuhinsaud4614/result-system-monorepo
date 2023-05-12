@@ -41,6 +41,7 @@ interface Params {
   code?: Code;
   paths?: ErrorResponse["paths"];
   detail?: string;
+  originalMessage?: string;
 }
 
 /* It's a class that extends the Error class and has a code property */
@@ -48,12 +49,14 @@ export class HttpError extends Error {
   code: Code;
   #paths: ErrorResponse["paths"];
   #detail?: string;
+  originalMessage?: string;
 
-  constructor({ message, code, detail, paths }: Params) {
+  constructor({ message, code, detail, paths, originalMessage }: Params) {
     super(message);
     this.code = code || 500;
     this.#paths = paths;
     this.#detail = detail;
+    this.originalMessage = originalMessage;
   }
 
   /**
@@ -80,7 +83,10 @@ export class HttpError extends Error {
 /* The AuthenticationError class extends the HttpError class and represents an error that occurs when
 authentication fails with a default message of "Unauthorized". */
 export class AuthenticationError extends HttpError {
-  constructor(message = generateUnAuthorizedErrorMessage()) {
-    super({ code: 401, message });
+  constructor(
+    message = generateUnAuthorizedErrorMessage(),
+    originalMessage?: string,
+  ) {
+    super({ code: 401, message, originalMessage });
   }
 }
