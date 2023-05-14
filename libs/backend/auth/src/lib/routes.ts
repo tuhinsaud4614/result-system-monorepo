@@ -3,7 +3,6 @@ import rateLimit from "express-rate-limit";
 import ms from "ms";
 
 import {
-  API_ROUTE,
   ASSETS_DESTINATION,
   HttpError,
   imageUpload,
@@ -11,7 +10,7 @@ import {
   userRegistrationSchema,
   validateRequest,
 } from "@result-system/backend/utility";
-import { isDev } from "@result-system/shared/utility";
+import { API_ROUTE, isDev } from "@result-system/shared/utility";
 
 import {
   logoutController,

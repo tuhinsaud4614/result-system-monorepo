@@ -6,12 +6,8 @@ import helmet from "helmet";
 import path from "path";
 import swaggerUI from "swagger-ui-express";
 
-import {
-  API_ROUTE,
-  errorHandler,
-  notFoundHandler,
-} from "@result-system/backend/utility";
-import { isDev } from "@result-system/shared/utility";
+import { errorHandler, notFoundHandler } from "@result-system/backend/utility";
+import { API_ROUTE, isDev } from "@result-system/shared/utility";
 
 import routes from "./routes";
 import swaggerJson from "./swagger.json";

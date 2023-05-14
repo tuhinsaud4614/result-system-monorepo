@@ -1,11 +1,10 @@
 import {
-  API_ROUTE,
   SIGNALS,
   environment,
   logger,
   redisClient,
 } from "@result-system/backend/utility";
-import { isDev } from "@result-system/shared/utility";
+import { API_ROUTE, isDev } from "@result-system/shared/utility";
 
 import app from "./app";
 

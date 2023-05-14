@@ -29,3 +29,15 @@ export const IMAGE_MIMES = {
 // Regex
 export const PASSWORD_REGEX =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,64}$/;
+
+export const API_ROUTE = {
+  v1: "/api/v1",
+  auth: {
+    main: "/auth",
+    registerUser: "/register",
+    loginUser: "/login",
+    token: "/token",
+    logoutUser: "/logout",
+  },
+  assets: "assets",
+} as const;

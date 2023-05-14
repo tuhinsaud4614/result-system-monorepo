@@ -6,6 +6,7 @@ import path from "path";
 import sharp from "sharp";
 
 import {
+  API_ROUTE,
   type AuthorizedUser,
   type IMAGE_MIME,
   IMAGE_MIMES,
@@ -14,7 +15,6 @@ import {
   isObjectWithKeys,
 } from "@result-system/shared/utility";
 
-import { API_ROUTE } from "./constants";
 import { AuthenticationError } from "./model";
 
 /**

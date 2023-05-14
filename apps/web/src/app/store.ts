@@ -1,17 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import {
-  SOMETHING_FEATURE_KEY,
-  somethingReducer,
-} from "../features/something.slice";
+import { isDev } from "@result-system/shared/utility";
+
+import { AUTH_FEATURE_KEY, authReducer } from "../features/auth/auth.slice";
+import { api } from "./services/api";
 
 const store = configureStore({
-  reducer: { [SOMETHING_FEATURE_KEY]: somethingReducer },
-  // Additional middleware can be passed to this array
+  reducer: { [api.reducerPath]: api.reducer, [AUTH_FEATURE_KEY]: authReducer },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
-  devTools: process.env.NODE_ENV !== "production",
-  // Optional Redux store enhancers
+  devTools: isDev(),
   enhancers: [],
 });
 
+export type RootState = ReturnType<typeof store.getState>;
 export default store;

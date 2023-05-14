@@ -1,19 +1,10 @@
 import path from "path";
 
+import { API_ROUTE } from "@result-system/shared/utility";
+
 /* The signals of the server. */
 export const SIGNALS = ["SIGINT", "SIGTERM", "SIGHUP"] as const;
 
 /**  Name of the rest api route. */
-export const API_ROUTE = {
-  v1: "/api/v1",
-  auth: {
-    main: "/auth",
-    registerUser: "/register",
-    loginUser: "/login",
-    token: "/token",
-    logoutUser: "/logout",
-  },
-  assets: "assets",
-} as const;
 
 export const ASSETS_DESTINATION = path.join(__dirname, API_ROUTE.assets);

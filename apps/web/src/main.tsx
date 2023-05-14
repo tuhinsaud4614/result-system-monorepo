@@ -23,10 +23,13 @@ root.render(
                 main: "#854621",
               },
               secondary: {
-                main: "#CFBE55",
+                main: "#ff6d1f",
               },
-              text: { primary: "383230" },
-              background: { paper: "#BFAEA4" },
+              background: {
+                default: "#ffffff",
+                paper: "#faf3e1",
+              },
+              text: { primary: "#383230" },
             },
           })}
         >
