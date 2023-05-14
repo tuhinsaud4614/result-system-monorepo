@@ -4,7 +4,7 @@ import { Route, Routes } from "react-router-dom";
 
 import { API_ROUTE } from "@result-system/shared/utility";
 
-import LoginLoader from "../pages/login/loader";
+import LoginLoader from "../pages/login/Loader";
 
 const LoginPage = React.lazy(() => import("../pages/login"));
 
