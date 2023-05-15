@@ -16,6 +16,7 @@ const envSchema = yup.object({
   REDIS_PORT: yup.string().required(),
   HOST: yup.string().required(),
   PORT: yup.string().required(),
+  CLINT_URL: yup.string(),
 });
 
 const environment = envSchema.validateSync(process.env);

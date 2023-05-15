@@ -6,8 +6,12 @@ import helmet from "helmet";
 import path from "path";
 import swaggerUI from "swagger-ui-express";
 
-import { errorHandler, notFoundHandler } from "@result-system/backend/utility";
-import { API_ROUTE, isDev } from "@result-system/shared/utility";
+import {
+  environment,
+  errorHandler,
+  notFoundHandler,
+} from "@result-system/backend/utility";
+import { API_ROUTE } from "@result-system/shared/utility";
 
 import routes from "./routes";
 import swaggerJson from "./swagger.json";
@@ -16,7 +20,7 @@ const app = express();
 
 app.use(compression());
 app.use(helmet());
-app.use(cors({ origin: isDev() ? "*" : undefined }));
+app.use(cors({ origin: environment.CLINT_URL, credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 import { Route, Routes } from "react-router-dom";
 
@@ -8,7 +8,7 @@ import LoginLoader from "../pages/login/Loader";
 
 const LoginPage = React.lazy(() => import("../pages/login"));
 
-export function App() {
+export default function App() {
   return (
     <Routes>
       <Route
@@ -22,5 +22,3 @@ export function App() {
     </Routes>
   );
 }
-
-export default App;

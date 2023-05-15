@@ -7,7 +7,8 @@ import { api } from "./services/api";
 
 const store = configureStore({
   reducer: { [api.reducerPath]: api.reducer, [AUTH_FEATURE_KEY]: authReducer },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(api.middleware),
   devTools: isDev(),
   enhancers: [],
 });
