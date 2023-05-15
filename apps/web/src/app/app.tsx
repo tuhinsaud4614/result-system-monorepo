@@ -1,16 +1,28 @@
 import React from "react";
 
-import { Route, Routes } from "react-router-dom";
+import {
+  Outlet,
+  Route,
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+} from "react-router-dom";
 
 import { API_ROUTE } from "@result-system/shared/utility";
 
+import ImagePicker from "../components/common/image-picker";
+import PageNotFound from "../pages/404";
 import LoginLoader from "../pages/login/Loader";
 
 const LoginPage = React.lazy(() => import("../pages/login"));
 
-export default function App() {
-  return (
-    <Routes>
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<Outlet />} errorElement={<PageNotFound />}>
+      <Route
+        index
+        element={<ImagePicker onChanged={() => undefined} data={null} />}
+      />
       <Route
         path={API_ROUTE.auth.main}
         element={
@@ -19,6 +31,10 @@ export default function App() {
           </React.Suspense>
         }
       />
-    </Routes>
-  );
+    </Route>,
+  ),
+);
+
+export default function App() {
+  return <RouterProvider router={router} />;
 }

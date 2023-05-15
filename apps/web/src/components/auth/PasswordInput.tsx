@@ -10,9 +10,9 @@ import {
 } from "@mui/material";
 import { type UseFormRegisterReturn } from "react-hook-form";
 
-export default function PasswordInput<T extends string>(
+function Root<T extends string>(
   props: UseFormRegisterReturn<T>,
-  ref: React.Ref<HTMLInputElement>,
+  ref: React.ForwardedRef<HTMLInputElement>,
 ) {
   const passwordId = React.useId();
   const [showPassword, setShowPassword] = React.useState(false);
@@ -52,3 +52,6 @@ export default function PasswordInput<T extends string>(
     </FormControl>
   );
 }
+
+const PasswordInput = React.forwardRef(Root);
+export default PasswordInput;
