@@ -41,6 +41,9 @@ const authApi = api.injectEndpoints({
           method: "POST",
         };
       },
+      // onQueryStarted(_args, {dispatch,queryFulfilled}){
+
+      // }
     }),
   }),
 });

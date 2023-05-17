@@ -1,11 +1,11 @@
 import { Typography } from "@mui/material";
 
-import AuthContainer from "../../components/auth/Container";
 import Login from "../../features/auth/Login";
+import Wrapper from "./Wrapper";
 
 export default function LoginPage() {
   return (
-    <AuthContainer>
+    <Wrapper>
       <Typography
         variant="h5"
         component="h1"
@@ -16,6 +16,6 @@ export default function LoginPage() {
         Result System
       </Typography>
       <Login />
-    </AuthContainer>
+    </Wrapper>
   );
 }

@@ -114,7 +114,7 @@
     "vitest": "^0.31.0"
   },
   "lint-staged": {
-    "{apps,libs}/**/*.{ts,js,jsx,json,css,html}": [
+    "{apps,libs}/**/*.{ts,js,tsx,jsx,json,css,html}": [
       "nx format:write --uncommitted",
       "nx affected --target lint --uncommitted"
     ]
