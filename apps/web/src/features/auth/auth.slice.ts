@@ -1,4 +1,5 @@
 import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
+import jwt_decode from "jwt-decode";
 
 import { type AuthorizedUser } from "@result-system/shared/utility";
 
@@ -17,11 +18,9 @@ export const authSlice = createSlice({
   name: AUTH_FEATURE_KEY,
   initialState: initialAuthState,
   reducers: {
-    setAuthState(
-      state,
-      action: PayloadAction<{ user: AuthorizedUser; token: string }>,
-    ) {
-      state.user = action.payload.user;
+    setAuthState(state, action: PayloadAction<{ token: string }>) {
+      console.log(jwt_decode(action.payload.token));
+      // state.user = action.payload.user;
       state.token = action.payload.token;
     },
     setAuthInitial(state) {

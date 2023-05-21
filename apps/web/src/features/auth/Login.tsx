@@ -22,7 +22,8 @@ export default function Login() {
     resolver: yupResolver(loginInputSchema),
   });
 
-  const [login, { data, isLoading, reset }] = useLoginMutation();
+  const [login, { data, isLoading, reset, isError, error: apiError }] =
+    useLoginMutation();
 
   console.log("data:", data);
 
@@ -34,6 +35,8 @@ export default function Login() {
       resetForm();
     }
   });
+
+  console.log(apiError);
 
   return (
     <>
@@ -63,7 +66,9 @@ export default function Login() {
           Login
         </Button>
       </form>
-      <ErrorModal title="Login errors" errors={["hello"]} onClose={reset} />
+      {isError && (
+        <ErrorModal title="Login errors" errors={["hello"]} onClose={reset} />
+      )}
     </>
   );
 }

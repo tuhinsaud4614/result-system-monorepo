@@ -23,7 +23,7 @@ const baseQuery = fetchBaseQuery({
 
 const baseQueryWithAuth: BaseQueryFn = async (args, api, extraOptions) => {
   const result = await baseQuery(args, api, extraOptions);
-  console.log("Result", result);
+  console.log("baseQueryWithAuth - Result:", result);
 
   if (result.error && result.error.status === 401) {
     const newToken = await baseQuery(

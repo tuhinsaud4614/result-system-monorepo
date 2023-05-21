@@ -3,8 +3,10 @@ import {
   LoginInput,
   RegisterInput,
   SuccessResponse,
+  isDev,
 } from "@result-system/shared/utility";
 
+import { authActions } from "../../features/auth/auth.slice";
 import { api } from "./api";
 
 const authApi = api.injectEndpoints({
@@ -41,9 +43,17 @@ const authApi = api.injectEndpoints({
           method: "POST",
         };
       },
-      // onQueryStarted(_args, {dispatch,queryFulfilled}){
-
-      // }
+      async onQueryStarted(_args, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          dispatch(authActions.setAuthInitial());
+          dispatch(api.util.resetApiState());
+        } catch (error) {
+          if (isDev()) {
+            console.log(error);
+          }
+        }
+      },
     }),
   }),
 });
