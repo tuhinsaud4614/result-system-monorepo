@@ -39,5 +39,10 @@ export const getAuthState = (rootState: RootState): AuthState =>
 export const getAuthUser = (rootState: RootState) =>
   rootState[AUTH_FEATURE_KEY].user;
 
+export const getAuthUserRole = (rootState: RootState) => {
+  const user = rootState[AUTH_FEATURE_KEY].user;
+  return user && user.role;
+};
+
 export const getAuthToken = (rootState: RootState) =>
   rootState[AUTH_FEATURE_KEY].token;

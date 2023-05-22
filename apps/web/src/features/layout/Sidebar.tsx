@@ -7,11 +7,11 @@ import {
   IconButton,
   Stack,
   Theme,
-  Typography,
   useMediaQuery,
 } from "@mui/material";
 
 import { useAppDispatch, useAppSelector } from "../../utility/hooks";
+import SidebarUserRole from "../auth/SidebarUserRole";
 import { getLayoutSidebarState, layoutActions } from "./layout.slice";
 
 interface Props {
@@ -40,10 +40,12 @@ export default function Sidebar({ children }: Props) {
           ...mixins.toolbar,
         })}
       >
-        <Typography variant="h6" component="h1">
-          Panel
-        </Typography>
-        <IconButton aria-label="close drawer" onClick={handleClose}>
+        <SidebarUserRole />
+        <IconButton
+          aria-label="close drawer"
+          sx={{ ml: "auto" }}
+          onClick={handleClose}
+        >
           <ChevronLeft />
         </IconButton>
       </Stack>

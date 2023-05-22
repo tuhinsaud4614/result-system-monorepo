@@ -20,25 +20,15 @@ export default function MainWrapper({ children }: Props) {
           padding: spacing(10, 2, 2),
           [breakpoints.up("sm")]: {
             transition: transitions.create("margin", {
-              easing: transitions.easing.sharp,
-              duration: transitions.duration.leavingScreen,
+              easing: transitions.easing[open ? "easeOut" : "sharp"],
+              duration:
+                transitions.duration[open ? "enteringScreen" : "leavingScreen"],
             }),
             flexGrow: 1,
-            marginLeft: spacing(-30),
+            marginLeft: open ? 0 : spacing(-30),
             maxWidth: breakpoints.values.lg,
           },
         }),
-        open
-          ? ({ breakpoints, transitions }) => ({
-              [breakpoints.up("sm")]: {
-                transition: transitions.create("margin", {
-                  easing: transitions.easing.easeOut,
-                  duration: transitions.duration.enteringScreen,
-                }),
-                marginLeft: 0,
-              },
-            })
-          : {},
       ]}
     >
       {children}
