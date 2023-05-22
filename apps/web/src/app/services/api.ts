@@ -23,6 +23,9 @@ const baseQuery = fetchBaseQuery({
 
 const baseQueryWithAuth: BaseQueryFn = async (args, api, extraOptions) => {
   const result = await baseQuery(args, api, extraOptions);
+  if (api.endpoint === "login") {
+    return result;
+  }
   console.log("baseQueryWithAuth - Result:", result);
 
   if (result.error && result.error.status === 401) {

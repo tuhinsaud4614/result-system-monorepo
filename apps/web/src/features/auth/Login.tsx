@@ -3,15 +3,24 @@ import * as React from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, CircularProgress, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
-import { LoginInput, loginInputSchema } from "@result-system/shared/utility";
+import {
+  ErrorResponse,
+  LoginInput,
+  loginInputSchema,
+} from "@result-system/shared/utility";
 
 import { useLoginMutation } from "../../app/services/auth.api";
 import ErrorModal from "../../components/common/ErrorModal";
 import PasswordInput from "../../components/common/PasswordInput";
+import { useAppDispatch } from "../../utility/hooks";
+import { authActions } from "./auth.slice";
 
 export default function Login() {
   const usernameId = React.useId();
+  const rdxDispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -22,21 +31,17 @@ export default function Login() {
     resolver: yupResolver(loginInputSchema),
   });
 
-  const [login, { data, isLoading, reset, isError, error: apiError }] =
-    useLoginMutation();
+  const [login, { isLoading, reset, error: apiError }] = useLoginMutation();
 
-  console.log("data:", data);
-
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = handleSubmit(async (formData) => {
     try {
-      await login(data).unwrap();
+      const { data } = await login(formData).unwrap();
+      rdxDispatch(authActions.setAuthState(data.accessToken));
+      navigate("/");
     } catch (error) {
-      console.log("error:", error);
       resetForm();
     }
   });
-
-  console.log(apiError);
 
   return (
     <>
@@ -66,8 +71,16 @@ export default function Login() {
           Login
         </Button>
       </form>
-      {isError && (
-        <ErrorModal title="Login errors" errors={["hello"]} onClose={reset} />
+      {apiError && (
+        <ErrorModal
+          title="Login errors"
+          errors={
+            (apiError as ErrorResponse).paths || [
+              (apiError as ErrorResponse).message,
+            ]
+          }
+          onClose={reset}
+        />
       )}
     </>
   );

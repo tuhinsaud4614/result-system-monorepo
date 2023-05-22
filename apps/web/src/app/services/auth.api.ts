@@ -1,5 +1,6 @@
 import {
   API_ROUTE,
+  ErrorResponse,
   LoginInput,
   RegisterInput,
   SuccessResponse,
@@ -35,6 +36,13 @@ const authApi = api.injectEndpoints({
           body,
         };
       },
+      transformErrorResponse(
+        baseQueryReturnValue: { status: number; data: ErrorResponse },
+        _meta,
+        _args,
+      ) {
+        return baseQueryReturnValue.data;
+      },
     }),
     logout: build.mutation({
       query() {
@@ -48,6 +56,22 @@ const authApi = api.injectEndpoints({
           await queryFulfilled;
           dispatch(authActions.setAuthInitial());
           dispatch(api.util.resetApiState());
+        } catch (error) {
+          if (isDev()) {
+            console.log(error);
+          }
+        }
+      },
+    }),
+    refreshToken: build.query({
+      query: () => ({
+        url: `${API_ROUTE.auth.main}${API_ROUTE.auth.token}`,
+        method: "GET",
+      }),
+      async onQueryStarted(_args, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(authActions.setAuthState(data as string));
         } catch (error) {
           if (isDev()) {
             console.log(error);

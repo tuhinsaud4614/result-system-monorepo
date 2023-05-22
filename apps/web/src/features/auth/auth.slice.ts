@@ -1,7 +1,11 @@
 import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
 import jwt_decode from "jwt-decode";
+import _ from "lodash";
 
-import { type AuthorizedUser } from "@result-system/shared/utility";
+import {
+  type AuthorizedUser,
+  isObjectWithKeys,
+} from "@result-system/shared/utility";
 
 import { RootState } from "../../app/store";
 
@@ -18,10 +22,26 @@ export const authSlice = createSlice({
   name: AUTH_FEATURE_KEY,
   initialState: initialAuthState,
   reducers: {
-    setAuthState(state, action: PayloadAction<{ token: string }>) {
-      console.log(jwt_decode(action.payload.token));
-      // state.user = action.payload.user;
-      state.token = action.payload.token;
+    setAuthState(state, action: PayloadAction<string>) {
+      const decoded = jwt_decode(action.payload);
+      if (
+        isObjectWithKeys<AuthorizedUser & { exp: number; iat: number }>(
+          decoded,
+          [
+            "id",
+            "username",
+            "firstName",
+            "lastName",
+            "role",
+            "avatar",
+            "exp",
+            "iat",
+          ],
+        )
+      ) {
+        state.user = _.omit(decoded, ["exp", "iat"]);
+        state.token = action.payload;
+      }
     },
     setAuthInitial(state) {
       state.user = null;
