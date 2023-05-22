@@ -2,9 +2,13 @@ import * as React from "react";
 
 import { Avatar, IconButton, Menu, MenuItem } from "@mui/material";
 
+import { useAppSelector } from "../../utility/hooks";
+import { getAuthUser } from "./auth.slice";
+
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const menuId = React.useId();
+  const user = useAppSelector(getAuthUser);
 
   const open = Boolean(anchorEl);
 
@@ -17,7 +21,14 @@ export default function AccountMenu() {
   };
 
   const avatar =
-    Math.random() > 0.5 ? (
+    user &&
+    (user.avatar ? (
+      <Avatar
+        sx={({ spacing }) => ({ width: spacing(4), height: spacing(4) })}
+        src={`${import.meta.env.VITE_APP_API}/${user.avatar.url}`}
+        alt="avatar"
+      />
+    ) : (
       <Avatar
         sx={({ palette, spacing }) => ({
           bgcolor: palette.background.paper,
@@ -26,16 +37,10 @@ export default function AccountMenu() {
           height: spacing(4),
         })}
       >
-        {"F"}
-        {"L"}
+        {user.firstName.charAt(0).toUpperCase()}
+        {user.lastName.charAt(0).toUpperCase()}
       </Avatar>
-    ) : (
-      <Avatar
-        sx={({ spacing }) => ({ width: spacing(4), height: spacing(4) })}
-        src="https://mui.com/static/images/avatar/1.jpg"
-        alt="avatar"
-      />
-    );
+    ));
   return (
     <>
       <IconButton
@@ -60,8 +65,6 @@ export default function AccountMenu() {
             filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
             mt: 1.5,
             "& .MuiAvatar-root": {
-              width: 32,
-              height: 32,
               ml: -0.5,
               mr: 1,
             },

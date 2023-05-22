@@ -14,10 +14,11 @@ export default function Header() {
           component={Link}
           to="/"
           variant="h6"
-          sx={({ palette }) => ({
+          sx={({ palette, spacing }) => ({
             display: "inline-flex",
             alignItems: "center",
             mr: "auto",
+            ml: spacing(),
             color: palette.common.white,
             textDecoration: "none",
           })}
