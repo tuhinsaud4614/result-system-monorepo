@@ -3,6 +3,7 @@ import * as React from "react";
 import { Avatar, IconButton, Menu, MenuItem } from "@mui/material";
 
 import { useAppSelector } from "../../utility/hooks";
+import LogoutMenuItem from "./Logout";
 import { getAuthUser } from "./auth.slice";
 
 export default function AccountMenu() {
@@ -86,7 +87,7 @@ export default function AccountMenu() {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>Logout</MenuItem>
+        <LogoutMenuItem onClick={handleClose} />
       </Menu>
     </>
   );

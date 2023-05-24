@@ -55,34 +55,40 @@ const authApi = api.injectEndpoints({
         try {
           await queryFulfilled;
           dispatch(authActions.setAuthInitial());
-          dispatch(api.util.resetApiState());
         } catch (error) {
-          if (isDev()) {
-            console.log(error);
-          }
+          isDev() && console.log("authApi@logout:", error);
         }
       },
     }),
-    refreshToken: build.query({
+    refreshToken: build.query<
+      SuccessResponse<{
+        accessToken: string;
+      }>,
+      unknown
+    >({
       query: () => ({
         url: `${API_ROUTE.auth.main}${API_ROUTE.auth.token}`,
         method: "GET",
       }),
       async onQueryStarted(_args, { dispatch, queryFulfilled }) {
         try {
-          const { data } = await queryFulfilled;
-          dispatch(authActions.setAuthState(data as string));
+          const {
+            data: { data },
+          } = await queryFulfilled;
+          dispatch(authActions.setAuthState(data.accessToken));
         } catch (error) {
-          if (isDev()) {
-            console.log(error);
-          }
+          isDev() && console.log("authApi@refreshToken:", error);
         }
       },
     }),
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation, useLogoutMutation } =
-  authApi;
+export const {
+  useRegisterMutation,
+  useLoginMutation,
+  useLogoutMutation,
+  useLazyRefreshTokenQuery,
+} = authApi;
 
 export default authApi;

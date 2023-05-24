@@ -1,43 +1,52 @@
 import React from "react";
 
 import {
-  Outlet,
   Route,
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
 
-import { API_ROUTE } from "@result-system/shared/utility";
-
 import Layout from "../components/layout";
+import PersistLogin from "../features/auth/PersistLogin";
+import RequireAuth from "../features/auth/RequireAuth";
+import UnProtected from "../features/auth/UnProtected";
 import PageNotFound from "../pages/404";
 import Dashboard from "../pages/dashboard";
-import LoginLoader from "../pages/login/Loader";
+import LoginPageSkeleton from "../pages/login/Skeleton";
+import { WEB_PATHS } from "../utility/constants";
 
 const LoginPage = React.lazy(() => import("../pages/login"));
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<Outlet />} errorElement={<PageNotFound />}>
-      <Route element={<Layout />}>
+    <Route
+      path={WEB_PATHS.dashboard}
+      element={<PersistLogin />}
+      errorElement={<PageNotFound />}
+    >
+      <Route element={<RequireAuth />}>
+        <Route element={<Layout />}>
+          <Route
+            index
+            element={
+              <React.Suspense fallback="Loading...">
+                <Dashboard />
+              </React.Suspense>
+            }
+          />
+        </Route>
+      </Route>
+      <Route path={WEB_PATHS.login} element={<UnProtected />}>
         <Route
           index
           element={
-            <React.Suspense fallback="Loading...">
-              <Dashboard />
+            <React.Suspense fallback={<LoginPageSkeleton />}>
+              <LoginPage />
             </React.Suspense>
           }
         />
       </Route>
-      <Route
-        path={API_ROUTE.auth.main}
-        element={
-          <React.Suspense fallback={<LoginLoader />}>
-            <LoginPage />
-          </React.Suspense>
-        }
-      />
     </Route>,
   ),
 );

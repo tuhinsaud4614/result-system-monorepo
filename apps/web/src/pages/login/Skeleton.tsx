@@ -2,7 +2,7 @@ import { Skeleton } from "@mui/material";
 
 import Wrapper from "./Wrapper";
 
-export default function LoginLoader() {
+export default function LoginPageSkeleton() {
   return (
     <Wrapper>
       <Skeleton width="60%" height="2rem" sx={{ mb: 2, mx: "auto" }} />

@@ -3,6 +3,7 @@ import * as React from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   FormControl,
+  FormHelperText,
   IconButton,
   InputAdornment,
   InputLabel,
@@ -11,7 +12,13 @@ import {
 import { type UseFormRegisterReturn } from "react-hook-form";
 
 function Root<T extends string>(
-  props: UseFormRegisterReturn<T>,
+  {
+    helperText,
+    ...rest
+  }: UseFormRegisterReturn<T> & {
+    error?: boolean;
+    helperText?: React.ReactNode;
+  },
   ref: React.ForwardedRef<HTMLInputElement>,
 ) {
   const passwordId = React.useId();
@@ -27,10 +34,16 @@ function Root<T extends string>(
   };
 
   return (
-    <FormControl sx={{ mb: 2 }} variant="outlined" fullWidth required>
+    <FormControl
+      sx={{ mb: 2 }}
+      variant="outlined"
+      error={rest.error}
+      fullWidth
+      required
+    >
       <InputLabel htmlFor={passwordId}>Password</InputLabel>
       <OutlinedInput
-        {...props}
+        {...rest}
         ref={ref}
         id={passwordId}
         type={showPassword ? "text" : "password"}
@@ -43,12 +56,14 @@ function Root<T extends string>(
               onClick={handleClickShowPassword}
               onMouseDown={handleMouseDownPassword}
               edge="end"
+              color="primary"
             >
               {showPassword ? <VisibilityOff /> : <Visibility />}
             </IconButton>
           </InputAdornment>
         }
       />
+      {helperText && <FormHelperText>{helperText}</FormHelperText>}
     </FormControl>
   );
 }

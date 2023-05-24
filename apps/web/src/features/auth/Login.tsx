@@ -3,7 +3,8 @@ import * as React from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, CircularProgress, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useLocalStorage } from "usehooks-ts";
 
 import {
   ErrorResponse,
@@ -14,6 +15,7 @@ import {
 import { useLoginMutation } from "../../app/services/auth.api";
 import ErrorModal from "../../components/common/ErrorModal";
 import PasswordInput from "../../components/common/PasswordInput";
+import { WEB_KEYS } from "../../utility/constants";
 import { useAppDispatch } from "../../utility/hooks";
 import { authActions } from "./auth.slice";
 
@@ -21,6 +23,8 @@ export default function Login() {
   const usernameId = React.useId();
   const rdxDispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [, setPersist] = useLocalStorage(WEB_KEYS.persist, false);
 
   const {
     register,
@@ -28,7 +32,9 @@ export default function Login() {
     reset: resetForm,
     formState: { errors, isDirty, isValid, isSubmitting },
   } = useForm<LoginInput>({
+    defaultValues: { password: "", username: "" },
     resolver: yupResolver(loginInputSchema),
+    mode: "onChange",
   });
 
   const [login, { isLoading, reset, error: apiError }] = useLoginMutation();
@@ -37,7 +43,8 @@ export default function Login() {
     try {
       const { data } = await login(formData).unwrap();
       rdxDispatch(authActions.setAuthState(data.accessToken));
-      navigate("/");
+      setPersist(true);
+      navigate(location.state?.from?.pathname || "/", { replace: true });
     } catch (error) {
       resetForm();
     }
@@ -53,12 +60,15 @@ export default function Login() {
           label="Username"
           placeholder="Enter your username..."
           sx={{ mb: 2 }}
-          error={!!errors.username}
-          helperText={errors.username && errors.username.message}
+          error={!!errors.username?.message}
+          helperText={errors.username?.message}
           fullWidth
-          required
         />
-        <PasswordInput {...register("password")} />
+        <PasswordInput
+          {...register("password")}
+          error={!!errors.password?.message}
+          helperText={errors.password?.message}
+        />
         <Button
           variant="contained"
           type="submit"
