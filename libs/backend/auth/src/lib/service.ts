@@ -23,7 +23,6 @@ import {
   generateCRUDFailedErrorMessage,
   generateExistErrorMessage,
   generateInvalidCredentialErrorMessage,
-  generateNotExistErrorMessage,
 } from "@result-system/shared/utility";
 
 import {
@@ -110,8 +109,8 @@ export async function loginService(data: LoginInput) {
 
     if (!user) {
       return new HttpError({
-        message: generateNotExistErrorMessage("User"),
-        code: 403,
+        message: generateInvalidCredentialErrorMessage("login"),
+        code: 409,
       });
     }
 

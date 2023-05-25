@@ -8,7 +8,9 @@ export interface LayoutState {
   sidebarOpen: boolean;
 }
 
-export const initialLayoutState: LayoutState = { sidebarOpen: false };
+export const initialLayoutState: LayoutState = {
+  sidebarOpen: window.matchMedia("(min-width: 600px)").matches,
+};
 
 export const layoutSlice = createSlice({
   name: LAYOUT_FEATURE_KEY,

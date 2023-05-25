@@ -10,9 +10,9 @@ import {
   useMediaQuery,
 } from "@mui/material";
 
-import { useAppDispatch, useAppSelector } from "../../utility/hooks";
-import SidebarUserRole from "../auth/SidebarUserRole";
-import { getLayoutSidebarState, layoutActions } from "./layout.slice";
+import { useAppDispatch, useAppSelector } from "../../../utility/hooks";
+import SidebarUserRole from "../../auth/SidebarUserRole";
+import { getLayoutSidebarState, layoutActions } from "../layout.slice";
 
 interface Props {
   children?: React.ReactNode;
@@ -63,6 +63,7 @@ export default function Sidebar({ children }: Props) {
         },
         "& .MuiDrawer-paper": {
           width: spacing(30),
+          bgcolor: "common.white",
         },
       })}
       anchor="left"

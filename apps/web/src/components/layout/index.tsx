@@ -1,8 +1,9 @@
 import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
 
+import SidebarItems from "../../features/auth/SidebarItems";
 import MainWrapper from "../../features/layout/MainWrapper";
-import Sidebar from "../../features/layout/Sidebar";
+import Sidebar from "../../features/layout/sidebar";
 import Header from "./Header";
 
 export default function Layout() {
@@ -15,9 +16,10 @@ export default function Layout() {
       })}
     >
       <Header />
-      <Sidebar />
+      <Sidebar>
+        <SidebarItems />
+      </Sidebar>
       <MainWrapper>
-        layout
         <Outlet />
       </MainWrapper>
     </Box>
