@@ -10,6 +10,8 @@ export const WEB_PATHS = {
   admin: {
     main: "/admin",
     users: "/admin/users",
-    classes: "/admin/calsses",
+    addUser: "/admin/users/add",
+    classes: "/admin/classes",
+    subjects: "/admin/subjects",
   },
 } as const;

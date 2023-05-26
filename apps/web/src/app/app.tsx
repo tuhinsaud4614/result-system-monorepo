@@ -26,6 +26,7 @@ const router = createBrowserRouter(
       path={WEB_PATHS.dashboard}
       element={<PersistLogin />}
       errorElement={<PageNotFound />}
+      handle={{ crumb: "dashboard" }}
     >
       <Route element={<RequireAuth />}>
         <Route element={<Layout />}>
@@ -49,7 +50,11 @@ const router = createBrowserRouter(
           }
         />
       </Route>
-      <Route path={WEB_PATHS.admin.users} element={<Layout />}>
+      <Route
+        handle={{ crumb: "users" }}
+        path={WEB_PATHS.admin.users}
+        element={<Layout />}
+      >
         <Route
           index
           element={

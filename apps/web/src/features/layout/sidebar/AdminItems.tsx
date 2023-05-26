@@ -13,7 +13,7 @@ const items = [
   { name: "classes", to: WEB_PATHS.admin.classes, icon: <GroupsOutlined /> },
   {
     name: "subjects",
-    to: WEB_PATHS.admin.classes,
+    to: WEB_PATHS.admin.subjects,
     icon: <LibraryBooksOutlined />,
   },
 ];
