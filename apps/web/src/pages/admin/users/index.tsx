@@ -17,8 +17,8 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 
-import { WEB_PATHS } from "../../utility/constants";
-import { HeadCell } from "../../utility/types";
+import { WEB_PATHS } from "../../../utility/constants";
+import { HeadCell } from "../../../utility/types";
 
 type Keys =
   | "id"

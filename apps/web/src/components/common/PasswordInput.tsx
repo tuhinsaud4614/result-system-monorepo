@@ -11,14 +11,22 @@ import {
 } from "@mui/material";
 import { type UseFormRegisterReturn } from "react-hook-form";
 
+interface Props<T extends string> extends UseFormRegisterReturn<T> {
+  error?: boolean;
+  helperText?: React.ReactNode;
+  label?: string;
+  placeholder?: string;
+  onCopy?: React.ClipboardEventHandler<HTMLInputElement>;
+  onPaste?: React.ClipboardEventHandler<HTMLInputElement>;
+}
+
 function Root<T extends string>(
   {
     helperText,
+    label = "Password",
+    placeholder = "Enter the password.",
     ...rest
-  }: UseFormRegisterReturn<T> & {
-    error?: boolean;
-    helperText?: React.ReactNode;
-  },
+  }: Props<T>,
   ref: React.ForwardedRef<HTMLInputElement>,
 ) {
   const passwordId = React.useId();
@@ -41,18 +49,17 @@ function Root<T extends string>(
       fullWidth
       required
     >
-      <InputLabel htmlFor={passwordId}>Password</InputLabel>
+      <InputLabel htmlFor={passwordId}>{label}</InputLabel>
       <OutlinedInput
         {...rest}
         ref={ref}
         id={passwordId}
         type={showPassword ? "text" : "password"}
-        label="Password"
-        placeholder="Enter the password..."
+        label={label}
+        placeholder={placeholder}
         endAdornment={
           <InputAdornment position="end">
             <IconButton
-              aria-label="toggle password visibility"
               onClick={handleClickShowPassword}
               onMouseDown={handleMouseDownPassword}
               edge="end"

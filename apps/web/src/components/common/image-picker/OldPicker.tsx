@@ -9,10 +9,10 @@ export default function OldPicture({
 }) {
   return (
     <Box mr={2}>
-      <InputLabel sx={{ pb: 1 }}>Prev {label}</InputLabel>
+      <InputLabel sx={{ pb: 1 }}>Previous {label}</InputLabel>
       <Box
         component="img"
-        sx={({ spacing, breakpoints }) => ({
+        sx={({ spacing, breakpoints, palette }) => ({
           width: spacing(10),
           height: spacing(7),
           [breakpoints.up("sm")]: {
@@ -21,7 +21,7 @@ export default function OldPicture({
           },
           borderRadius: spacing(),
           objectFit: "cover",
-          border: "1px solid secondary.dark",
+          border: `1px solid ${palette.primary.main}`,
           padding: spacing(0.5),
         })}
         height="70"

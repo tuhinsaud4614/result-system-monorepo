@@ -1,182 +1,130 @@
 import * as React from "react";
 
-import { Close, PhotoCamera } from "@mui/icons-material";
-import { Box, Button, FormHelperText, InputLabel, alpha } from "@mui/material";
+import { Box, FormHelperText, InputLabel, Paper, Stack } from "@mui/material";
 
 import OldPicture from "./OldPicker";
+import PickerButton from "./PickerButton";
 
-interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
-  onChanged: (f: File | null) => void;
-  data: File | null;
+interface Props
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    "onChange" | "value"
+  > {
+  onChange: (f: File | null) => void;
+  value?: File | null;
   helperText?: React.ReactNode;
   error?: boolean;
-  margin?: boolean;
   label?: string;
   prevImage?: string;
 }
 
-const ImagePicker = ({
-  label,
-  prevImage,
-  data,
-  helperText,
-  onChanged,
-  margin = false,
-  error = false,
-  id,
-  ...rest
-}: Props) => {
-  const [img, setImg] = React.useState<null | string>(null);
+const ImagePicker = React.forwardRef(
+  (
+    {
+      label,
+      prevImage,
+      value,
+      helperText,
+      onChange,
+      error = false,
+      ...rest
+    }: Props,
+    ref: React.ForwardedRef<HTMLInputElement>,
+  ) => {
+    const imageId = React.useId();
+    const [img, setImg] = React.useState<null | string>(null);
 
-  const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.currentTarget.files && event.currentTarget.files.length === 1) {
-      const file = event.currentTarget.files[0];
-      onChanged(file);
-    }
-  };
+    const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.currentTarget.files && event.currentTarget.files.length === 1) {
+        const file = event.currentTarget.files[0];
+        onChange(file);
+      }
+    };
 
-  React.useEffect(() => {
-    if (data) {
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        const result = fileReader.result;
-        if (result) {
-          setImg(result.toString());
-        }
-      };
-      fileReader.readAsDataURL(data);
-    } else {
-      setImg(null);
-    }
-  }, [data, error]);
+    React.useEffect(() => {
+      if (value) {
+        const objectUrl = URL.createObjectURL(value);
+        setImg(objectUrl);
+        return () => URL.revokeObjectURL(objectUrl);
+      } else {
+        setImg(null);
+      }
+    }, [value, error]);
 
-  // Prev Image
-
-  // File Input
-  let content = (
-    <>
+    return (
       <Box
-        component="input"
-        id={id || "image-picker"}
-        type="file"
-        accept="image/*"
-        onChange={changeHandler}
-        display="none"
-        {...rest}
-      />
-      <label htmlFor={id || "image-picker"}>
-        <Button
-          sx={({ spacing, breakpoints }) => ({
-            width: spacing(10),
-            height: spacing(7),
-            [breakpoints.up("sm")]: {
-              width: spacing(13),
-              height: spacing(10),
-            },
-          })}
-          variant="outlined"
-          color="secondary"
-          aria-label="image picker"
-          component="span"
-        >
-          <PhotoCamera fontSize="large" />
-        </Button>
-      </label>
-    </>
-  );
-
-  // After Picking Image Input
-  if (img) {
-    content = (
-      <Box
-        sx={({ spacing, breakpoints, palette }) => ({
-          width: spacing(10),
-          height: spacing(7),
-          [breakpoints.up("sm")]: {
-            width: spacing(13),
-            height: spacing(10),
-          },
-          position: "relative",
-          overflow: "hidden",
-          borderRadius: spacing(),
-          "&::before": {
-            content: '""',
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 1,
-            background: alpha(palette.common.black, 0.3),
-          },
+        sx={({ spacing }) => ({
+          display: "flex",
+          flexWrap: "wrap",
+          padding: spacing(0.5),
         })}
       >
-        <Box
-          component="img"
-          sx={{
-            objectFit: "cover",
-            height: "inherit",
-            width: "inherit",
-          }}
-          src={img}
-          alt="Picked"
-          height="70"
-          width="50"
-          title="Picked"
-        />
-        <Close
-          sx={({ spacing, palette }) => ({
-            position: "absolute",
-            zIndex: 2,
-            top: spacing(0.5),
-            right: spacing(0.5),
-            cursor: "pointer",
-            color: palette.secondary.main,
-            fontSize: spacing(3),
-            "&:hover": {
-              color: palette.secondary.dark,
-            },
-          })}
-          onClick={() => onChanged(null)}
-        />
+        {prevImage && <OldPicture src={prevImage} label={label} />}
+        <Stack>
+          {(label || prevImage) && (
+            <InputLabel
+              style={{ paddingBottom: "8px" }}
+              required={rest.required}
+              htmlFor={imageId}
+            >
+              {prevImage && "New "}
+              {label}
+            </InputLabel>
+          )}
+          <Paper
+            sx={({ breakpoints, spacing }) => ({
+              overflow: "hidden",
+              width: spacing(10),
+              height: spacing(7),
+              [breakpoints.up("sm")]: {
+                width: spacing(13),
+                height: spacing(10),
+              },
+            })}
+          >
+            {img ? (
+              <Box
+                component="img"
+                sx={{
+                  objectFit: "contain",
+                  height: "100%",
+                  width: "100%",
+                  cursor: "pointer",
+                }}
+                src={img}
+                alt={value?.name || "Picked"}
+                height="70"
+                width="50"
+                title={value?.name || "Picked"}
+                onClick={() => onChange(null)}
+              />
+            ) : (
+              <>
+                <Box
+                  {...rest}
+                  component="input"
+                  id={imageId}
+                  type="file"
+                  accept="image/*"
+                  onChange={changeHandler}
+                  display="none"
+                  ref={ref}
+                />
+                <label htmlFor={imageId}>
+                  <PickerButton />
+                </label>
+              </>
+            )}
+          </Paper>
+          {helperText && (
+            <FormHelperText id={imageId} error={error}>
+              {helperText}
+            </FormHelperText>
+          )}
+        </Stack>
       </Box>
     );
-  }
-
-  return (
-    <Box
-      mt={margin ? 2 : 0}
-      mb={margin ? 1 : 0}
-      sx={({ spacing }) => ({
-        display: "flex",
-        flexWrap: "wrap",
-        borderRadius: spacing(),
-        objectFit: "cover",
-        border: "1px solid secondary.dark",
-        padding: spacing(0.5),
-      })}
-    >
-      {prevImage && <OldPicture src={prevImage} label={label} />}
-      <div>
-        {(label || prevImage) && (
-          <InputLabel style={{ paddingBottom: "8px" }} required={rest.required}>
-            {prevImage && "New "}
-            {label}
-          </InputLabel>
-        )}
-        {content}
-        {helperText && (
-          <FormHelperText
-            id={id || "image-picker"}
-            variant="filled"
-            error={error}
-          >
-            {helperText}
-          </FormHelperText>
-        )}
-      </div>
-    </Box>
-  );
-};
+  },
+);
 
 export default ImagePicker;

@@ -18,7 +18,8 @@ import LoginPageSkeleton from "../pages/login/Skeleton";
 import { WEB_PATHS } from "../utility/constants";
 
 const LoginPage = React.lazy(() => import("../pages/login"));
-const AdminUsersPage = React.lazy(() => import("../pages/admin/users"));
+// const AdminUsersPage = React.lazy(() => import("../pages/admin/users"));
+const AdminAddUser = React.lazy(() => import("../pages/admin/users/add-user"));
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -65,7 +66,8 @@ const router = createBrowserRouter(
                 />
               }
             >
-              <AdminUsersPage />
+              {/* <AdminUsersPage /> */}
+              <AdminAddUser />
             </React.Suspense>
           }
         />
