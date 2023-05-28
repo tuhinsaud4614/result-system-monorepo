@@ -2,7 +2,6 @@ import {
   API_ROUTE,
   ErrorResponse,
   LoginInput,
-  RegisterInput,
   SuccessResponse,
   isDev,
 } from "@result-system/shared/utility";
@@ -12,17 +11,6 @@ import { api } from "./api";
 
 const authApi = api.injectEndpoints({
   endpoints: (build) => ({
-    register: build.mutation<string, RegisterInput & { avatar: File }>({
-      query(body) {
-        const form = new FormData();
-        Object.entries(body).forEach(([key, value]) => form.append(key, value));
-        return {
-          url: `${API_ROUTE.auth.main}${API_ROUTE.auth.registerUser}`,
-          method: "POST",
-          body: form,
-        };
-      },
-    }),
     login: build.mutation<
       SuccessResponse<{
         accessToken: string;
@@ -84,11 +72,7 @@ const authApi = api.injectEndpoints({
   }),
 });
 
-export const {
-  useRegisterMutation,
-  useLoginMutation,
-  useLogoutMutation,
-  useLazyRefreshTokenQuery,
-} = authApi;
+export const { useLoginMutation, useLogoutMutation, useLazyRefreshTokenQuery } =
+  authApi;
 
 export default authApi;

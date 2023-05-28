@@ -9,9 +9,11 @@ import {
   Typography,
 } from "@mui/material";
 
+import { ErrorResponse } from "@result-system/shared/utility";
+
 interface Props {
   title: string;
-  errors?: string | string[];
+  errors?: ErrorResponse;
   onClose(): void;
 }
 
@@ -29,7 +31,7 @@ const style: SxProps<Theme> = {
 export default function ErrorModal({ errors, onClose, title }: Props) {
   const content = errors && (
     <List dense>
-      {(Array.isArray(errors) ? errors : [errors]).map((er) => (
+      {(errors.paths || [errors.message]).map((er) => (
         <ListItem key={er}>
           <ListItemText
             primary={er}

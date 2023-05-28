@@ -4,6 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Box,
   Button,
+  CircularProgress,
   FormControl,
   FormHelperText,
   InputLabel,
@@ -12,45 +13,23 @@ import {
   TextField,
   styled,
 } from "@mui/material";
-import _ from "lodash";
 import { useController, useForm } from "react-hook-form";
-import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
 
-import {
-  IMAGE_MIMES,
-  RegisterInput,
-  generateNotImageErrorMessage,
-  generateTooLargeFileErrorMessage,
-  maxFileSize,
-  registerInputSchema,
-} from "@result-system/shared/utility";
+import { RegisterInput } from "@result-system/shared/utility";
 
-import PasswordInput from "../../../components/common/PasswordInput";
-import ImagePicker from "../../../components/common/image-picker";
+import PasswordInput from "../../../../components/common/PasswordInput";
+import ImagePicker from "../../../../components/common/image-picker";
+import { WEB_PATHS } from "../../../../utility/constants";
+import { CreateUserInput, createUserSchema } from "./utils";
 
 interface Props {
   oldData?: Omit<RegisterInput, "confirmPassword" | "password"> & {
     avatar?: string;
   };
+  action(formData: CreateUserInput): Promise<string>;
+  isLoading?: boolean;
 }
-
-const schema = registerInputSchema.shape({
-  avatar: yup
-    .mixed<File>()
-    .nullable()
-    .test(
-      "fileSize",
-      generateTooLargeFileErrorMessage("Avatar", `${5} Mb`),
-      (value) => {
-        if (!value) return true;
-        return value.size <= maxFileSize(5);
-      },
-    )
-    .test("fileFormat", generateNotImageErrorMessage("Avatar"), (value) => {
-      if (!value) return true;
-      return _.has(IMAGE_MIMES, value.type);
-    }),
-});
 
 const FormGroup = styled(Box)(({ theme }) => ({
   [theme.breakpoints.up("md")]: {
@@ -60,18 +39,19 @@ const FormGroup = styled(Box)(({ theme }) => ({
   },
 }));
 
-export default function Form({ oldData }: Props) {
+export default function Form({ oldData, action, isLoading }: Props) {
   const firstNameId = React.useId();
   const lastNameId = React.useId();
   const roleId = React.useId();
+  const navigate = useNavigate();
 
   const {
     register,
     control,
-    // handleSubmit,
-    // reset: resetForm,
+    handleSubmit,
+    reset: resetForm,
     formState: { errors, isDirty, isValid, isSubmitting },
-  } = useForm<yup.InferType<typeof schema>>({
+  } = useForm<CreateUserInput>({
     defaultValues: {
       firstName: oldData?.firstName || "",
       confirmPassword: "",
@@ -80,7 +60,7 @@ export default function Form({ oldData }: Props) {
       role: oldData?.role || "STUDENT",
       avatar: null,
     },
-    resolver: yupResolver(schema),
+    resolver: yupResolver(createUserSchema),
     mode: "onChange",
   });
 
@@ -92,8 +72,17 @@ export default function Form({ oldData }: Props) {
   const handleClipboard: React.ClipboardEventHandler<HTMLInputElement> = (e) =>
     e.preventDefault();
 
+  const onSubmit = handleSubmit(async (formData) => {
+    try {
+      await action(formData);
+      navigate(WEB_PATHS.dashboard, { replace: true });
+    } catch (error) {
+      resetForm();
+    }
+  });
+
   return (
-    <form>
+    <form onSubmit={onSubmit}>
       <FormGroup>
         <TextField
           {...register("firstName")}
@@ -167,13 +156,12 @@ export default function Form({ oldData }: Props) {
         type="submit"
         size="large"
         sx={{ mt: 2 }}
-        // disabled={!(isDirty && isValid) || isSubmitting || isLoading}
-        disabled={!(isDirty && isValid) || isSubmitting}
+        disabled={!(isDirty && isValid) || isSubmitting || isLoading}
         fullWidth
       >
-        {/* {(isSubmitting || isLoading) && (
+        {(isSubmitting || isLoading) && (
           <CircularProgress sx={{ mr: 1, ml: -0.5 }} size={24} />
-        )} */}
+        )}
         {oldData ? "Edit" : "Add"}
       </Button>
     </form>

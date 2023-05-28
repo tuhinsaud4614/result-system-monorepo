@@ -65,7 +65,7 @@ const ImagePicker = React.forwardRef(
             <InputLabel
               style={{ paddingBottom: "8px" }}
               required={rest.required}
-              htmlFor={imageId}
+              htmlFor={img ? undefined : imageId}
             >
               {prevImage && "New "}
               {label}

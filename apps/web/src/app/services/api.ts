@@ -54,5 +54,6 @@ const baseQueryWithAuth: BaseQueryFn = async (args, api, extraOptions) => {
 
 export const api = createApi({
   baseQuery: baseQueryWithAuth,
+  tagTypes: ["User"],
   endpoints: () => ({}),
 });

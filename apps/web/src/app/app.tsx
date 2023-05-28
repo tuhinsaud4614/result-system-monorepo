@@ -13,13 +13,16 @@ import PersistLogin from "../features/auth/PersistLogin";
 import RequireAuth from "../features/auth/RequireAuth";
 import UnProtected from "../features/auth/UnProtected";
 import PageNotFound from "../pages/404";
+import AdminAddUserPageSkeleton from "../pages/admin/users/add-user/Skeleton";
 import Dashboard from "../pages/dashboard";
 import LoginPageSkeleton from "../pages/login/Skeleton";
 import { WEB_PATHS } from "../utility/constants";
 
 const LoginPage = React.lazy(() => import("../pages/login"));
-// const AdminUsersPage = React.lazy(() => import("../pages/admin/users"));
-const AdminAddUser = React.lazy(() => import("../pages/admin/users/add-user"));
+const AdminUsersPage = React.lazy(() => import("../pages/admin/users"));
+const AdminAddUserPage = React.lazy(
+  () => import("../pages/admin/users/add-user"),
+);
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -27,7 +30,6 @@ const router = createBrowserRouter(
       path={WEB_PATHS.dashboard}
       element={<PersistLogin />}
       errorElement={<PageNotFound />}
-      handle={{ crumb: "dashboard" }}
     >
       <Route element={<RequireAuth />}>
         <Route element={<Layout />}>
@@ -36,6 +38,28 @@ const router = createBrowserRouter(
             element={
               <React.Suspense fallback="Loading...">
                 <Dashboard />
+              </React.Suspense>
+            }
+          />
+          <Route
+            path={WEB_PATHS.admin.users}
+            element={
+              <React.Suspense
+                fallback={
+                  <CircularProgress
+                    sx={{ height: "6.25rem", width: "6.25rem" }}
+                  />
+                }
+              >
+                <AdminUsersPage />
+              </React.Suspense>
+            }
+          />
+          <Route
+            path={WEB_PATHS.admin.addUser}
+            element={
+              <React.Suspense fallback={<AdminAddUserPageSkeleton />}>
+                <AdminAddUserPage />
               </React.Suspense>
             }
           />
@@ -51,27 +75,26 @@ const router = createBrowserRouter(
           }
         />
       </Route>
-      <Route
-        handle={{ crumb: "users" }}
-        path={WEB_PATHS.admin.users}
-        element={<Layout />}
-      >
-        <Route
-          index
-          element={
-            <React.Suspense
-              fallback={
-                <CircularProgress
-                  sx={{ height: "6.25rem", width: "6.25rem" }}
-                />
-              }
-            >
-              {/* <AdminUsersPage /> */}
-              <AdminAddUser />
-            </React.Suspense>
-          }
-        />
-      </Route>
+      {/* <Route
+         handle={{ crumb: "users" }}
+         path={WEB_PATHS.admin.users}
+         element={<Layout />}
+       >
+         <Route
+           index
+           element={
+             <React.Suspense
+               fallback={
+                 <CircularProgress
+                   sx={{ height: "6.25rem", width: "6.25rem" }}
+                 />
+               }
+             >
+               <AdminAddUser />
+             </React.Suspense>
+           }
+         />
+       </Route> */}
     </Route>,
   ),
 );

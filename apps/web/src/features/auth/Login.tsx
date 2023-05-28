@@ -83,12 +83,8 @@ export default function Login() {
       </form>
       {apiError && (
         <ErrorModal
-          title="Login errors"
-          errors={
-            (apiError as ErrorResponse).paths || [
-              (apiError as ErrorResponse).message,
-            ]
-          }
+          title="Login Errors"
+          errors={apiError as ErrorResponse}
           onClose={reset}
         />
       )}
