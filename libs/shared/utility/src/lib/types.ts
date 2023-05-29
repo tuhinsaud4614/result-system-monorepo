@@ -2,7 +2,11 @@ import type { Picture, User, UserRole } from "@prisma/client";
 import type { InferType } from "yup";
 
 import { CODE, IMAGE_MIMES } from "./constants";
-import { loginInputSchema, registerInputSchema } from "./schema";
+import {
+  loginInputSchema,
+  offsetQuerySchema,
+  registerInputSchema,
+} from "./schema";
 
 /**
  * `200`: "OK"
@@ -46,9 +50,25 @@ export type Pretty<T extends {}> = {
   // eslint-disable-next-line @typescript-eslint/ban-types
 } & {};
 
+export type OffsetQuery = InferType<typeof offsetQuerySchema>;
+export interface IOffsetPageInfo {
+  hasNext: boolean;
+  nextPage: number;
+  previousPage: number;
+  totalPages: number;
+}
+export interface ResultWithOffset<T> {
+  data: T[];
+  total: number;
+  pageInfo?: IOffsetPageInfo;
+}
+
 // Auth
 export type RegisterInput = InferType<typeof registerInputSchema>;
 export type LoginInput = InferType<typeof loginInputSchema>;
+export type AuthorizedUser = LeanUser & {
+  avatar: LeanPicture | null;
+};
 
 // User
 export type NonAdminUserRole = Exclude<UserRole, "ADMIN">;
@@ -57,10 +77,11 @@ export type LeanUser = Omit<
   "password" | "classRoomId" | "createdAt" | "updatedAt"
 >;
 export type UserWithAvatar = User & { avatar: LeanPicture | null };
-
-export type AuthorizedUser = LeanUser & {
-  avatar: LeanPicture | null;
-};
+export type LeanUserWithAvatar = Pretty<
+  Omit<User, "password" | "classRoomId"> & {
+    avatar: LeanPicture | null;
+  }
+>;
 
 // Picture
 export type LeanPicture = Pick<Picture, "url" | "width" | "height">;

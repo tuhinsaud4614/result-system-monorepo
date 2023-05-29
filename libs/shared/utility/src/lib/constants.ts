@@ -39,5 +39,9 @@ export const API_ROUTE = {
     token: "/token",
     logoutUser: "/logout",
   },
+  admin: {
+    main: "/admin",
+    users: "/users",
+  },
   assets: "assets",
 } as const;

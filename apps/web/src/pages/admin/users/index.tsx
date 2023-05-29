@@ -107,17 +107,14 @@ export default function AdminUsersPage() {
         Add User
       </Button>
       <Paper
-        sx={(theme) => ({
+        sx={{
           width: "100%",
           overflow: "hidden",
-          bgcolor: theme.palette.background.default,
-        })}
+        }}
       >
         <TableContainer sx={{ maxHeight: 440 }}>
           <Table stickyHeader aria-label="sticky table">
-            <TableHead
-              sx={(theme) => ({ bgColor: theme.palette.background.paper })}
-            >
+            <TableHead>
               <TableRow>
                 {cells.map((cell) => (
                   <TableCell key={cell.id} align="left">

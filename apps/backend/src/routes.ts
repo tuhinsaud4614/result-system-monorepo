@@ -7,6 +7,6 @@ import { API_ROUTE } from "@result-system/shared/utility";
 const router = Router();
 
 router.use(API_ROUTE.auth.main, authRoutes);
-router.use("/admin", adminRoutes);
+router.use(API_ROUTE.admin.main, adminRoutes);
 
 export default router;

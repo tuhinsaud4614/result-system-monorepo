@@ -7,6 +7,7 @@
     "serve:backend": "nx serve backend",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
+    "db:seed": "ts-node prisma/seed.ts",
     "docker": "docker-compose -f docker-compose.yml up -d --build",
     "lint:backend": "nx lint backend",
     "lint-fix:backend": "nx lint backend --fix",

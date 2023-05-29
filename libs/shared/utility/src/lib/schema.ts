@@ -7,6 +7,8 @@ import {
   generateEitherErrorMessage,
   generateMatchedErrorMessage,
   generateNotImageErrorMessage,
+  generateNotIntegerErrorMessage,
+  generateNotPositiveNumberErrorMessage,
   generateRequiredErrorMessage,
   generateSanitizeErrorMessage,
 } from "./response-message";
@@ -82,4 +84,15 @@ export const loginInputSchema = yup.object({
     .test("sanitize", generateSanitizeErrorMessage("password"), (value) => {
       return !!value && !!sanitizeHtml(value);
     }),
+});
+
+export const offsetQuerySchema = yup.object({
+  limit: yup
+    .number()
+    .integer(generateNotIntegerErrorMessage("Limit"))
+    .positive(generateNotPositiveNumberErrorMessage("Limit")),
+  page: yup
+    .number()
+    .integer(generateNotIntegerErrorMessage("Page"))
+    .positive(generateNotPositiveNumberErrorMessage("Page")),
 });

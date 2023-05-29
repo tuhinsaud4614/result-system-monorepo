@@ -22,7 +22,7 @@ services:
       - 5555:5555
     networks:
       - shared-network
-    command: bash -c 'npm run db:push && npm run serve:backend'
+    command: bash -c 'npm run db:push && npm run db:seed && npm run serve:backend'
 
   db:
     image: postgres:15.2-alpine

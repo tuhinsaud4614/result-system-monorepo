@@ -75,7 +75,7 @@ export default function Form({ oldData, action, isLoading }: Props) {
   const onSubmit = handleSubmit(async (formData) => {
     try {
       await action(formData);
-      navigate(WEB_PATHS.dashboard, { replace: true });
+      navigate(WEB_PATHS.admin.users, { replace: true });
     } catch (error) {
       resetForm();
     }

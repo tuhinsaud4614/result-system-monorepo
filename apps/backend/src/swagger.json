@@ -53,6 +53,53 @@
           "paths": { "type": "array" },
           "timestamp": { "type": "string" }
         }
+      },
+      "OffsetPageInfo": {
+        "type": "object",
+        "required": ["hasNext", "nextPage", "previousPage", "totalPages"],
+        "properties": {
+          "hasNext": { "type": "boolean" },
+          "nextPage": { "type": "integer" },
+          "previousPage": { "type": "integer" },
+          "totalPages": { "type": "integer" }
+        }
+      },
+      "Avatar": {
+        "type": "object",
+        "nullable": true,
+        "required": ["url", "width", "height"],
+        "properties": {
+          "url": { "type": "string" },
+          "width": { "type": "number" },
+          "height": { "type": "number" }
+        }
+      },
+      "User": {
+        "type": "object",
+        "required": [
+          "id",
+          "username",
+          "firstName",
+          "lastName",
+          "role",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "username": { "type": "string" },
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "role": {
+            "type": "string",
+            "enum": ["STUDENT", "TEACHER", "ADMIN"]
+          },
+          "createdAt": { "type": "string" },
+          "updatedAt": { "type": "string" },
+          "avatar": {
+            "$ref": "#/components/schemas/Avatar"
+          }
+        }
       }
     },
     "responses": {
@@ -227,7 +274,8 @@
     }
   },
   "tags": [
-    { "name": "Auth", "description": "All routes of the authentication." }
+    { "name": "Auth", "description": "All routes of the authentication." },
+    { "name": "Users", "description": "All routes of the Users." }
   ],
   "paths": {
     "/api/v1/auth/register": {
@@ -448,6 +496,74 @@
           "204": {
             "description": "Successfully logout.",
             "content": {}
+          },
+          "401": {
+            "$ref": "#/components/responses/UNAUTHORIZED"
+          },
+          "500": {
+            "$ref": "#/components/responses/INTERNAL_SERVER_ERROR"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/users": {
+      "get": {
+        "summary": "Get all the users",
+        "description": "Retrieves a list of all users registered in the system",
+        "tags": ["Users"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The page number of the result set to retrieve. Use this parameter to skip a certain number of items before starting to collect the result set. For example, if the limit is set to 10 and page is set to 2, the API will retrieve items 11 to 20."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The maximum number of items to return per page. Use this parameter to control the size of the result set. For example, if the limit is set to 10, the API will return a maximum of 10 users per page."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "data": {
+                              "$ref": "#/components/schemas/User"
+                            },
+                            "total": {
+                              "type": "integer"
+                            },
+                            "pageInfo": {
+                              "$ref": "#/components/schemas/OffsetPageInfo"
+                            }
+                          }
+                        }
+                      },
+                      "required": ["data"]
+                    }
+                  ]
+                }
+              }
+            }
           },
           "401": {
             "$ref": "#/components/responses/UNAUTHORIZED"
