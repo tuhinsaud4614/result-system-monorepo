@@ -1,4 +1,11 @@
-import { API_ROUTE, RegisterInput } from "@result-system/shared/utility";
+import {
+  API_ROUTE,
+  LeanUserWithAvatar,
+  OffsetQuery,
+  RegisterInput,
+  ResultWithOffset,
+  SuccessResponse,
+} from "@result-system/shared/utility";
 
 import { api } from "./api";
 
@@ -21,10 +28,32 @@ const usersApi = api.injectEndpoints({
           body: form,
         };
       },
+      invalidatesTags: [{ type: "User", id: "LIST" }],
+    }),
+    getUsers: build.query<
+      SuccessResponse<ResultWithOffset<LeanUserWithAvatar>>,
+      OffsetQuery
+    >({
+      query: (offsetQuery) => {
+        const { limit, page } = offsetQuery;
+        const q = limit && page ? `?page=${page}&limit=${limit}` : "";
+        return {
+          url: `${API_ROUTE.admin.main}${API_ROUTE.admin.users}${q}`,
+          method: "GET",
+        };
+      },
+      providesTags: (users, _error, _arg) => {
+        if (users) {
+          return [
+            { type: "User", id: "LIST" },
+            ...users.data.data.map(({ id }) => ({ type: "User" as const, id })),
+          ];
+        } else return [{ type: "User", id: "LIST" }];
+      },
     }),
   }),
 });
 
-export const { useCreateUserMutation } = usersApi;
+export const { useCreateUserMutation, useGetUsersQuery } = usersApi;
 
 export default usersApi;

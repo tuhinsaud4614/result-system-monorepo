@@ -1,6 +1,5 @@
 import * as React from "react";
 
-import { CircularProgress } from "@mui/material";
 import {
   Route,
   RouterProvider,
@@ -44,13 +43,7 @@ const router = createBrowserRouter(
           <Route
             path={WEB_PATHS.admin.users}
             element={
-              <React.Suspense
-                fallback={
-                  <CircularProgress
-                    sx={{ height: "6.25rem", width: "6.25rem" }}
-                  />
-                }
-              >
+              <React.Suspense fallback={<AdminAddUserPageSkeleton />}>
                 <AdminUsersPage />
               </React.Suspense>
             }

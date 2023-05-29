@@ -19,7 +19,7 @@ import swaggerJson from "./swagger.json";
 const app = express();
 
 app.use(compression());
-app.use(helmet());
+app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(cors({ origin: environment.CLINT_URL, credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
