@@ -74,16 +74,20 @@ export default class UserRepository {
   }
 
   /**
-   * This function returns multiple users based on optional conditions using Prisma client.
+   * This function returns a promise that finds and selects multiple users with their avatars based on
+   * optional conditions.
    * @param [condition] - The `condition` parameter is an optional argument of type
    * `Prisma.UserFindManyArgs`. It is used to specify any additional conditions or filters that should
-   * be applied when querying the database for users. This parameter can include options such as
-   * `where`, `orderBy`, `take`, `skip`, and
-   * @returns The `getUsers` function is returning a Promise that resolves to an array of user objects
-   * that match the provided condition (if any). The `select` property is also being passed to the
-   * `findMany` method to specify which fields should be included in the returned user objects.
+   * be applied when querying the database for users. These conditions can include things like sorting,
+   * pagination, or filtering based on specific fields in the user table
+   * @returns The `getUsers` function is returning a Promise that resolves to an array of
+   * `LeanUserWithAvatar` objects. The function uses the Prisma client to query the database for
+   * multiple user records based on the optional `condition` argument, and then selects specific fields
+   * using the `select` property of the `this.#select` object.
    */
-  static getUsers(condition?: Prisma.UserFindManyArgs) {
+  static getUsers(
+    condition?: Prisma.UserFindManyArgs,
+  ): Promise<LeanUserWithAvatar[]> {
     return prismaClient.user.findMany({ ...condition, select: this.#select });
   }
 
