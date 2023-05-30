@@ -157,11 +157,11 @@ export default function Form({ oldData, action, isLoading }: Props) {
         size="large"
         sx={{ mt: 2 }}
         disabled={!(isDirty && isValid) || isSubmitting || isLoading}
+        startIcon={
+          (isSubmitting || isLoading) && <CircularProgress size={24} />
+        }
         fullWidth
       >
-        {(isSubmitting || isLoading) && (
-          <CircularProgress sx={{ mr: 1, ml: -0.5 }} size={24} />
-        )}
         {oldData ? "Edit" : "Add"}
       </Button>
     </form>

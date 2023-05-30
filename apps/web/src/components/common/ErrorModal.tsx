@@ -9,11 +9,11 @@ import {
   Typography,
 } from "@mui/material";
 
-import { ErrorResponse } from "@result-system/shared/utility";
+import { ErrorResponse, isObjectWithKeys } from "@result-system/shared/utility";
 
 interface Props {
   title: string;
-  errors?: ErrorResponse;
+  errors?: unknown;
   onClose(): void;
 }
 
@@ -29,21 +29,20 @@ const style: SxProps<Theme> = {
 };
 
 export default function ErrorModal({ errors, onClose, title }: Props) {
-  const content = errors && (
-    <List dense>
-      {(errors.paths || [errors.message]).map((er) => (
-        <ListItem key={er}>
-          <ListItemText
-            primary={er}
-            primaryTypographyProps={{ color: "warning.main" }}
-          />
-        </ListItem>
-      ))}
-    </List>
-  );
+  const newErrors =
+    !!errors &&
+    (isObjectWithKeys<ErrorResponse>(errors, [
+      "code",
+      "message",
+      "success",
+      "timeStamp",
+    ])
+      ? errors.paths || [errors.message]
+      : ["Something went wrong"]);
+
   return (
     <Modal
-      open={!!errors}
+      open={!!newErrors}
       onClose={onClose}
       slotProps={{
         backdrop: {
@@ -55,7 +54,18 @@ export default function ErrorModal({ errors, onClose, title }: Props) {
         <Typography variant="h6" component="h2" color="error" px={2}>
           {title}
         </Typography>
-        {content}
+        {newErrors && (
+          <List dense>
+            {newErrors.map((er) => (
+              <ListItem key={er}>
+                <ListItemText
+                  primary={er}
+                  primaryTypographyProps={{ color: "warning.main" }}
+                />
+              </ListItem>
+            ))}
+          </List>
+        )}
       </Paper>
     </Modal>
   );

@@ -1,6 +1,6 @@
 import { Box, CircularProgress } from "@mui/material";
 
-export default function AdminAddUserPageSkeleton() {
+export default function AuthenticatePageLoader() {
   return (
     <Box
       sx={({ breakpoints }) => ({

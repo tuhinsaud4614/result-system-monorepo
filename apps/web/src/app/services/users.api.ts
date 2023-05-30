@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 import {
   API_ROUTE,
   LeanUserWithAvatar,
@@ -11,25 +13,6 @@ import { api } from "./api";
 
 const usersApi = api.injectEndpoints({
   endpoints: (build) => ({
-    createUser: build.mutation<
-      string,
-      RegisterInput & { avatar?: File | null }
-    >({
-      query(body) {
-        const form = new FormData();
-        Object.entries(body).forEach(([key, value]) => {
-          if (value) {
-            form.append(key, value);
-          }
-        });
-        return {
-          url: `${API_ROUTE.auth.main}${API_ROUTE.auth.registerUser}`,
-          method: "POST",
-          body: form,
-        };
-      },
-      invalidatesTags: [{ type: "User", id: "LIST" }],
-    }),
     getUsers: build.query<
       SuccessResponse<ResultWithOffset<LeanUserWithAvatar>>,
       OffsetQuery
@@ -49,6 +32,31 @@ const usersApi = api.injectEndpoints({
             ...users.data.data.map(({ id }) => ({ type: "User" as const, id })),
           ];
         } else return [{ type: "User", id: "LIST" }];
+      },
+      transformErrorResponse(baseQueryReturnValue, _meta, _args) {
+        return _.get(baseQueryReturnValue, "data") || baseQueryReturnValue;
+      },
+    }),
+    createUser: build.mutation<
+      string,
+      RegisterInput & { avatar?: File | null }
+    >({
+      query(body) {
+        const form = new FormData();
+        Object.entries(body).forEach(([key, value]) => {
+          if (value) {
+            form.append(key, value);
+          }
+        });
+        return {
+          url: `${API_ROUTE.auth.main}${API_ROUTE.auth.registerUser}`,
+          method: "POST",
+          body: form,
+        };
+      },
+      invalidatesTags: [{ type: "User", id: "LIST" }],
+      transformErrorResponse(baseQueryReturnValue, _meta, _args) {
+        return _.get(baseQueryReturnValue, "data") || baseQueryReturnValue;
       },
     }),
   }),

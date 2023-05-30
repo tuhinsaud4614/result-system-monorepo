@@ -1,4 +1,4 @@
-import { API_ROUTE } from "@result-system/shared/utility";
+import { API_ROUTE, LeanUserWithAvatar } from "@result-system/shared/utility";
 
 export const WEB_KEYS = {
   persist: "PERSIST",
@@ -13,5 +13,9 @@ export const WEB_PATHS = {
     addUser: "/admin/users/add",
     classes: "/admin/classes",
     subjects: "/admin/subjects",
+    edit: {
+      static: "/admin/users/:id/edit",
+      dynamic: (id: LeanUserWithAvatar["id"]) => `/admin/users/${id}/edit`,
+    },
   },
 } as const;

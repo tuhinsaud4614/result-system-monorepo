@@ -192,6 +192,20 @@ export function generateUnAuthorizedErrorMessage(
 }
 
 /**
+ * This TypeScript function generates a forbidden error message with a customizable subject.
+ * @param [subjectWIthAuxiliary=You are] - The subjectWIthAuxiliary parameter is a string that
+ * represents the subject of the error message. It defaults to "You are" but can be customized to
+ * include any auxiliary words or phrases.
+ * @returns a string message that says "You are not permitted". The message can be customized by
+ * passing a different subject with auxiliary verb as an argument to the function.
+ */
+export function generateForbiddenErrorMessage(
+  subjectWIthAuxiliary = "You are",
+): string {
+  return `${subjectWIthAuxiliary} not permitted`;
+}
+
+/**
  * This function generates an error message for invalid credentials with a specific action.
  * @param {string} action - The `action` parameter is a string that represents the action for which the
  * credentials are invalid. It is used to generate an error message indicating that the credentials

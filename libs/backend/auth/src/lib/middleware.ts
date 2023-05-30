@@ -5,6 +5,7 @@ import _ from "lodash";
 
 import {
   AuthenticationError,
+  ForbiddenError,
   deserializeUserWithAvatar,
   environment,
 } from "@result-system/backend/utility";
@@ -45,22 +46,19 @@ export const verifyJwtAccessToken: RequestHandler = (req, _res, next) => {
 
 /**
  * This function verifies if a user has the required roles to access a certain resource.
- * @param {UserRole[]} roles - an array of UserRole values that are allowed to access a certain route
+ * @param {UserRole[]} roles - An array of UserRole values that are allowed to access a certain route
  * or perform a certain action.
- * @returns The function `verifyRoles` is returning a request handler function that takes in three
- * parameters: `req`, `_res`, and `next`. The request handler function checks if the `role` of the
- * authenticated user is included in the `roles` array passed as an argument to `verifyRoles`. If the
- * user is not authenticated or their role is not included in the `roles` array, an `
+ * @returns The `verifyRoles` function returns a middleware function that takes in a request, response,
+ * and next function as parameters. The middleware function checks if the user's role in the request
+ * matches one of the roles specified in the `roles` parameter. If the user's role is valid, the
+ * middleware calls the `next` function to proceed to the next middleware in the chain. If the user's
+ * role
  */
 export function verifyRoles(roles: UserRole[]): RequestHandler {
   return (req, _res, next) => {
     const role = _.get(req, "user.role");
     const isValidUser = !!role && roles.includes(role);
 
-    if (!isValidUser) {
-      return next(new AuthenticationError());
-    }
-
-    return next();
+    return isValidUser ? next() : next(new ForbiddenError());
   };
 }

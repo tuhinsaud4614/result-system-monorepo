@@ -7,12 +7,12 @@ import {
   createRoutesFromElements,
 } from "react-router-dom";
 
+import AuthenticatePageLoader from "../components/common/AuthenticatePageLoader";
 import Layout from "../components/layout";
 import PersistLogin from "../features/auth/PersistLogin";
 import RequireAuth from "../features/auth/RequireAuth";
 import UnProtected from "../features/auth/UnProtected";
 import PageNotFound from "../pages/404";
-import AdminAddUserPageSkeleton from "../pages/admin/users/add-user/Skeleton";
 import Dashboard from "../pages/dashboard";
 import LoginPageSkeleton from "../pages/login/Skeleton";
 import { WEB_PATHS } from "../utility/constants";
@@ -43,7 +43,7 @@ const router = createBrowserRouter(
           <Route
             path={WEB_PATHS.admin.users}
             element={
-              <React.Suspense fallback={<AdminAddUserPageSkeleton />}>
+              <React.Suspense fallback={<AuthenticatePageLoader />}>
                 <AdminUsersPage />
               </React.Suspense>
             }
@@ -51,7 +51,7 @@ const router = createBrowserRouter(
           <Route
             path={WEB_PATHS.admin.addUser}
             element={
-              <React.Suspense fallback={<AdminAddUserPageSkeleton />}>
+              <React.Suspense fallback={<AuthenticatePageLoader />}>
                 <AdminAddUserPage />
               </React.Suspense>
             }

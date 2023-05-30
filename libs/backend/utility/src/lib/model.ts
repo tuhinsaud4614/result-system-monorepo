@@ -2,6 +2,7 @@ import {
   CODE,
   Code,
   ErrorResponse,
+  generateForbiddenErrorMessage,
   generateUnAuthorizedErrorMessage,
 } from "@result-system/shared/utility";
 
@@ -88,5 +89,14 @@ export class AuthenticationError extends HttpError {
     originalMessage?: string,
   ) {
     super({ code: 401, message, originalMessage });
+  }
+}
+
+export class ForbiddenError extends HttpError {
+  constructor(
+    message = generateForbiddenErrorMessage(),
+    originalMessage?: string,
+  ) {
+    super({ code: 403, message, originalMessage });
   }
 }

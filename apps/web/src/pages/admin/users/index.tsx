@@ -1,51 +1,46 @@
 import * as React from "react";
 
-import { DeleteOutline, Edit } from "@mui/icons-material";
+import { Edit } from "@mui/icons-material";
 import {
   Avatar,
-  Box,
-  Button,
-  CircularProgress,
   IconButton,
   Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TablePagination,
   TableRow,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 
 import {
-  ErrorResponse,
   LeanPicture,
   LeanUserWithAvatar,
   isObjectWithKeys,
 } from "@result-system/shared/utility";
 
 import { useGetUsersQuery } from "../../../app/services/users.api";
-import ErrorModal from "../../../components/common/ErrorModal";
+import AuthenticatePageLoader from "../../../components/common/AuthenticatePageLoader";
+import ErrorBox from "../../../components/common/ErrorBox";
+import THead from "../../../components/common/table/THead";
 import { WEB_PATHS } from "../../../utility/constants";
 import { HeadCell } from "../../../utility/types";
+import DeleteAction from "./DeleteAction";
+import NoUser from "./NoUser";
+import Title from "./Title";
 
-type Keys = keyof LeanUserWithAvatar;
-
-const cells: HeadCell<Keys>[] = [
+const cells: HeadCell<keyof LeanUserWithAvatar>[] = [
   {
     id: "id",
-    disablePadding: true,
     label: "ID",
   },
   {
     id: "firstName",
-    disablePadding: true,
     label: "First Name",
   },
   {
     id: "lastName",
-    disablePadding: true,
     label: "Last Name",
   },
   {
@@ -75,10 +70,11 @@ export default function AdminUsersPage() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const {
-    data,
+    data: users,
     error: fetchError,
     refetch,
     isLoading,
+    isFetching,
   } = useGetUsersQuery(
     { limit: rowsPerPage, page: page + 1 },
     {
@@ -99,21 +95,26 @@ export default function AdminUsersPage() {
     setPage(0);
   };
 
+  let content = null;
+
   if (isLoading) {
-    return <CircularProgress sx={{ height: "6.25rem", width: "6.25rem" }} />;
+    content = <AuthenticatePageLoader />;
+  } else if (fetchError) {
+    content = (
+      <ErrorBox
+        title="Users Fetching Errors"
+        errors={fetchError}
+        onRetry={refetch}
+      />
+    );
+  } else if (!users || users.data.total === 0) {
+    content = <NoUser />;
   }
 
   return (
     <>
-      <Box>
-        <Button
-          sx={{ mb: 2 }}
-          variant="contained"
-          component={Link}
-          to={WEB_PATHS.admin.addUser}
-        >
-          Add User
-        </Button>
+      <Title />
+      {content || (
         <Paper
           sx={{
             width: "100%",
@@ -122,101 +123,91 @@ export default function AdminUsersPage() {
         >
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  {cells.map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      align="left"
-                      sx={({ palette }) => ({
-                        backgroundColor: palette.primary.main,
-                        color: palette.common.white,
-                      })}
-                    >
-                      {cell.label}
-                    </TableCell>
-                  ))}
-                  <TableCell
-                    align="left"
-                    sx={({ palette }) => ({
-                      backgroundColor: palette.primary.main,
-                      color: palette.common.white,
-                    })}
-                  >
-                    Actions
-                  </TableCell>
-                </TableRow>
-              </TableHead>
+              <THead cells={cells}>
+                <TableCell
+                  align="left"
+                  sx={({ palette }) => ({
+                    backgroundColor: palette.primary.main,
+                    color: palette.common.white,
+                  })}
+                >
+                  Actions
+                </TableCell>
+              </THead>
               <TableBody>
-                {data?.data.data
-                  // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, index) => {
-                    return (
-                      <TableRow key={row.id}>
-                        {cells.map((cell) => {
-                          const item = row[cell.id];
+                {users?.data.data.map((row, index) => {
+                  return (
+                    <TableRow key={row.id}>
+                      {cells.map((cell) => {
+                        const item = row[cell.id];
 
-                          let content;
-                          if (cell.id === "id") {
-                            content = page * rowsPerPage + index + 1;
-                          } else if (
-                            isObjectWithKeys<LeanPicture>(item, [
-                              "height",
-                              "height",
-                              "width",
-                            ])
-                          ) {
-                            content = (
-                              <Avatar
-                                variant="rounded"
-                                src={`${import.meta.env.VITE_APP_API}/${
-                                  item.url
-                                }`}
-                                alt={row["firstName"]}
-                              />
-                            );
-                          } else if (
-                            cell.id === "createdAt" ||
-                            cell.id === "updatedAt"
-                          ) {
-                            content = new Date(
-                              item as string,
-                            ).toLocaleDateString();
-                          } else {
-                            content = item as string;
-                          }
-
-                          return (
-                            <TableCell key={cell.id} align="left">
-                              {content}
-                            </TableCell>
+                        let content;
+                        if (cell.id === "id") {
+                          content =
+                            !isFetching && page * rowsPerPage + index + 1;
+                        } else if (
+                          isObjectWithKeys<LeanPicture>(item, [
+                            "height",
+                            "height",
+                            "width",
+                          ])
+                        ) {
+                          content = (
+                            <Avatar
+                              variant="rounded"
+                              src={`${import.meta.env.VITE_APP_API}/${
+                                item.url
+                              }`}
+                              alt={row["firstName"]}
+                            />
                           );
-                        })}
-                        <TableCell
-                          align="left"
-                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                        >
+                        } else if (
+                          cell.id === "createdAt" ||
+                          cell.id === "updatedAt"
+                        ) {
+                          content = new Date(
+                            item as string,
+                          ).toLocaleDateString();
+                        } else {
+                          content = item as React.ReactNode;
+                        }
+
+                        return (
+                          <TableCell key={cell.id} align="left">
+                            {content}
+                          </TableCell>
+                        );
+                      })}
+                      <TableCell
+                        align="left"
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                        }}
+                      >
+                        <DeleteAction id={row.id} fetching={isFetching} />
+                        {!isFetching && (
                           <IconButton
-                            color="error"
-                            onClick={() => alert(row.id)}
+                            color="warning"
+                            component={Link}
+                            to={WEB_PATHS.admin.edit.dynamic(row.id)}
                           >
-                            <DeleteOutline />
-                          </IconButton>
-                          <IconButton color="warning">
                             <Edit />
                           </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </TableContainer>
-          {!!data?.data.total && (
+          {!!users?.data.total && (
             <TablePagination
               rowsPerPageOptions={[5, 10, 15]}
               component="div"
-              count={data.data.total}
+              count={users.data.total}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}
@@ -224,13 +215,6 @@ export default function AdminUsersPage() {
             />
           )}
         </Paper>
-      </Box>
-      {fetchError && (
-        <ErrorModal
-          title="Users Fetching Errors"
-          errors={fetchError as ErrorResponse}
-          onClose={refetch}
-        />
       )}
     </>
   );

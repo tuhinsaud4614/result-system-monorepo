@@ -73,11 +73,11 @@ export default function Login() {
           variant="contained"
           type="submit"
           disabled={!(isDirty && isValid) || isSubmitting || isLoading}
+          startIcon={
+            (isSubmitting || isLoading) && <CircularProgress size={24} />
+          }
           fullWidth
         >
-          {(isSubmitting || isLoading) && (
-            <CircularProgress sx={{ mr: 1, ml: -0.5 }} size={24} />
-          )}
           Login
         </Button>
       </form>

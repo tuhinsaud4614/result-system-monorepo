@@ -1,6 +1,7 @@
+import _ from "lodash";
+
 import {
   API_ROUTE,
-  ErrorResponse,
   LoginInput,
   SuccessResponse,
   isDev,
@@ -24,12 +25,8 @@ const authApi = api.injectEndpoints({
           body,
         };
       },
-      transformErrorResponse(
-        baseQueryReturnValue: { status: number; data: ErrorResponse },
-        _meta,
-        _args,
-      ) {
-        return baseQueryReturnValue.data;
+      transformErrorResponse(baseQueryReturnValue, _meta, _args) {
+        return _.get(baseQueryReturnValue, "data") || baseQueryReturnValue;
       },
     }),
     logout: build.mutation({
@@ -46,6 +43,9 @@ const authApi = api.injectEndpoints({
         } catch (error) {
           isDev() && console.log("authApi@logout:", error);
         }
+      },
+      transformErrorResponse(baseQueryReturnValue, _meta, _args) {
+        return _.get(baseQueryReturnValue, "data") || baseQueryReturnValue;
       },
     }),
     refreshToken: build.query<
@@ -67,6 +67,9 @@ const authApi = api.injectEndpoints({
         } catch (error) {
           isDev() && console.log("authApi@refreshToken:", error);
         }
+      },
+      transformErrorResponse(baseQueryReturnValue, _meta, _args) {
+        return _.get(baseQueryReturnValue, "data") || baseQueryReturnValue;
       },
     }),
   }),
