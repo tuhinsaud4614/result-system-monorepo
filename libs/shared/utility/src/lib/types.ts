@@ -3,6 +3,7 @@ import type { InferType } from "yup";
 
 import { CODE, IMAGE_MIMES } from "./constants";
 import {
+  idParamsSchema,
   loginInputSchema,
   offsetQuerySchema,
   registerInputSchema,
@@ -62,6 +63,8 @@ export interface ResultWithOffset<T> {
   total: number;
   pageInfo?: IOffsetPageInfo;
 }
+
+export type IDParams = InferType<ReturnType<typeof idParamsSchema>>;
 
 // Auth
 export type RegisterInput = InferType<typeof registerInputSchema>;

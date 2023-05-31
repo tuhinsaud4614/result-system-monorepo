@@ -4,6 +4,7 @@ import { Prisma } from "@prisma/client";
 import { UserRepository } from "@result-system/backend/repositories";
 import { HttpError } from "@result-system/backend/utility";
 import {
+  IDParams,
   OffsetQuery,
   generateCRUDFailedErrorMessage,
 } from "@result-system/shared/utility";
@@ -40,6 +41,27 @@ export async function getUsersService({ limit, page }: OffsetQuery) {
   } catch (error) {
     return new HttpError({
       message: generateCRUDFailedErrorMessage("users"),
+      originalMessage: (error as Error).message,
+    });
+  }
+}
+
+/**
+ * This TypeScript function deletes a user by their ID and returns an error message if the deletion
+ * fails.
+ * @param id - The `id` parameter is of type `IDParams["id"]`, which means it is a string representing
+ * the unique identifier of a user that needs to be deleted.
+ * @returns If the deletion is successful, nothing is returned explicitly (i.e., `undefined` is
+ * returned). If there is an error during the deletion, a `HttpError` object is returned with a message
+ * indicating that the deletion failed and the original error message.
+ */
+export async function deleteUserService(id: IDParams["id"]) {
+  try {
+    await UserRepository.deleteById(id);
+    return;
+  } catch (error) {
+    return new HttpError({
+      message: generateCRUDFailedErrorMessage("user", "delete"),
       originalMessage: (error as Error).message,
     });
   }

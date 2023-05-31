@@ -1,9 +1,9 @@
 import { type RequestHandler } from "express";
 
 import { HttpError, responseAsObj } from "@result-system/backend/utility";
-import { OffsetQuery } from "@result-system/shared/utility";
+import { IDParams, OffsetQuery } from "@result-system/shared/utility";
 
-import { getUsersService } from "./service";
+import { deleteUserService, getUsersService } from "./service";
 
 /**
  * This is a function that exports a controller for getting users, which logs the request
@@ -23,7 +23,7 @@ import { getUsersService } from "./service";
  * using the `next` function.
  */
 export const getUsersController: RequestHandler<
-  unknown,
+  IDParams,
   unknown,
   unknown,
   OffsetQuery
@@ -35,4 +35,30 @@ export const getUsersController: RequestHandler<
   }
 
   return res.status(200).json(responseAsObj(data));
+};
+
+/**
+ * This function handles a DELETE request to delete a user and returns a 204 status code if successful.
+ * @param req - The request object contains information about the incoming HTTP request, such as the
+ * request headers, request parameters, and request body.
+ * @param res - `res` is the response object that is used to send a response back to the client. It is
+ * an instance of the `Response` class from the Express framework. In this code snippet, it is used to
+ * send a 204 status code and an empty JSON response back to the client after a
+ * @param next - `next` is a function that is called to pass control to the next middleware function in
+ * the stack. It is typically used to handle errors or to move on to the next function in the chain of
+ * middleware.
+ * @returns a response with a status code of 204 (No Content) and an empty JSON object.
+ */
+export const deleteUserController: RequestHandler<IDParams> = async (
+  req,
+  res,
+  next,
+) => {
+  const data = await deleteUserService(req.params.id);
+
+  if (data instanceof HttpError) {
+    return next(data);
+  }
+
+  return res.status(204).json();
 };

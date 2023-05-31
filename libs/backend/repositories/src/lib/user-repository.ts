@@ -5,6 +5,7 @@ import {
   prismaClient,
 } from "@result-system/backend/utility";
 import {
+  IDParams,
   LeanUserWithAvatar,
   ResultWithOffset,
 } from "@result-system/shared/utility";
@@ -136,5 +137,18 @@ export default class UserRepository {
 
     const result = await this.getUsers({ ...args });
     return { data: result, total: count };
+  }
+
+  /**
+   * This function deletes a user from the database based on their ID.
+   * @param id - The `id` parameter is of type `IDParams["id"]`, which means it is a string
+   * representing the unique identifier of a user in the database. This function uses the Prisma client
+   * to delete a user from the database based on their `id`.
+   * @returns The `deleteById` function is returning a Promise that will resolve to the result of
+   * deleting a user from the database using the `prismaClient.user.delete` method. The `where` clause
+   * specifies that the user to be deleted has the `id` passed as a parameter.
+   */
+  static deleteById(id: IDParams["id"]) {
+    return prismaClient.user.delete({ where: { id } });
   }
 }

@@ -1,6 +1,7 @@
 import * as yup from "yup";
 
 import {
+  idParamsSchema,
   loginInputSchema,
   offsetQuerySchema,
   registerInputSchema,
@@ -16,4 +17,8 @@ export const userLoginSchema = yup.object({
 
 export const adminGetUsersSchema = yup.object({
   query: offsetQuerySchema,
+});
+
+export const adminDeleteUserSchema = yup.object({
+  params: idParamsSchema("User"),
 });

@@ -275,7 +275,7 @@
   },
   "tags": [
     { "name": "Auth", "description": "All routes of the authentication." },
-    { "name": "Users", "description": "All routes of the Users." }
+    { "name": "Admin", "description": "All routes of the Users." }
   ],
   "paths": {
     "/api/v1/auth/register": {
@@ -510,7 +510,7 @@
       "get": {
         "summary": "Get all the users",
         "description": "Retrieves a list of all users registered in the system",
-        "tags": ["Users"],
+        "tags": ["Admin"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
           {
@@ -567,6 +567,46 @@
           },
           "401": {
             "$ref": "#/components/responses/UNAUTHORIZED"
+          },
+          "403": {
+            "$ref": "#/components/responses/FORBIDDEN"
+          },
+          "500": {
+            "$ref": "#/components/responses/INTERNAL_SERVER_ERROR"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/users/{id}": {
+      "delete": {
+        "summary": "Delete a user",
+        "description": "Deletes a specific user based on the provided ID.",
+        "tags": ["Admin"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID of the user to delete."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User deleted successfully",
+            "content": {}
+          },
+          "400": {
+            "$ref": "#/components/responses/BAD_REQUEST"
+          },
+          "401": {
+            "$ref": "#/components/responses/UNAUTHORIZED"
+          },
+          "403": {
+            "$ref": "#/components/responses/FORBIDDEN"
           },
           "500": {
             "$ref": "#/components/responses/INTERNAL_SERVER_ERROR"

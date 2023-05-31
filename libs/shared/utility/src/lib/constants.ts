@@ -1,3 +1,5 @@
+import { IDParams } from "./types";
+
 /** The Response Code corresponding to the status code. */
 export const CODE = {
   200: "OK", // code: 200
@@ -42,6 +44,10 @@ export const API_ROUTE = {
   admin: {
     main: "/admin",
     users: "/users",
+    deleteUser: {
+      static: "/users/:id",
+      dynamic: (id: IDParams["id"]) => `/users/${id}`,
+    },
   },
   assets: "assets",
 } as const;

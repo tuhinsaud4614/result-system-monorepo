@@ -96,3 +96,8 @@ export const offsetQuerySchema = yup.object({
     .integer(generateNotIntegerErrorMessage("Page"))
     .positive(generateNotPositiveNumberErrorMessage("Page")),
 });
+
+export const idParamsSchema = (key: string) =>
+  yup.object({
+    id: yup.string().required(generateRequiredErrorMessage(`${key} ID`)),
+  });
