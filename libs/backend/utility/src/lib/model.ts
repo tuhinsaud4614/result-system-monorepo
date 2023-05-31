@@ -3,6 +3,7 @@ import {
   Code,
   ErrorResponse,
   generateForbiddenErrorMessage,
+  generateNotExistErrorMessage,
   generateUnAuthorizedErrorMessage,
 } from "@result-system/shared/utility";
 
@@ -98,5 +99,15 @@ export class ForbiddenError extends HttpError {
     originalMessage?: string,
   ) {
     super({ code: 403, message, originalMessage });
+  }
+}
+
+export class NotFoundError extends HttpError {
+  constructor(
+    key: string,
+    message = generateNotExistErrorMessage(key),
+    originalMessage?: string,
+  ) {
+    super({ code: 404, message, originalMessage });
   }
 }

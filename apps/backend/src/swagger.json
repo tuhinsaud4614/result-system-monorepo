@@ -175,6 +175,30 @@
           }
         }
       },
+      "NOT_FOUND": {
+        "description": "NOT FOUND",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Error"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "default": "NOT_FOUND"
+                    }
+                  },
+                  "required": ["code"]
+                }
+              ]
+            }
+          }
+        }
+      },
       "UNAUTHORIZED": {
         "description": "Unauthorized - User is not logged in",
         "content": {
@@ -607,6 +631,9 @@
           },
           "403": {
             "$ref": "#/components/responses/FORBIDDEN"
+          },
+          "404": {
+            "$ref": "#/components/responses/NOT_FOUND"
           },
           "500": {
             "$ref": "#/components/responses/INTERNAL_SERVER_ERROR"

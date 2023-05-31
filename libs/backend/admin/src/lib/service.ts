@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Prisma } from "@prisma/client";
+import _ from "lodash";
 
 import { UserRepository } from "@result-system/backend/repositories";
-import { HttpError } from "@result-system/backend/utility";
+import { HttpError, NotFoundError } from "@result-system/backend/utility";
 import {
   IDParams,
   OffsetQuery,
@@ -60,6 +60,16 @@ export async function deleteUserService(id: IDParams["id"]) {
     await UserRepository.deleteById(id);
     return;
   } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      return new NotFoundError(
+        "User",
+        _.get(error, "meta.cause") as string,
+        (error as Error).message,
+      );
+    }
     return new HttpError({
       message: generateCRUDFailedErrorMessage("user", "delete"),
       originalMessage: (error as Error).message,
