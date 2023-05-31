@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import { ErrorResponse, isObjectWithKeys } from "@result-system/shared/utility";
+import { useFormattedError } from "../../utility/hooks";
 
 interface Props {
   title: string;
@@ -18,16 +18,7 @@ interface Props {
 }
 
 export default function ErrorBox({ errors, onClose, onRetry, title }: Props) {
-  const newErrors =
-    !!errors &&
-    (isObjectWithKeys<ErrorResponse>(errors, [
-      "code",
-      "message",
-      "success",
-      "timeStamp",
-    ])
-      ? errors.paths || [errors.message]
-      : ["Something went wrong"]);
+  const newErrors = useFormattedError(errors);
 
   return (
     <Paper

@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { setupListeners } from "@reduxjs/toolkit/query/react";
 
 import { isDev } from "@result-system/shared/utility";
 
@@ -20,6 +21,7 @@ const store = configureStore({
   devTools: isDev(),
   enhancers: [],
 });
+setupListeners(store.dispatch);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

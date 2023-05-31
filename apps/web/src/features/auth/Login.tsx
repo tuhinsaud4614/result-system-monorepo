@@ -6,11 +6,7 @@ import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useLocalStorage } from "usehooks-ts";
 
-import {
-  ErrorResponse,
-  LoginInput,
-  loginInputSchema,
-} from "@result-system/shared/utility";
+import { LoginInput, loginInputSchema } from "@result-system/shared/utility";
 
 import { useLoginMutation } from "../../app/services/auth.api";
 import ErrorModal from "../../components/common/ErrorModal";
@@ -82,11 +78,7 @@ export default function Login() {
         </Button>
       </form>
       {apiError && (
-        <ErrorModal
-          title="Login Errors"
-          errors={apiError as ErrorResponse}
-          onClose={reset}
-        />
+        <ErrorModal title="Login Errors" errors={apiError} onClose={reset} />
       )}
     </>
   );

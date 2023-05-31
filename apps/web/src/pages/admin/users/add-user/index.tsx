@@ -23,10 +23,13 @@ export default function AdminAddUserPage() {
         })}
       >
         <Typography
+          component="h1"
           variant="h5"
-          component="h3"
-          sx={{ mb: 2 }}
-          fontWeight={(theme) => theme.typography.fontWeightBold}
+          fontWeight="700"
+          mb={2}
+          sx={({ breakpoints }) => ({
+            [breakpoints.up("md")]: { fontSize: "2.25rem" },
+          })}
           color="primary"
         >
           Add User

@@ -19,6 +19,7 @@ export default function Title() {
         sx={({ breakpoints }) => ({
           [breakpoints.up("md")]: { fontSize: "2.25rem" },
         })}
+        color="primary"
       >
         Users
       </Typography>

@@ -186,16 +186,14 @@ export default function AdminUsersPage() {
                           gap: 1,
                         }}
                       >
-                        <DeleteAction id={row.id} fetching={isFetching} />
-                        {!isFetching && (
-                          <IconButton
-                            color="warning"
-                            component={Link}
-                            to={WEB_PATHS.admin.edit.dynamic(row.id)}
-                          >
-                            <Edit />
-                          </IconButton>
-                        )}
+                        <DeleteAction id={row.id} />
+                        <IconButton
+                          color="warning"
+                          component={Link}
+                          to={WEB_PATHS.admin.edit.dynamic(row.id)}
+                        >
+                          <Edit />
+                        </IconButton>
                       </TableCell>
                     </TableRow>
                   );

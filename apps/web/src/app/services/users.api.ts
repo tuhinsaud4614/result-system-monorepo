@@ -2,6 +2,7 @@ import _ from "lodash";
 
 import {
   API_ROUTE,
+  IDParams,
   LeanUserWithAvatar,
   OffsetQuery,
   RegisterInput,
@@ -59,9 +60,27 @@ const usersApi = api.injectEndpoints({
         return _.get(baseQueryReturnValue, "data") || baseQueryReturnValue;
       },
     }),
+    deleteUser: build.mutation<void, IDParams["id"]>({
+      query(id) {
+        return {
+          url: `${API_ROUTE.admin.main}${API_ROUTE.admin.deleteUser.dynamic(
+            id,
+          )}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: (_result, _error, arg) => [{ type: "User", id: arg }],
+      transformErrorResponse(baseQueryReturnValue, _meta, _args) {
+        return _.get(baseQueryReturnValue, "data") || baseQueryReturnValue;
+      },
+    }),
   }),
 });
 
-export const { useCreateUserMutation, useGetUsersQuery } = usersApi;
+export const {
+  useCreateUserMutation,
+  useGetUsersQuery,
+  useDeleteUserMutation,
+} = usersApi;
 
 export default usersApi;

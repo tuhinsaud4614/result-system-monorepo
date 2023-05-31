@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import { ErrorResponse, isObjectWithKeys } from "@result-system/shared/utility";
+import { useFormattedError } from "../../utility/hooks";
 
 interface Props {
   title: string;
@@ -29,20 +29,11 @@ const style: SxProps<Theme> = {
 };
 
 export default function ErrorModal({ errors, onClose, title }: Props) {
-  const newErrors =
-    !!errors &&
-    (isObjectWithKeys<ErrorResponse>(errors, [
-      "code",
-      "message",
-      "success",
-      "timeStamp",
-    ])
-      ? errors.paths || [errors.message]
-      : ["Something went wrong"]);
+  const newErrors = useFormattedError(errors);
 
   return (
     <Modal
-      open={!!newErrors}
+      open={!!newErrors && !!newErrors.length}
       onClose={onClose}
       slotProps={{
         backdrop: {

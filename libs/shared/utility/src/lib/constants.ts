@@ -46,7 +46,7 @@ export const API_ROUTE = {
     users: "/users",
     deleteUser: {
       static: "/users/:id",
-      dynamic: (id: IDParams["id"]) => `/users/${id}`,
+      dynamic: (id: IDParams["id"]) => `/users/${id}` as const,
     },
   },
   assets: "assets",
