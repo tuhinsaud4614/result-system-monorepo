@@ -12,12 +12,19 @@ import { useFormattedError } from "../../utility/hooks";
 
 interface Props {
   title: string;
+  closeBtnLabel?: string;
   errors?: unknown;
   onClose?(): void;
   onRetry?(): void;
 }
 
-export default function ErrorBox({ errors, onClose, onRetry, title }: Props) {
+export default function ErrorBox({
+  errors,
+  onClose,
+  onRetry,
+  title,
+  closeBtnLabel = "Clear errors",
+}: Props) {
   const newErrors = useFormattedError(errors);
 
   return (
@@ -78,10 +85,10 @@ export default function ErrorBox({ errors, onClose, onRetry, title }: Props) {
             <Button
               variant="outlined"
               color="warning"
-              aria-label="Clear errors"
+              aria-label={closeBtnLabel}
               onClick={onClose}
             >
-              Clear errors
+              {closeBtnLabel}
             </Button>
           )}
         </Stack>

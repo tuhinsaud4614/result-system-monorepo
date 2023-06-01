@@ -4,8 +4,8 @@ import { ErrorResponse } from "@result-system/shared/utility";
 
 import { useCreateUserMutation } from "../../../../app/services/users.api";
 import ErrorModal from "../../../../components/common/ErrorModal";
-import Form from "../form";
-import { CreateUserInput } from "../form/utils";
+import { CreateUserInput } from "../utils";
+import Form from "./Form";
 
 export default function AdminAddUserPage() {
   const [create, { isLoading, reset, error: apiError }] =

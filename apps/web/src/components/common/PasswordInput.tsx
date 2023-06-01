@@ -47,7 +47,7 @@ function Root<T extends string>(
       variant="outlined"
       error={rest.error}
       fullWidth
-      required
+      required={rest.required}
     >
       <InputLabel htmlFor={passwordId}>{label}</InputLabel>
       <OutlinedInput

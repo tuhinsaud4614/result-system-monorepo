@@ -51,10 +51,10 @@ export async function getUserService(id: IDParams["id"]) {
     const user = await UserRepository.getUserById(id, {
       role: { in: ["STUDENT", "TEACHER"] },
     });
+
     if (!user) {
       return new NotFoundError("User");
     }
-
     return user;
   } catch (error) {
     return new HttpError({

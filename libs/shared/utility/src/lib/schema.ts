@@ -86,6 +86,38 @@ export const loginInputSchema = yup.object({
     }),
 });
 
+export const updateUserInputSchema = yup.object({
+  firstName: yup
+    .string()
+    .test("sanitize", generateSanitizeErrorMessage("first name"), (value) => {
+      return !!value && !!sanitizeHtml(value);
+    }),
+  lastName: yup
+    .string()
+    .test("sanitize", generateSanitizeErrorMessage("last name"), (value) => {
+      return !!value && !!sanitizeHtml(value);
+    }),
+  password: yup
+    .string()
+    .transform((value) => (value === "" ? undefined : value))
+    .matches(
+      PASSWORD_REGEX,
+      "Password must be 8-64 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character like @$!%*?&",
+    ),
+  confirmPassword: yup
+    .string()
+    .transform((value) => (value === "" ? undefined : value))
+    .when("password", ([password], schema) => {
+      if (password) {
+        return schema.required(
+          generateRequiredErrorMessage("Confirm password"),
+        );
+      }
+      return schema.notRequired();
+    })
+    .oneOf([yup.ref("password")], generateMatchedErrorMessage("Password")),
+});
+
 export const offsetQuerySchema = yup.object({
   limit: yup
     .number()

@@ -7,6 +7,7 @@ import {
   loginInputSchema,
   offsetQuerySchema,
   registerInputSchema,
+  updateUserInputSchema,
 } from "./schema";
 
 /**
@@ -68,6 +69,7 @@ export type IDParams = InferType<ReturnType<typeof idParamsSchema>>;
 
 // Auth
 export type RegisterInput = InferType<typeof registerInputSchema>;
+export type UpdateUserInput = InferType<typeof updateUserInputSchema>;
 export type LoginInput = InferType<typeof loginInputSchema>;
 export type AuthorizedUser = LeanUser & {
   avatar: LeanPicture | null;

@@ -38,6 +38,22 @@ const usersApi = api.injectEndpoints({
         return _.get(baseQueryReturnValue, "data") || baseQueryReturnValue;
       },
     }),
+    getUser: build.query<SuccessResponse<LeanUserWithAvatar>, IDParams["id"]>({
+      query: (id) => {
+        return {
+          url: `${API_ROUTE.admin.main}${API_ROUTE.admin.deleteUser.dynamic(
+            id,
+          )}`,
+          method: "GET",
+        };
+      },
+      providesTags: (_user, _error, arg) => {
+        return [{ type: "User", id: arg }];
+      },
+      transformErrorResponse(baseQueryReturnValue, _meta, _args) {
+        return _.get(baseQueryReturnValue, "data") || baseQueryReturnValue;
+      },
+    }),
     createUser: build.mutation<
       string,
       RegisterInput & { avatar?: File | null }
@@ -81,6 +97,7 @@ export const {
   useCreateUserMutation,
   useGetUsersQuery,
   useDeleteUserMutation,
+  useLazyGetUserQuery,
 } = usersApi;
 
 export default usersApi;

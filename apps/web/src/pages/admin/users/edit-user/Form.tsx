@@ -1,66 +1,42 @@
 import * as React from "react";
 
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  styled,
-} from "@mui/material";
+import { Button, CircularProgress, TextField } from "@mui/material";
 import { useController, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 
-import { RegisterInput } from "@result-system/shared/utility";
+import { LeanUserWithAvatar } from "@result-system/shared/utility";
 
 import PasswordInput from "../../../../components/common/PasswordInput";
+import { FormGroup } from "../../../../components/common/Styled";
 import ImagePicker from "../../../../components/common/image-picker";
-import { WEB_PATHS } from "../../../../utility/constants";
-import { CreateUserInput, createUserSchema } from "./utils";
+import { UpdateUserInput, updateUserSchema } from "../utils";
 
 interface Props {
-  oldData?: Omit<RegisterInput, "confirmPassword" | "password"> & {
-    avatar?: string;
-  };
-  action(formData: CreateUserInput): Promise<string>;
-  isLoading?: boolean;
+  user: LeanUserWithAvatar;
 }
 
-const FormGroup = styled(Box)(({ theme }) => ({
-  [theme.breakpoints.up("md")]: {
-    display: "flex",
-    alignItems: "flex-start",
-    gap: theme.spacing(2),
-  },
-}));
-
-export default function Form({ oldData, action, isLoading }: Props) {
+export default function Form({ user }: Props) {
   const firstNameId = React.useId();
   const lastNameId = React.useId();
-  const roleId = React.useId();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const {
     register,
     control,
     handleSubmit,
     reset: resetForm,
+    watch,
+    trigger,
     formState: { errors, isDirty, isValid, isSubmitting },
-  } = useForm<CreateUserInput>({
+  } = useForm<UpdateUserInput>({
     defaultValues: {
-      firstName: oldData?.firstName || "",
+      firstName: user.firstName,
+      lastName: user.lastName,
       confirmPassword: "",
-      lastName: oldData?.lastName || "",
       password: "",
-      role: oldData?.role || "STUDENT",
       avatar: null,
     },
-    resolver: yupResolver(createUserSchema),
+    resolver: yupResolver(updateUserSchema),
     mode: "onChange",
   });
 
@@ -72,14 +48,19 @@ export default function Form({ oldData, action, isLoading }: Props) {
   const handleClipboard: React.ClipboardEventHandler<HTMLInputElement> = (e) =>
     e.preventDefault();
 
-  const onSubmit = handleSubmit(async (formData) => {
+  const onSubmit = handleSubmit(async (_formData) => {
     try {
-      await action(formData);
-      navigate(WEB_PATHS.admin.users, { replace: true });
+      //   await action(formData);
+      // navigate(WEB_PATHS.admin.users, { replace: true });
     } catch (error) {
       resetForm();
     }
   });
+
+  const passwordWatch = watch("password");
+  React.useEffect(() => {
+    trigger("confirmPassword");
+  }, [passwordWatch, trigger]);
 
   return (
     <form onSubmit={onSubmit}>
@@ -107,25 +88,6 @@ export default function Form({ oldData, action, isLoading }: Props) {
           fullWidth
         />
       </FormGroup>
-      {!oldData && (
-        <FormControl sx={{ mb: 2 }} fullWidth>
-          <InputLabel id={roleId}>Role</InputLabel>
-          <Select
-            {...register("role")}
-            labelId={roleId}
-            id={roleId}
-            label="Role"
-            placeholder="Enter user role. (Student/Teacher)"
-            defaultValue="STUDENT"
-          >
-            <MenuItem value="STUDENT">Student</MenuItem>
-            <MenuItem value="TEACHER">Teacher</MenuItem>
-          </Select>
-          {errors.role && (
-            <FormHelperText>{errors.role.message}</FormHelperText>
-          )}
-        </FormControl>
-      )}
       <FormGroup>
         <PasswordInput
           {...register("password")}
@@ -145,7 +107,9 @@ export default function Form({ oldData, action, isLoading }: Props) {
       </FormGroup>
       <ImagePicker
         {...avatarCtrl.field}
-        prevImage={oldData?.avatar}
+        prevImage={
+          user.avatar && `${import.meta.env.VITE_APP_API}/${user.avatar.url}`
+        }
         label="Avatar"
         value={avatarCtrl.field.value}
         error={!!errors.avatar}
@@ -156,13 +120,15 @@ export default function Form({ oldData, action, isLoading }: Props) {
         type="submit"
         size="large"
         sx={{ mt: 2 }}
-        disabled={!(isDirty && isValid) || isSubmitting || isLoading}
+        // disabled={!(isDirty && isValid) || isSubmitting || isLoading}
+        disabled={!(isDirty && isValid) || isSubmitting}
         startIcon={
-          (isSubmitting || isLoading) && <CircularProgress size={24} />
+          //   (isSubmitting || isLoading) && <CircularProgress size={24} />
+          isSubmitting && <CircularProgress size={24} />
         }
         fullWidth
       >
-        {oldData ? "Edit" : "Add"}
+        Edit
       </Button>
     </form>
   );

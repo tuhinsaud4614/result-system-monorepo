@@ -15,14 +15,14 @@ interface Props
   helperText?: React.ReactNode;
   error?: boolean;
   label?: string;
-  prevImage?: string;
+  prevImage: string | null;
 }
 
 const ImagePicker = React.forwardRef(
   (
     {
       label,
-      prevImage,
+      prevImage = null,
       value,
       helperText,
       onChange,

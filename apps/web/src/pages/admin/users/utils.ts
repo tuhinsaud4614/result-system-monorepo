@@ -7,9 +7,10 @@ import {
   generateTooLargeFileErrorMessage,
   maxFileSize,
   registerInputSchema,
+  updateUserInputSchema,
 } from "@result-system/shared/utility";
 
-export const createUserSchema = registerInputSchema.shape({
+const avatarSchema = yup.object({
   avatar: yup
     .mixed<File>()
     .nullable()
@@ -27,4 +28,8 @@ export const createUserSchema = registerInputSchema.shape({
     }),
 });
 
+export const createUserSchema = registerInputSchema.concat(avatarSchema);
+export const updateUserSchema = updateUserInputSchema.concat(avatarSchema);
+
 export type CreateUserInput = yup.InferType<typeof createUserSchema>;
+export type UpdateUserInput = yup.InferType<typeof updateUserSchema>;
