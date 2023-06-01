@@ -3,7 +3,7 @@ import { type RequestHandler } from "express";
 import { HttpError, responseAsObj } from "@result-system/backend/utility";
 import { IDParams, OffsetQuery } from "@result-system/shared/utility";
 
-import { deleteUserService, getUsersService } from "./service";
+import { deleteUserService, getUserService, getUsersService } from "./service";
 
 /**
  * This is a function that exports a controller for getting users, which logs the request
@@ -29,6 +29,20 @@ export const getUsersController: RequestHandler<
   OffsetQuery
 > = async (req, res, next) => {
   const data = await getUsersService(req.query);
+
+  if (data instanceof HttpError) {
+    return next(data);
+  }
+
+  return res.status(200).json(responseAsObj(data));
+};
+
+export const getUserController: RequestHandler<IDParams> = async (
+  req,
+  res,
+  next,
+) => {
+  const data = await getUserService(req.params.id);
 
   if (data instanceof HttpError) {
     return next(data);

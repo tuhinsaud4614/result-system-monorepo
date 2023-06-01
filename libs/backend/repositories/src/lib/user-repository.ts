@@ -92,6 +92,19 @@ export default class UserRepository {
     return prismaClient.user.findMany({ ...condition, select: this.#select });
   }
 
+  static getUserById(
+    id: IDParams["id"],
+    condition?: Omit<Prisma.UserWhereInput, "id">,
+  ): Promise<LeanUserWithAvatar | null> {
+    return prismaClient.user.findFirst({
+      where: {
+        id,
+        ...condition,
+      },
+      select: this.#select,
+    });
+  }
+
   /**
    * This function retrieves a specified number of users with an optional offset and pagination, and
    * returns the results along with pagination information.

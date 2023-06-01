@@ -19,6 +19,6 @@ export const adminGetUsersSchema = yup.object({
   query: offsetQuerySchema,
 });
 
-export const adminDeleteUserSchema = yup.object({
+export const adminUserIdParamsSchema = yup.object({
   params: idParamsSchema("User"),
 });

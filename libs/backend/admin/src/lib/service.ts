@@ -46,8 +46,26 @@ export async function getUsersService({ limit, page }: OffsetQuery) {
   }
 }
 
+export async function getUserService(id: IDParams["id"]) {
+  try {
+    const user = await UserRepository.getUserById(id, {
+      role: { in: ["STUDENT", "TEACHER"] },
+    });
+    if (!user) {
+      return new NotFoundError("User");
+    }
+
+    return user;
+  } catch (error) {
+    return new HttpError({
+      message: generateCRUDFailedErrorMessage("user", "fetch"),
+      originalMessage: (error as Error).message,
+    });
+  }
+}
+
 /**
- * This TypeScript function deletes a user by their ID and returns an error message if the deletion
+ * This function deletes a user by their ID and returns an error message if the deletion
  * fails.
  * @param id - The `id` parameter is of type `IDParams["id"]`, which means it is a string representing
  * the unique identifier of a user that needs to be deleted.
