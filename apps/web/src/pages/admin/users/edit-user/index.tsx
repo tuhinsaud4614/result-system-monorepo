@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Box, Paper, Typography } from "@mui/material";
+import { Paper } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { IDParams } from "@result-system/shared/utility";
@@ -10,6 +10,7 @@ import AuthenticatePageLoader from "../../../../components/common/AuthenticatePa
 import ErrorBox from "../../../../components/common/ErrorBox";
 import { WEB_PATHS } from "../../../../utility/constants";
 import Form from "./Form";
+import Header from "./Header";
 
 export default function AdminEditUserPage() {
   const { id } = useParams<{ id: IDParams["id"] }>();
@@ -53,26 +54,10 @@ export default function AdminEditUserPage() {
   }
 
   return (
-    <Box
-      sx={({ breakpoints }) => ({
-        maxWidth: breakpoints.values.md,
-        mx: "auto",
-      })}
+    <Header
+      fullName={data?.data && `${data.data.firstName} ${data.data.lastName}`}
     >
-      <Typography
-        component="h1"
-        variant="h5"
-        fontWeight="700"
-        mb={2}
-        sx={({ breakpoints }) => ({
-          [breakpoints.up("md")]: { fontSize: "2.25rem" },
-        })}
-        color="primary"
-      >
-        Edit{" "}
-        {data?.data ? `${data.data.firstName} ${data.data.lastName}` : "User"}
-      </Typography>
       {content}
-    </Box>
+    </Header>
   );
 }
