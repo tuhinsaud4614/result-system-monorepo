@@ -23,17 +23,11 @@ import type { NonAdminUserRole } from "./types";
 export const generateImageFileSchema = (key: string) =>
   yup
     .mixed<Express.Multer.File>()
-    // .required(generateRequiredErrorMessage(key))
     .test(
       "fileFormat",
       generateNotImageErrorMessage(key),
       (value) => !!value && has(IMAGE_MIMES, value.mimetype),
     );
-// .test(
-//   "fileSize",
-//   generateTooLargeFileErrorMessage(key, `${maxSize} Mb`),
-//   (value) => !!value && value.size <= maxFileSize(maxSize),
-// );
 
 export const registerInputSchema = yup.object({
   firstName: yup
@@ -90,11 +84,17 @@ export const updateUserInputSchema = yup.object({
   firstName: yup
     .string()
     .test("sanitize", generateSanitizeErrorMessage("first name"), (value) => {
+      if (!value) {
+        return true;
+      }
       return !!value && !!sanitizeHtml(value);
     }),
   lastName: yup
     .string()
     .test("sanitize", generateSanitizeErrorMessage("last name"), (value) => {
+      if (!value) {
+        return true;
+      }
       return !!value && !!sanitizeHtml(value);
     }),
   password: yup

@@ -1,9 +1,19 @@
 import { type RequestHandler } from "express";
+import _ from "lodash";
 
 import { HttpError, responseAsObj } from "@result-system/backend/utility";
-import { IDParams, OffsetQuery } from "@result-system/shared/utility";
+import {
+  IDParams,
+  OffsetQuery,
+  UpdateUserInput,
+} from "@result-system/shared/utility";
 
-import { deleteUserService, getUserService, getUsersService } from "./service";
+import {
+  deleteUserService,
+  getUserService,
+  getUsersService,
+  updateUserService,
+} from "./service";
 
 /**
  * This is a function that exports a controller for getting users, which logs the request
@@ -37,6 +47,23 @@ export const getUsersController: RequestHandler<
   return res.status(200).json(responseAsObj(data));
 };
 
+/**
+ * This function handles a GET request to retrieve user data and returns a JSON response.
+ * @param req - req stands for request and it is an object that contains information about the HTTP
+ * request that was made, such as the request headers, query parameters, and request body. It is passed
+ * as the first parameter to the getUserController function.
+ * @param res - `res` is the response object that is used to send a response back to the client. It is
+ * an instance of the `http.ServerResponse` class in Node.js. In this code snippet, `res` is used to
+ * send a JSON response with a status code of 200 and the data
+ * @param next - `next` is a function that is called to pass control to the next middleware function in
+ * the stack. It is typically used to handle errors or to move on to the next function in the chain of
+ * middleware.
+ * @returns This code is returning a request handler function that retrieves user data by calling the
+ * `getUserService` function with the user ID passed in the request parameters. If the `getUserService`
+ * function returns an instance of `HttpError`, the function calls the `next` function with the error
+ * to pass it to the error handling middleware. Otherwise, the function returns a JSON response with
+ * the user data in the body
+ */
 export const getUserController: RequestHandler<IDParams> = async (
   req,
   res,
@@ -75,4 +102,36 @@ export const deleteUserController: RequestHandler<IDParams> = async (
   }
 
   return res.status(204).json();
+};
+
+/**
+ * This is a function that updates a user's data and returns a JSON response.
+ * @param req - `req` is an object that represents the HTTP request made by the client. It contains
+ * information such as the request method, headers, URL, and body. In this specific code snippet, `req`
+ * is used to extract the request body (`req.body`), request parameters (`req.params`),
+ * @param res - `res` is the response object that is used to send the response back to the client. It
+ * is an instance of the `http.ServerResponse` class in Node.js. The `res` object has methods like
+ * `res.status()`, `res.json()`, `res.send()`, etc.
+ * @param next - `next` is a function that is called to pass control to the next middleware function in
+ * the stack. It is typically used to handle errors or to move on to the next middleware function in
+ * the chain.
+ * @returns The `updateUserController` function is returning a response with a status code of 200 and a
+ * JSON object that contains the data returned from the `updateUserService` function. If the
+ * `updateUserService` function returns an instance of `HttpError`, the function will call the `next`
+ * function with the error as an argument.
+ */
+export const updateUserController: RequestHandler<
+  IDParams,
+  unknown,
+  UpdateUserInput
+> = async (req, res, next) => {
+  const inputs = _.omit(req.body, "confirmPassword");
+
+  const data = await updateUserService(req.params.id, inputs, req.file);
+
+  if (data instanceof HttpError) {
+    return next(data);
+  }
+
+  return res.status(200).json(responseAsObj(data));
 };

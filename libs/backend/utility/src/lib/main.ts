@@ -1,4 +1,4 @@
-import type { UserRole } from "@prisma/client";
+import { UserRole } from "@prisma/client";
 import { unlink } from "fs/promises";
 import { type JwtPayload } from "jsonwebtoken";
 import _ from "lodash";
@@ -15,6 +15,7 @@ import {
   isObjectWithKeys,
 } from "@result-system/shared/utility";
 
+import logger from "./logger";
 import { AuthenticationError } from "./model";
 
 /**
@@ -182,4 +183,25 @@ export function deserializeUserWithAvatar(
   }
 
   throw new AuthenticationError();
+}
+
+/**
+ * This is an async function that removes a file at a given file path and logs a warning if there is an
+ * error.
+ * @param {string} [filePath] - The file path of the file to be removed. If this parameter is not
+ * provided or is falsy, the function will return without doing anything.
+ * @param rootPath - The root directory path where the file is located. If no value is provided, it
+ * defaults to the current directory (__dirname).
+ * @returns If `filePath` is not provided, `undefined` is returned. If `unlink` is successful, nothing
+ * is returned. If there is an error, a warning message is logged but no value is returned.
+ */
+export async function removeFile(filePath?: string, rootPath = __dirname) {
+  if (!filePath) {
+    return;
+  }
+  try {
+    await unlink(path.join(rootPath, filePath));
+  } catch (error) {
+    logger.warn((error as Error).message);
+  }
 }

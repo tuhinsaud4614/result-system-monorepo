@@ -5,6 +5,7 @@ import {
   loginInputSchema,
   offsetQuerySchema,
   registerInputSchema,
+  updateUserInputSchema,
 } from "@result-system/shared/utility";
 
 export const userRegistrationSchema = yup.object({
@@ -21,4 +22,8 @@ export const adminGetUsersSchema = yup.object({
 
 export const adminUserIdParamsSchema = yup.object({
   params: idParamsSchema("User"),
+});
+
+export const adminUserUpdateBodySchema = yup.object({
+  body: updateUserInputSchema,
 });

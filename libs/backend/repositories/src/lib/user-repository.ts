@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 
 import {
   type UserCreateInput,
+  UserUpdateInputWithAvatar,
   prismaClient,
 } from "@result-system/backend/utility";
 import {
@@ -21,26 +22,6 @@ export default class UserRepository {
     createdAt: true,
     updatedAt: true,
   } satisfies Prisma.UserSelect;
-  /**
-   * This function creates a user repository with an optional avatar input.
-   * @param {UserCreateInput} inputs - The `inputs` parameter is an object of type `UserCreateInput`
-   * which contains the data needed to create a new user in the database. It may include properties such
-   * as `name`, `email`, `password`, and `avatar`. The `avatar` property is optional and may contain an
-   * object
-   * @returns The function `createUserRepository` is returning a Promise that resolves to the result of
-   * creating a new user in the database using the `prismaClient` instance. The user data is taken from
-   * the `inputs` parameter, and if an `avatar` is provided, it is also created and associated with the
-   * user.
-   */
-  static create(inputs: UserCreateInput) {
-    const { avatar, ...rest } = inputs;
-    return prismaClient.user.create({
-      data: {
-        ...rest,
-        avatar: avatar && { create: { ...avatar } },
-      },
-    });
-  }
 
   /**
    * This function returns the count of users based on the provided condition using Prisma.
@@ -153,6 +134,27 @@ export default class UserRepository {
   }
 
   /**
+   * This function creates a user repository with an optional avatar input.
+   * @param {UserCreateInput} inputs - The `inputs` parameter is an object of type `UserCreateInput`
+   * which contains the data needed to create a new user in the database. It may include properties such
+   * as `name`, `email`, `password`, and `avatar`. The `avatar` property is optional and may contain an
+   * object
+   * @returns The function `createUserRepository` is returning a Promise that resolves to the result of
+   * creating a new user in the database using the `prismaClient` instance. The user data is taken from
+   * the `inputs` parameter, and if an `avatar` is provided, it is also created and associated with the
+   * user.
+   */
+  static create(inputs: UserCreateInput) {
+    const { avatar, ...rest } = inputs;
+    return prismaClient.user.create({
+      data: {
+        ...rest,
+        avatar: avatar && { create: { ...avatar } },
+      },
+    });
+  }
+
+  /**
    * This function deletes a user from the database based on their ID.
    * @param id - The `id` parameter is of type `IDParams["id"]`, which means it is a string
    * representing the unique identifier of a user in the database. This function uses the Prisma client
@@ -162,6 +164,31 @@ export default class UserRepository {
    * specifies that the user to be deleted has the `id` passed as a parameter.
    */
   static deleteById(id: IDParams["id"]) {
-    return prismaClient.user.delete({ where: { id } });
+    return prismaClient.user.delete({
+      where: { id },
+      include: { avatar: true },
+    });
+  }
+
+  /**
+   * This function updates a user's information, including their avatar, and returns the updated user's
+   * data.
+   * @param id - The ID of the user that needs to be updated.
+   * @param {UserUpdateInputWithAvatar}  - - `id`: a string representing the ID of the user to be
+   * updated
+   * @returns The `updateUser` function is returning a Promise that resolves to a `LeanUserWithAvatar`
+   * object. This object represents the updated user with the specified `id` and includes the updated
+   * user data and avatar information. The `select` property is used to specify which fields should be
+   * included in the returned object.
+   */
+  static updateUser(
+    id: IDParams["id"],
+    { avatar, ...rest }: UserUpdateInputWithAvatar,
+  ): Promise<LeanUserWithAvatar> {
+    return prismaClient.user.update({
+      where: { id },
+      data: { ...rest, avatar: avatar && { update: { ...avatar } } },
+      select: this.#select,
+    });
   }
 }

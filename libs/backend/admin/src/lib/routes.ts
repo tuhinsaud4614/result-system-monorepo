@@ -2,8 +2,11 @@ import { Router } from "express";
 
 import { verifyJwtAccessToken, verifyRoles } from "@result-system/backend/auth";
 import {
+  ASSETS_DESTINATION,
   adminGetUsersSchema,
   adminUserIdParamsSchema,
+  adminUserUpdateBodySchema,
+  imageUpload,
   validateRequest,
 } from "@result-system/backend/utility";
 import { API_ROUTE } from "@result-system/shared/utility";
@@ -12,6 +15,7 @@ import {
   deleteUserController,
   getUserController,
   getUsersController,
+  updateUserController,
 } from "./controller";
 
 const router = Router();
@@ -27,6 +31,12 @@ router.get(
 router
   .route(API_ROUTE.admin.deleteUser.static)
   .get(validateRequest(adminUserIdParamsSchema, 400), getUserController)
-  .delete(validateRequest(adminUserIdParamsSchema, 400), deleteUserController);
+  .delete(validateRequest(adminUserIdParamsSchema, 400), deleteUserController)
+  .patch(
+    validateRequest(adminUserIdParamsSchema, 400),
+    validateRequest(adminUserUpdateBodySchema, 422),
+    imageUpload(ASSETS_DESTINATION, 5).single("avatar"),
+    updateUserController,
+  );
 
 export default router;
