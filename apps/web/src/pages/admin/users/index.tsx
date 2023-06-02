@@ -67,7 +67,7 @@ const cells: HeadCell<keyof LeanUserWithAvatar>[] = [
 
 export default function AdminUsersPage() {
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const {
     data: users,
@@ -203,7 +203,7 @@ export default function AdminUsersPage() {
           </TableContainer>
           {!!users?.data.total && (
             <TablePagination
-              rowsPerPageOptions={[5, 10, 15]}
+              rowsPerPageOptions={[10, 15, 20]}
               component="div"
               count={users.data.total}
               rowsPerPage={rowsPerPage}

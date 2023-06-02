@@ -44,7 +44,7 @@ export const API_ROUTE = {
   admin: {
     main: "/admin",
     users: "/users",
-    deleteUser: {
+    user: {
       static: "/users/:id",
       dynamic: (id: IDParams["id"]) => `/users/${id}` as const,
     },

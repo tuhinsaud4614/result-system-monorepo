@@ -29,13 +29,13 @@ router.get(
 );
 
 router
-  .route(API_ROUTE.admin.deleteUser.static)
+  .route(API_ROUTE.admin.user.static)
   .get(validateRequest(adminUserIdParamsSchema, 400), getUserController)
   .delete(validateRequest(adminUserIdParamsSchema, 400), deleteUserController)
   .patch(
     validateRequest(adminUserIdParamsSchema, 400),
-    validateRequest(adminUserUpdateBodySchema, 422),
     imageUpload(ASSETS_DESTINATION, 5).single("avatar"),
+    validateRequest(adminUserUpdateBodySchema, 422),
     updateUserController,
   );
 

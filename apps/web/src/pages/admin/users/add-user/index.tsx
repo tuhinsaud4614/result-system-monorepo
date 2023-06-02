@@ -1,7 +1,5 @@
 import { Box, Paper, Typography } from "@mui/material";
 
-import { ErrorResponse } from "@result-system/shared/utility";
-
 import { useCreateUserMutation } from "../../../../app/services/users.api";
 import ErrorModal from "../../../../components/common/ErrorModal";
 import { CreateUserInput } from "../utils";
@@ -48,7 +46,7 @@ export default function AdminAddUserPage() {
       {apiError && (
         <ErrorModal
           title="Create User Errors"
-          errors={apiError as ErrorResponse}
+          errors={apiError}
           onClose={reset}
         />
       )}

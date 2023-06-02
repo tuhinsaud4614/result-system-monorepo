@@ -7,7 +7,7 @@ interface Props {
   children?: React.ReactNode;
 }
 
-export default function Header({ fullName, children }: Props) {
+export default function Header({ fullName = "User", children }: Props) {
   return (
     <Box
       sx={({ breakpoints }) => ({
@@ -25,7 +25,7 @@ export default function Header({ fullName, children }: Props) {
         })}
         color="primary"
       >
-        {fullName && `Edit ${fullName}`}
+        Edit {fullName}
       </Typography>
       {children}
     </Box>

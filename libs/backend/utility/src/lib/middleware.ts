@@ -185,10 +185,11 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     detail: "An unknown error occurs",
   });
 
+  if (req.file) {
+    unlink(req.file.path, (linkErr) => logger.warn(linkErr?.message));
+  }
+
   if (err instanceof MulterError) {
-    if (req.file) {
-      unlink(req.file.path, (linkErr) => logger.error(linkErr?.message));
-    }
     newError = new HttpError({
       message: err.message,
       code: 400,

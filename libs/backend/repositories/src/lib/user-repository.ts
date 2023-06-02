@@ -171,15 +171,12 @@ export default class UserRepository {
   }
 
   /**
-   * This function updates a user's information, including their avatar, and returns the updated user's
-   * data.
+   * This function updates a user's information, including their avatar, in the database using Prisma.
    * @param id - The ID of the user that needs to be updated.
    * @param {UserUpdateInputWithAvatar}  - - `id`: a string representing the ID of the user to be
-   * updated
-   * @returns The `updateUser` function is returning a Promise that resolves to a `LeanUserWithAvatar`
-   * object. This object represents the updated user with the specified `id` and includes the updated
-   * user data and avatar information. The `select` property is used to specify which fields should be
-   * included in the returned object.
+   * updated.
+   * @returns The function `updateUser` is returning a Promise that resolves to a `LeanUserWithAvatar`
+   * object.
    */
   static updateUser(
     id: IDParams["id"],
@@ -187,7 +184,12 @@ export default class UserRepository {
   ): Promise<LeanUserWithAvatar> {
     return prismaClient.user.update({
       where: { id },
-      data: { ...rest, avatar: avatar && { update: { ...avatar } } },
+      data: {
+        ...rest,
+        avatar: avatar && {
+          upsert: { create: { ...avatar }, update: { ...avatar } },
+        },
+      },
       select: this.#select,
     });
   }

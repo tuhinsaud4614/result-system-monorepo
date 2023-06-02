@@ -8,6 +8,7 @@ import {
   RegisterInput,
   ResultWithOffset,
   SuccessResponse,
+  UpdateUserInput,
 } from "@result-system/shared/utility";
 
 import { api } from "./api";
@@ -41,9 +42,7 @@ const usersApi = api.injectEndpoints({
     getUser: build.query<SuccessResponse<LeanUserWithAvatar>, IDParams["id"]>({
       query: (id) => {
         return {
-          url: `${API_ROUTE.admin.main}${API_ROUTE.admin.deleteUser.dynamic(
-            id,
-          )}`,
+          url: `${API_ROUTE.admin.main}${API_ROUTE.admin.user.dynamic(id)}`,
           method: "GET",
         };
       },
@@ -62,6 +61,12 @@ const usersApi = api.injectEndpoints({
         const form = new FormData();
         Object.entries(body).forEach(([key, value]) => {
           if (value) {
+            if (
+              (key === "firstName" || key === "lastName") &&
+              typeof value === "string"
+            ) {
+              value = value.trim().replace(/\s+/g, " ");
+            }
             form.append(key, value);
           }
         });
@@ -76,12 +81,38 @@ const usersApi = api.injectEndpoints({
         return _.get(baseQueryReturnValue, "data") || baseQueryReturnValue;
       },
     }),
+    updateUser: build.mutation<
+      SuccessResponse<LeanUserWithAvatar>,
+      { id: IDParams["id"]; inputs: UpdateUserInput & { avatar?: File | null } }
+    >({
+      query({ id, inputs }) {
+        const form = new FormData();
+        Object.entries(inputs).forEach(([key, value]) => {
+          if (value) {
+            if (
+              (key === "firstName" || key === "lastName") &&
+              typeof value === "string"
+            ) {
+              value = value.trim().replace(/\s+/g, " ");
+            }
+            form.append(key, value);
+          }
+        });
+        return {
+          url: `${API_ROUTE.admin.main}${API_ROUTE.admin.user.dynamic(id)}`,
+          method: "PATCH",
+          body: form,
+        };
+      },
+      invalidatesTags: (_result, _error, arg) => [{ type: "User", id: arg.id }],
+      transformErrorResponse(baseQueryReturnValue, _meta, _args) {
+        return _.get(baseQueryReturnValue, "data") || baseQueryReturnValue;
+      },
+    }),
     deleteUser: build.mutation<void, IDParams["id"]>({
       query(id) {
         return {
-          url: `${API_ROUTE.admin.main}${API_ROUTE.admin.deleteUser.dynamic(
-            id,
-          )}`,
+          url: `${API_ROUTE.admin.main}${API_ROUTE.admin.user.dynamic(id)}`,
           method: "DELETE",
         };
       },
@@ -98,6 +129,7 @@ export const {
   useGetUsersQuery,
   useDeleteUserMutation,
   useLazyGetUserQuery,
+  useUpdateUserMutation,
 } = usersApi;
 
 export default usersApi;

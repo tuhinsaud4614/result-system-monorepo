@@ -1,11 +1,8 @@
 import { Prisma } from "@prisma/client";
 import { hash as argonHash, verify as argonVerify } from "argon2";
-import { unlink } from "fs";
-import path from "path";
 
 import { UserRepository } from "@result-system/backend/repositories";
 import {
-  ASSETS_DESTINATION,
   AuthenticationError,
   HttpError,
   environment,
@@ -72,9 +69,6 @@ export async function userRegistrationService(
 
     return user.id;
   } catch (error) {
-    if (image) {
-      unlink(path.join(ASSETS_DESTINATION, image.path), () => undefined);
-    }
     let code: Code = 500,
       message = generateCRUDFailedErrorMessage("user", "create");
     if (

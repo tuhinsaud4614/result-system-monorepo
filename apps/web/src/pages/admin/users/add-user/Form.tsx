@@ -36,6 +36,8 @@ export default function Form({ action, isLoading }: Props) {
     control,
     handleSubmit,
     reset: resetForm,
+    watch,
+    trigger,
     formState: { errors, isDirty, isValid, isSubmitting },
   } = useForm<CreateUserInput>({
     defaultValues: {
@@ -54,6 +56,13 @@ export default function Form({ action, isLoading }: Props) {
     control,
     name: "avatar",
   });
+
+  const passwordWatch = watch("password");
+  React.useEffect(() => {
+    if (passwordWatch) {
+      trigger("confirmPassword");
+    }
+  }, [passwordWatch, trigger]);
 
   const handleClipboard: React.ClipboardEventHandler<HTMLInputElement> = (e) =>
     e.preventDefault();
