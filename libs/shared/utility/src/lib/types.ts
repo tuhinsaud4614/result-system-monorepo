@@ -6,7 +6,7 @@ import {
   createClassInputSchema,
   idParamsSchema,
   loginInputSchema,
-  offsetQuerySchema,
+  offsetSchema,
   registerInputSchema,
   updateUserInputSchema,
 } from "./schema";
@@ -53,7 +53,7 @@ export type Pretty<T extends {}> = {
   // eslint-disable-next-line @typescript-eslint/ban-types
 } & {};
 
-export type OffsetQuery = InferType<typeof offsetQuerySchema>;
+export type Offset = InferType<typeof offsetSchema>;
 export interface IOffsetPageInfo {
   hasNext: boolean;
   nextPage: number;

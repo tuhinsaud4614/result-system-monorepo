@@ -118,7 +118,7 @@ export const updateUserInputSchema = yup.object({
     .oneOf([yup.ref("password")], generateMatchedErrorMessage("Password")),
 });
 
-export const offsetQuerySchema = yup.object({
+export const offsetSchema = yup.object({
   limit: yup
     .number()
     .integer(generateNotIntegerErrorMessage("Limit"))

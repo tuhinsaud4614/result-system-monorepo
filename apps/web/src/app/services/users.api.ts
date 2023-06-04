@@ -4,7 +4,7 @@ import {
   API_ROUTE,
   IDParams,
   LeanUserWithAvatar,
-  OffsetQuery,
+  Offset,
   RegisterInput,
   ResultWithOffset,
   SuccessResponse,
@@ -17,7 +17,7 @@ const usersApi = api.injectEndpoints({
   endpoints: (build) => ({
     getUsers: build.query<
       SuccessResponse<ResultWithOffset<LeanUserWithAvatar>>,
-      OffsetQuery
+      Offset
     >({
       query: (offsetQuery) => {
         const { limit, page } = offsetQuery;

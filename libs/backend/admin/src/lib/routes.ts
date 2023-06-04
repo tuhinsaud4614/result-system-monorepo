@@ -4,10 +4,10 @@ import { verifyJwtAccessToken, verifyRoles } from "@result-system/backend/auth";
 import {
   ASSETS_DESTINATION,
   adminClassCreateBodySchema,
-  adminGetUsersSchema,
   adminUserIdParamsSchema,
   adminUserUpdateBodySchema,
   imageUpload,
+  queryWithOffsetSchema,
   validateRequest,
 } from "@result-system/backend/utility";
 import { API_ROUTE } from "@result-system/shared/utility";
@@ -15,6 +15,7 @@ import { API_ROUTE } from "@result-system/shared/utility";
 import {
   createClassController,
   deleteUserController,
+  getClassesController,
   getUserController,
   getUsersController,
   updateUserController,
@@ -26,7 +27,7 @@ router.use(verifyJwtAccessToken, verifyRoles(["ADMIN"]));
 
 router.get(
   API_ROUTE.admin.users,
-  validateRequest(adminGetUsersSchema, 422),
+  validateRequest(queryWithOffsetSchema, 400),
   getUsersController,
 );
 
@@ -43,6 +44,7 @@ router
 
 router
   .route(API_ROUTE.admin.classes)
+  .get(validateRequest(queryWithOffsetSchema, 400), getClassesController)
   .post(
     validateRequest(adminClassCreateBodySchema, 422),
     createClassController,

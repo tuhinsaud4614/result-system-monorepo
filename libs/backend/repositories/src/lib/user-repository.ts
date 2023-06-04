@@ -73,6 +73,20 @@ export default class UserRepository {
     return prismaClient.user.findMany({ ...condition, select: this.#select });
   }
 
+  /**
+   * This function retrieves a user by their ID and optional conditions, returning a lean user object
+   * with their avatar.
+   * @param id - The `id` parameter is of type `IDParams["id"]`, which means it is a string
+   * representing the unique identifier of a user. This parameter is used to filter the query and
+   * retrieve a specific user from the database.
+   * @param [condition] - The `condition` parameter is an optional object that specifies additional
+   * filtering criteria for the query. It is of type `Omit<Prisma.UserWhereInput, "id">`, which means
+   * it is an object that contains all the filtering criteria for a `User` object except for the `id`
+   * @returns The `getUserById` function is returning a Promise that resolves to a `LeanUserWithAvatar`
+   * object or `null`. The `LeanUserWithAvatar` object is selected using the `select` property of the
+   * Prisma query, which is defined in the private static property `#select`. The function takes in an
+   * `id` parameter of type `IDParams["id"]` and an optional
+   */
   static getUserById(
     id: IDParams["id"],
     condition?: Omit<Prisma.UserWhereInput, "id">,

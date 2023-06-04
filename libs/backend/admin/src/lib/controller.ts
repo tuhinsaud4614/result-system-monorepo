@@ -5,40 +5,40 @@ import { HttpError, responseAsObj } from "@result-system/backend/utility";
 import {
   CreateClassInput,
   IDParams,
-  OffsetQuery,
+  Offset,
   UpdateUserInput,
 } from "@result-system/shared/utility";
 
 import {
   createClassService,
   deleteUserService,
+  getClassesService,
   getUserService,
   getUsersService,
   updateUserService,
 } from "./service";
 
 /**
- * This is a function that exports a controller for getting users, which logs the request
- * query, calls a service function to retrieve user data, and returns a JSON response.
+ * This is a function that exports a controller to get users data and returns a JSON
+ * response.
  * @param req - The `req` parameter is an object that represents the HTTP request made by the client.
- * It contains information such as the request method, headers, URL, query parameters, and body. In
- * this case, the `req` object is used to extract the query parameters from the URL using `req.query
+ * It contains information such as the request method, headers, query parameters, and body. In this
+ * case, it is used to extract the query parameters to pass to the `getUsersService` function.
  * @param res - `res` is the response object that is used to send a response back to the client. It is
  * an instance of the `http.ServerResponse` class in Node.js. The `res` object has methods like
- * `res.status()`, `res.json()`, `res.send()`, etc.
- * @param next - `next` is a function that is called to pass control to the next middleware function in
- * the stack. It is typically used to handle errors or to move on to the next middleware function in
- * the chain.
- * @returns This code is returning a response to a GET request for users. It is using the
- * `getUsersService` function to retrieve the data and then returning a JSON response with a status
- * code of 200 and the retrieved data as an object. If there is an error, it will return the error
- * using the `next` function.
+ * `res.status()` to set the HTTP status code, `res.json()` to send
+ * @param next - `next` is a function that is called to pass control to the next middleware function.
+ * It is typically used to handle errors or to pass control to the next middleware function in the
+ * chain.
+ * @returns This code is returning a response with a status code of 200 and a JSON object containing
+ * the data returned from the `getUsersService` function. If `getUsersService` returns an instance of
+ * `HttpError`, the code will call the `next` function with the error object.
  */
 export const getUsersController: RequestHandler<
-  IDParams,
   unknown,
   unknown,
-  OffsetQuery
+  unknown,
+  Offset
 > = async (req, res, next) => {
   const data = await getUsersService(req.query);
 
@@ -138,12 +138,61 @@ export const updateUserController: RequestHandler<
   return res.status(200).json(responseAsObj(data));
 };
 
+/**
+ * This is a function that exports a controller to get classes data and returns a JSON
+ * response.
+ * @param req - The `req` parameter is an object that represents the HTTP request made to the server.
+ * It contains information about the request, such as the request method, headers, URL, query
+ * parameters, and body. In this case, the `req` parameter is used to extract the query parameters from
+ * the URL
+ * @param res - `res` is the response object that is used to send a response back to the client. It is
+ * an instance of the `http.ServerResponse` class in Node.js. The `res` object has methods like
+ * `res.status()` and `res.json()` that are used to set the HTTP status
+ * @param next - `next` is a function that is called to pass control to the next middleware function in
+ * the stack. It is typically used to handle errors or to move on to the next middleware function in
+ * the chain.
+ * @returns This code exports a function called `getClassesController` which is a request handler that
+ * takes in a request, response, and next function as parameters. It uses the `getClassesService`
+ * function to retrieve data based on the query parameters of the request. If the data is an instance
+ * of `HttpError`, it calls the `next` function with the error. Otherwise, it returns a JSON response
+ */
+export const getClassesController: RequestHandler<
+  unknown,
+  unknown,
+  unknown,
+  Offset
+> = async (req, res, next) => {
+  const data = await getClassesService(req.query);
+
+  if (data instanceof HttpError) {
+    return next(data);
+  }
+
+  return res.status(200).json(responseAsObj(data));
+};
+
+/**
+ * This function creates a class controller that handles requests to create a new class and returns a
+ * JSON response.
+ * @param req - req stands for request and it is an object that contains information about the incoming
+ * HTTP request such as the request headers, request parameters, request body, etc. It is passed as the
+ * first parameter to the RequestHandler function.
+ * @param res - `res` is the response object that is used to send a response back to the client. It is
+ * an instance of the `http.ServerResponse` class in Node.js. The `res` object has methods like
+ * `res.status()`, `res.json()`, `res.send()`, etc.
+ * @param next - `next` is a function that is called to pass control to the next middleware function in
+ * the stack. It is typically used to handle errors or to pass control to the final middleware function
+ * that sends the response back to the client.
+ * @returns This code is returning a response to a request to create a class. If the
+ * `createClassService` function returns an instance of `HttpError`, the function will call the `next`
+ * function with the error as an argument. Otherwise, it will return a JSON response with a status code
+ * of 201 and the data returned by `createClassService` as an object.
+ */
 export const createClassController: RequestHandler<
   unknown,
   unknown,
   CreateClassInput
 > = async (req, res, next) => {
-  console.log(req.body);
   const data = await createClassService(req.body);
 
   if (data instanceof HttpError) {

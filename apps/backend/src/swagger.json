@@ -104,6 +104,16 @@
             "$ref": "#/components/schemas/Avatar"
           }
         }
+      },
+      "Class": {
+        "type": "object",
+        "required": ["id", "name", "createdAt", "updatedAt"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "createdAt": { "type": "string" },
+          "updatedAt": { "type": "string" }
+        }
       }
     },
     "responses": {
@@ -592,6 +602,9 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BAD_REQUEST"
+          },
           "401": {
             "$ref": "#/components/responses/UNAUTHORIZED"
           },
@@ -796,6 +809,81 @@
       }
     },
     "/api/v1/admin/classes": {
+      "get": {
+        "summary": "Get all the classes",
+        "description": "Retrieves a list of all classes",
+        "tags": ["Admin"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The page number of the result set to retrieve. Use this parameter to skip a certain number of items before starting to collect the result set. For example, if the limit is set to 10 and page is set to 2, the API will retrieve items 11 to 20."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The maximum number of items to return per page. Use this parameter to control the size of the result set. For example, if the limit is set to 10, the API will return a maximum of 10 users per page."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "data": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/Class"
+                              }
+                            },
+                            "total": {
+                              "type": "integer"
+                            },
+                            "pageInfo": {
+                              "$ref": "#/components/schemas/OffsetPageInfo"
+                            }
+                          }
+                        }
+                      },
+                      "required": ["data"]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BAD_REQUEST"
+          },
+          "401": {
+            "$ref": "#/components/responses/UNAUTHORIZED"
+          },
+          "403": {
+            "$ref": "#/components/responses/FORBIDDEN"
+          },
+          "500": {
+            "$ref": "#/components/responses/INTERNAL_SERVER_ERROR"
+          }
+        }
+      },
       "post": {
         "summary": "Admin can create classes",
         "tags": ["Admin"],

@@ -4,7 +4,7 @@ import {
   createClassInputSchema,
   idParamsSchema,
   loginInputSchema,
-  offsetQuerySchema,
+  offsetSchema,
   registerInputSchema,
   updateUserInputSchema,
 } from "@result-system/shared/utility";
@@ -17,8 +17,8 @@ export const userLoginSchema = yup.object({
   body: loginInputSchema,
 });
 
-export const adminGetUsersSchema = yup.object({
-  query: offsetQuerySchema,
+export const queryWithOffsetSchema = yup.object({
+  query: offsetSchema,
 });
 
 export const adminUserIdParamsSchema = yup.object({

@@ -17,7 +17,7 @@ import {
   IDParams,
   LeanPicture,
   LeanUserWithAvatar,
-  OffsetQuery,
+  Offset,
   UpdateUserInput,
   generateCRUDFailedErrorMessage,
   generateExistErrorMessage,
@@ -25,13 +25,13 @@ import {
 
 /**
  * This function retrieves users from a database with pagination and filtering based on their role.
- * @param {OffsetQuery}  - - `limit`: The maximum number of users to return per page.
+ * @param {Offset}  - - `limit`: The maximum number of users to return per page.
  * @returns The `getUsersService` function returns a Promise that resolves to an object with two
  * properties: `data` and `total`. The `data` property is an array of user objects, and the `total`
  * property is the total number of users that match the given condition. If there is an error, the
  * function returns a `HttpError` object.
  */
-export async function getUsersService({ limit, page }: OffsetQuery) {
+export async function getUsersService({ limit, page }: Offset) {
   try {
     const condition: Prisma.UserWhereInput = { role: { not: "ADMIN" } };
     const count = await UserRepository.count({
@@ -178,6 +178,50 @@ export async function updateUserService(
   }
 }
 
+/**
+ * This function retrieves a list of classes with pagination and sorting options from a database using
+ * Prisma ORM.
+ * @param {Offset}  - - `limit`: The maximum number of items to return per page.
+ * @returns The `getClassesService` function returns either an object with an empty array and a `total`
+ * property set to 0 if there are no classes in the database, or it returns the result of calling the
+ * `getClassesWithOffset` method of the `ClassRepository` with the provided arguments. The result of
+ * this method call is a Promise that resolves to an object with a `data` property
+ */
+export async function getClassesService({ limit, page }: Offset) {
+  try {
+    const count = await ClassRepository.count();
+    if (count === 0) {
+      return { data: [], total: count };
+    }
+
+    const args: Prisma.ClassRoomFindManyArgs = {
+      orderBy: { updatedAt: "desc" },
+    };
+
+    return await ClassRepository.getClassesWithOffset(
+      count,
+      Number(page),
+      Number(limit),
+      args,
+    );
+  } catch (error) {
+    return new HttpError({
+      message: generateCRUDFailedErrorMessage("classes"),
+      originalMessage: (error as Error).message,
+    });
+  }
+}
+
+/**
+ * This function creates a new class and returns its ID, handling errors related to duplicate entries.
+ * @param {CreateClassInput} inputs - The `inputs` parameter is an object of type `CreateClassInput`,
+ * which contains the data needed to create a new class. This object likely includes properties such as
+ * the class name, description, start and end dates, and any other relevant information needed to
+ * create a new class.
+ * @returns either the ID of the newly created class or an instance of the HttpError class, depending
+ * on whether the creation was successful or not. If there was an error, the HttpError instance will
+ * contain information about the error, including an error code and message.
+ */
 export async function createClassService(inputs: CreateClassInput) {
   try {
     const newClass = await ClassRepository.create(inputs);
