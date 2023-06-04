@@ -268,3 +268,33 @@ export async function createClassService(inputs: CreateClassInput) {
     });
   }
 }
+
+/**
+ * This function deletes a class by ID and returns an error if the class is not found or if the
+ * deletion fails.
+ * @param id - The `id` parameter is of type `IDParams["id"]`, which means it is a string representing
+ * the ID of a class to be deleted.
+ * @returns either nothing (undefined) if the deletion is successful, or an error object (either a
+ * NotFoundError or an HttpError) if there is an error during the deletion process.
+ */
+export async function deleteClassService(id: IDParams["id"]) {
+  try {
+    await ClassRepository.deleteById(id);
+    return;
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      return new NotFoundError(
+        "Class",
+        _.get(error, "meta.cause") as string,
+        (error as Error).message,
+      );
+    }
+    return new HttpError({
+      message: generateCRUDFailedErrorMessage("class", "delete"),
+      originalMessage: (error as Error).message,
+    });
+  }
+}

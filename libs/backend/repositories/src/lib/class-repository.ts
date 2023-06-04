@@ -118,4 +118,19 @@ export default class ClassRepository {
   static create(inputs: CreateClassInput) {
     return prismaClient.classRoom.create({ data: inputs });
   }
+
+  /**
+   * This function deletes a classroom record from the database based on its ID.
+   * @param id - The `id` parameter is of type `IDParams["id"]`, which means it is a string
+   * representing the unique identifier of a class room that we want to delete from the database.
+   * @returns The `deleteById` function is returning the result of deleting a classroom from the
+   * database using the `prismaClient` instance. The `where` clause specifies the classroom to be
+   * deleted based on the `id` parameter passed to the function. The function is returning the result
+   * of the delete operation, which could be a success message or an error message.
+   */
+  static deleteById(id: IDParams["id"]) {
+    return prismaClient.classRoom.delete({
+      where: { id },
+    });
+  }
 }

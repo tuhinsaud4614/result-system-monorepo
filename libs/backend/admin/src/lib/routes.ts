@@ -14,6 +14,7 @@ import { API_ROUTE } from "@result-system/shared/utility";
 
 import {
   createClassController,
+  deleteClassController,
   deleteUserController,
   getClassController,
   getClassesController,
@@ -53,6 +54,7 @@ router
 
 router
   .route(API_ROUTE.admin.class.static)
-  .get(validateRequest(idParamsSchema, 400), getClassController);
+  .get(validateRequest(idParamsSchema, 400), getClassController)
+  .delete(validateRequest(idParamsSchema, 400), deleteClassController);
 
 export default router;

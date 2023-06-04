@@ -11,6 +11,7 @@ import {
 
 import {
   createClassService,
+  deleteClassService,
   deleteUserService,
   getClassService,
   getClassesService,
@@ -232,4 +233,31 @@ export const createClassController: RequestHandler<
   }
 
   return res.status(201).json(responseAsObj(data));
+};
+
+/**
+ * This function handles a DELETE request to delete a class and returns a 204 status code if
+ * successful.
+ * @param req - The request object contains information about the HTTP request that was made, such as
+ * the request method, headers, and any data that was sent in the request body.
+ * @param res - `res` is the response object that is used to send a response back to the client. It is
+ * an instance of the `Response` class from the Express framework. In this specific code snippet, `res`
+ * is used to send a 204 status code and an empty JSON response back to the
+ * @param next - `next` is a function that is called to pass control to the next middleware function in
+ * the stack. It is typically used to handle errors or to pass control to the next middleware function
+ * after the current middleware function has completed its task.
+ * @returns a response with a status code of 204 (No Content) and an empty JSON object.
+ */
+export const deleteClassController: RequestHandler<IDParams> = async (
+  req,
+  res,
+  next,
+) => {
+  const data = await deleteClassService(req.params.id);
+
+  if (data instanceof HttpError) {
+    return next(data);
+  }
+
+  return res.status(204).json();
 };
