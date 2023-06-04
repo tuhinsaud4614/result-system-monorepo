@@ -129,7 +129,7 @@ export const offsetSchema = yup.object({
     .positive(generateNotPositiveNumberErrorMessage("Page")),
 });
 
-export const idParamsSchema = (key: string) =>
+export const idSchema = (key: string) =>
   yup.object({
     id: yup.string().required(generateRequiredErrorMessage(`${key} ID`)),
   });

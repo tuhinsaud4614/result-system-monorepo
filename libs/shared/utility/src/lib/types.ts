@@ -4,7 +4,7 @@ import type { InferType } from "yup";
 import { CODE, IMAGE_MIMES } from "./constants";
 import {
   createClassInputSchema,
-  idParamsSchema,
+  idSchema,
   loginInputSchema,
   offsetSchema,
   registerInputSchema,
@@ -66,7 +66,7 @@ export interface ResultWithOffset<T> {
   pageInfo?: IOffsetPageInfo;
 }
 
-export type IDParams = InferType<ReturnType<typeof idParamsSchema>>;
+export type IDParams = InferType<ReturnType<typeof idSchema>>;
 
 // Auth
 export type RegisterInput = InferType<typeof registerInputSchema>;

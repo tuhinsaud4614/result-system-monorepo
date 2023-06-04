@@ -4,8 +4,8 @@ import { verifyJwtAccessToken, verifyRoles } from "@result-system/backend/auth";
 import {
   ASSETS_DESTINATION,
   adminClassCreateBodySchema,
-  adminUserIdParamsSchema,
   adminUserUpdateBodySchema,
+  idParamsSchema,
   imageUpload,
   queryWithOffsetSchema,
   validateRequest,
@@ -33,10 +33,10 @@ router.get(
 
 router
   .route(API_ROUTE.admin.user.static)
-  .get(validateRequest(adminUserIdParamsSchema, 400), getUserController)
-  .delete(validateRequest(adminUserIdParamsSchema, 400), deleteUserController)
+  .get(validateRequest(idParamsSchema, 400), getUserController)
+  .delete(validateRequest(idParamsSchema, 400), deleteUserController)
   .patch(
-    validateRequest(adminUserIdParamsSchema, 400),
+    validateRequest(idParamsSchema, 400),
     imageUpload(ASSETS_DESTINATION, 5).single("avatar"),
     validateRequest(adminUserUpdateBodySchema, 422),
     updateUserController,
