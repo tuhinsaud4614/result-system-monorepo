@@ -3,6 +3,7 @@ import type { InferType } from "yup";
 
 import { CODE, IMAGE_MIMES } from "./constants";
 import {
+  createClassInputSchema,
   idParamsSchema,
   loginInputSchema,
   offsetQuerySchema,
@@ -87,6 +88,9 @@ export type LeanUserWithAvatar = Pretty<
     avatar: LeanPicture | null;
   }
 >;
+
+// Class
+export type CreateClassInput = InferType<typeof createClassInputSchema>;
 
 // Picture
 export type LeanPicture = Pick<Picture, "url" | "width" | "height">;

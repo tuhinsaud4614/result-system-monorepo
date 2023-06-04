@@ -3,12 +3,14 @@ import _ from "lodash";
 
 import { HttpError, responseAsObj } from "@result-system/backend/utility";
 import {
+  CreateClassInput,
   IDParams,
   OffsetQuery,
   UpdateUserInput,
 } from "@result-system/shared/utility";
 
 import {
+  createClassService,
   deleteUserService,
   getUserService,
   getUsersService,
@@ -134,4 +136,19 @@ export const updateUserController: RequestHandler<
   }
 
   return res.status(200).json(responseAsObj(data));
+};
+
+export const createClassController: RequestHandler<
+  unknown,
+  unknown,
+  CreateClassInput
+> = async (req, res, next) => {
+  console.log(req.body);
+  const data = await createClassService(req.body);
+
+  if (data instanceof HttpError) {
+    return next(data);
+  }
+
+  return res.status(201).json(responseAsObj(data));
 };

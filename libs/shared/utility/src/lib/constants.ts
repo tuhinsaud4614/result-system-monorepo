@@ -48,6 +48,11 @@ export const API_ROUTE = {
       static: "/users/:id",
       dynamic: (id: IDParams["id"]) => `/users/${id}` as const,
     },
+    classes: "/classes",
+    class: {
+      static: "/class/:id",
+      dynamic: (id: IDParams["id"]) => `/classes/${id}` as const,
+    },
   },
   assets: "assets",
 } as const;

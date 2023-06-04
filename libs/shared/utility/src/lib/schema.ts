@@ -133,3 +133,12 @@ export const idParamsSchema = (key: string) =>
   yup.object({
     id: yup.string().required(generateRequiredErrorMessage(`${key} ID`)),
   });
+
+export const createClassInputSchema = yup.object({
+  name: yup
+    .string()
+    .required(generateRequiredErrorMessage("Class name"))
+    .test("sanitize", generateSanitizeErrorMessage("class name"), (value) => {
+      return !!value && !!sanitizeHtml(value);
+    }),
+});

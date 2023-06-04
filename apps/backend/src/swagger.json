@@ -5,6 +5,10 @@
     "version": "1.0",
     "description": "This is the <b> Result System Backend</b> server."
   },
+  "tags": [
+    { "name": "Auth", "description": "All routes of the authentication." },
+    { "name": "Admin", "description": "All routes of the Admin." }
+  ],
   "components": {
     "securitySchemes": {
       "bearerAuth": {
@@ -297,10 +301,6 @@
       }
     }
   },
-  "tags": [
-    { "name": "Auth", "description": "All routes of the authentication." },
-    { "name": "Admin", "description": "All routes of the Users." }
-  ],
   "paths": {
     "/api/v1/auth/register": {
       "post": {
@@ -788,6 +788,69 @@
           },
           "404": {
             "$ref": "#/components/responses/NOT_FOUND"
+          },
+          "500": {
+            "$ref": "#/components/responses/INTERNAL_SERVER_ERROR"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/classes": {
+      "post": {
+        "summary": "Admin can create classes",
+        "tags": ["Admin"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The name of the class"
+                  }
+                },
+                "required": ["name"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created a class.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["data"]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BAD_REQUEST"
+          },
+          "401": {
+            "$ref": "#/components/responses/UNAUTHORIZED"
+          },
+          "409": {
+            "$ref": "#/components/responses/CONFLICT"
+          },
+          "422": {
+            "$ref": "#/components/responses/BAD_USER_INPUT"
           },
           "500": {
             "$ref": "#/components/responses/INTERNAL_SERVER_ERROR"

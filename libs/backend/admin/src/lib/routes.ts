@@ -3,6 +3,7 @@ import { Router } from "express";
 import { verifyJwtAccessToken, verifyRoles } from "@result-system/backend/auth";
 import {
   ASSETS_DESTINATION,
+  adminClassCreateBodySchema,
   adminGetUsersSchema,
   adminUserIdParamsSchema,
   adminUserUpdateBodySchema,
@@ -12,6 +13,7 @@ import {
 import { API_ROUTE } from "@result-system/shared/utility";
 
 import {
+  createClassController,
   deleteUserController,
   getUserController,
   getUsersController,
@@ -37,6 +39,13 @@ router
     imageUpload(ASSETS_DESTINATION, 5).single("avatar"),
     validateRequest(adminUserUpdateBodySchema, 422),
     updateUserController,
+  );
+
+router
+  .route(API_ROUTE.admin.classes)
+  .post(
+    validateRequest(adminClassCreateBodySchema, 422),
+    createClassController,
   );
 
 export default router;

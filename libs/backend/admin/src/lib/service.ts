@@ -1,7 +1,10 @@
 import { Prisma } from "@prisma/client";
 import _ from "lodash";
 
-import { UserRepository } from "@result-system/backend/repositories";
+import {
+  ClassRepository,
+  UserRepository,
+} from "@result-system/backend/repositories";
 import {
   HttpError,
   NotFoundError,
@@ -9,12 +12,15 @@ import {
   removeFile,
 } from "@result-system/backend/utility";
 import {
+  Code,
+  CreateClassInput,
   IDParams,
   LeanPicture,
   LeanUserWithAvatar,
   OffsetQuery,
   UpdateUserInput,
   generateCRUDFailedErrorMessage,
+  generateExistErrorMessage,
 } from "@result-system/shared/utility";
 
 /**
@@ -167,6 +173,28 @@ export async function updateUserService(
     }
     return new HttpError({
       message: generateCRUDFailedErrorMessage("user", "update"),
+      originalMessage: (error as Error).message,
+    });
+  }
+}
+
+export async function createClassService(inputs: CreateClassInput) {
+  try {
+    const newClass = await ClassRepository.create(inputs);
+    return newClass.id;
+  } catch (error) {
+    let code: Code | undefined,
+      message = generateCRUDFailedErrorMessage("class", "create");
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      message = generateExistErrorMessage("Class");
+      code = 409;
+    }
+    return new HttpError({
+      code,
+      message,
       originalMessage: (error as Error).message,
     });
   }

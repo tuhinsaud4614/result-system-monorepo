@@ -1,6 +1,7 @@
 import * as yup from "yup";
 
 import {
+  createClassInputSchema,
   idParamsSchema,
   loginInputSchema,
   offsetQuerySchema,
@@ -26,4 +27,8 @@ export const adminUserIdParamsSchema = yup.object({
 
 export const adminUserUpdateBodySchema = yup.object({
   body: updateUserInputSchema,
+});
+
+export const adminClassCreateBodySchema = yup.object({
+  body: createClassInputSchema,
 });
