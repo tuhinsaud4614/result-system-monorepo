@@ -12,6 +12,7 @@ import {
 import {
   createClassService,
   deleteUserService,
+  getClassService,
   getClassesService,
   getUserService,
   getUsersService,
@@ -163,6 +164,37 @@ export const getClassesController: RequestHandler<
   Offset
 > = async (req, res, next) => {
   const data = await getClassesService(req.query);
+
+  if (data instanceof HttpError) {
+    return next(data);
+  }
+
+  return res.status(200).json(responseAsObj(data));
+};
+
+/**
+ * This function handles a GET request to retrieve a class controller by ID and returns a JSON
+ * response.
+ * @param req - req is the request object that contains information about the incoming HTTP request,
+ * such as the request headers, request parameters, and request body. It is an instance of the Express
+ * Request object.
+ * @param res - `res` is the response object that is used to send a response back to the client. It is
+ * an instance of the `Response` class from the `express` module. The `status()` method is used to set
+ * the HTTP status code of the response, and the `json()` method is
+ * @param next - `next` is a function that is called to pass control to the next middleware function in
+ * the stack. It is typically used to handle errors or to pass control to the next middleware function
+ * in the chain.
+ * @returns This code is returning a request handler function that retrieves data for a specific class
+ * using the ID parameter from the request URL. The retrieved data is then checked for errors and
+ * either returned as a JSON response object with a 200 status code or passed to the next middleware
+ * function if there is an error.
+ */
+export const getClassController: RequestHandler<IDParams> = async (
+  req,
+  res,
+  next,
+) => {
+  const data = await getClassService(req.params.id);
 
   if (data instanceof HttpError) {
     return next(data);

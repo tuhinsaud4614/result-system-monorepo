@@ -15,6 +15,7 @@ import { API_ROUTE } from "@result-system/shared/utility";
 import {
   createClassController,
   deleteUserController,
+  getClassController,
   getClassesController,
   getUserController,
   getUsersController,
@@ -49,5 +50,9 @@ router
     validateRequest(adminClassCreateBodySchema, 422),
     createClassController,
   );
+
+router
+  .route(API_ROUTE.admin.class.static)
+  .get(validateRequest(idParamsSchema, 400), getClassController);
 
 export default router;

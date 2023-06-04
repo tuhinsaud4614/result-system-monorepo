@@ -213,6 +213,31 @@ export async function getClassesService({ limit, page }: Offset) {
 }
 
 /**
+ * This function fetches a class by its ID from a repository and returns it, or returns an error if it
+ * doesn't exist or if the fetch fails.
+ * @param id - The "id" parameter is of type "IDParams['id']". This means that it is a specific type of
+ * "id" that is defined in the "IDParams" interface. The value of this parameter is used to retrieve a
+ * specific class from the database using the "ClassRepository.getClassById
+ * @returns either an instance of the `Class` model if it exists in the database, or an error object
+ * (`NotFoundError` or `HttpError`) if there was an issue with the database query.
+ */
+export async function getClassService(id: IDParams["id"]) {
+  try {
+    const user = await ClassRepository.getClassById(id);
+
+    if (!user) {
+      return new NotFoundError("Class");
+    }
+    return user;
+  } catch (error) {
+    return new HttpError({
+      message: generateCRUDFailedErrorMessage("class", "fetch"),
+      originalMessage: (error as Error).message,
+    });
+  }
+}
+
+/**
  * This function creates a new class and returns its ID, handling errors related to duplicate entries.
  * @param {CreateClassInput} inputs - The `inputs` parameter is an object of type `CreateClassInput`,
  * which contains the data needed to create a new class. This object likely includes properties such as

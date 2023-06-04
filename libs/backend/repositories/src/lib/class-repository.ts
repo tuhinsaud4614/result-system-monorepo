@@ -3,6 +3,7 @@ import { ClassRoom, Prisma } from "@prisma/client";
 import { prismaClient } from "@result-system/backend/utility";
 import {
   CreateClassInput,
+  IDParams,
   ResultWithOffset,
 } from "@result-system/shared/utility";
 
@@ -78,6 +79,30 @@ export default class ClassRepository {
 
     const result = await this.getClasses({ ...args });
     return { data: result, total: count };
+  }
+
+  /**
+   * This function retrieves a class by its ID and an optional condition using Prisma.
+   * @param id - The ID of the class that we want to retrieve from the database.
+   * @param [condition] - The `condition` parameter is an optional argument of type
+   * `Omit<Prisma.ClassRoomWhereInput, "id">`. It is used to specify additional conditions to filter
+   * the `ClassRoom` object that is being retrieved from the database. The `Omit` utility type is used
+   * to exclude
+   * @returns This function returns a Promise that resolves to a single `ClassRoom` object or `null`.
+   * The `ClassRoom` object represents a class room record in a database and contains information such
+   * as the class room's ID, name, capacity, and other attributes. The function takes an `id` parameter
+   * which is used to find the class room record in the database, and an optional `condition` parameter
+   */
+  static getClassById(
+    id: IDParams["id"],
+    condition?: Omit<Prisma.ClassRoomWhereInput, "id">,
+  ): Promise<ClassRoom | null> {
+    return prismaClient.classRoom.findFirst({
+      where: {
+        id,
+        ...condition,
+      },
+    });
   }
 
   /**
