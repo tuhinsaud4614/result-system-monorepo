@@ -41,9 +41,9 @@ model Subject {
   id               String        @id @default(cuid())
   name             String        @unique
   status           SubjectStatus @default(ACTIVE)
-  classRoom        ClassRoom     @relation(fields: [classRoomId], references: [id], onDelete: Cascade)
-  classRoomId      String
-  teacher          User          @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  classRoom        ClassRoom?    @relation(fields: [classRoomId], references: [id])
+  classRoomId      String?
+  teacher          User          @relation(fields: [teacherId], references: [id])
   teacherId        String
   subjectWithClass String
   createdAt        DateTime      @default(now())
@@ -57,7 +57,7 @@ model Examination {
   examDate        DateTime
   teacher         User     @relation(fields: [teacherId], references: [id], onDelete: Cascade)
   teacherId       String
-  subject         Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  subject         Subject  @relation(fields: [subjectId], references: [id], onDelete: Restrict)
   subjectId       String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt

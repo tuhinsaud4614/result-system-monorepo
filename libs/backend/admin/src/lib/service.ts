@@ -3,12 +3,14 @@ import _ from "lodash";
 
 import {
   ClassRepository,
+  SubjectRepository,
   UserRepository,
 } from "@result-system/backend/repositories";
 import {
   HttpError,
   NotFoundError,
   generateImage,
+  prismaClient,
   removeFile,
 } from "@result-system/backend/utility";
 import {
@@ -96,6 +98,10 @@ export async function getUserService(id: IDParams["id"]) {
  */
 export async function deleteUserService(id: IDParams["id"]) {
   try {
+    if (await UserRepository.findTeacherWithActiveSubject(id)) {
+      throw Error();
+    }
+
     const { avatar } = await UserRepository.deleteById(id);
 
     if (avatar) {
@@ -279,7 +285,10 @@ export async function createClassService(inputs: CreateClassInput) {
  */
 export async function deleteClassService(id: IDParams["id"]) {
   try {
-    await ClassRepository.deleteById(id);
+    await prismaClient.$transaction([
+      SubjectRepository.deleteActiveSubjectsIfNoExaminations(id),
+      ClassRepository.deleteById(id),
+    ]);
     return;
   } catch (error) {
     if (

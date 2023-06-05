@@ -148,6 +148,23 @@ export default class UserRepository {
   }
 
   /**
+   * This function finds a teacher with an active subject based on their ID.
+   * @param id - The `id` parameter is of type `IDParams["id"]`, which means it is a string
+   * representing the unique identifier of a user. This function is looking for a teacher with the
+   * given `id` who has at least one active subject.
+   * @returns The function `findTeacherWithActiveSubject` is returning a Promise that resolves to a
+   * single user object from the Prisma database that matches the following criteria:
+   * - The user has the role "TEACHER"
+   * - The user's ID matches the `id` parameter passed to the function
+   * - The user has at least one subject with a status of "ACTIVE"
+   */
+  static findTeacherWithActiveSubject(id: IDParams["id"]) {
+    return prismaClient.user.findFirst({
+      where: { id, role: "TEACHER", subjects: { some: { status: "ACTIVE" } } },
+    });
+  }
+
+  /**
    * This function creates a user repository with an optional avatar input.
    * @param {UserCreateInput} inputs - The `inputs` parameter is an object of type `UserCreateInput`
    * which contains the data needed to create a new user in the database. It may include properties such
