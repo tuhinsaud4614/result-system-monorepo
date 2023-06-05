@@ -25,6 +25,7 @@ const AdminAddUserPage = React.lazy(
 const AdminEditUserPage = React.lazy(
   () => import("../pages/admin/users/edit-user"),
 );
+const AdminClassesPage = React.lazy(() => import("../pages/admin/classes"));
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -67,6 +68,14 @@ const router = createBrowserRouter(
               </React.Suspense>
             }
           />
+          <Route
+            path={WEB_PATHS.admin.classes}
+            element={
+              <React.Suspense fallback={<AuthenticatePageLoader />}>
+                <AdminClassesPage />
+              </React.Suspense>
+            }
+          />
         </Route>
       </Route>
       <Route path={WEB_PATHS.login} element={<UnProtected />}>
@@ -79,26 +88,6 @@ const router = createBrowserRouter(
           }
         />
       </Route>
-      {/* <Route
-         handle={{ crumb: "users" }}
-         path={WEB_PATHS.admin.users}
-         element={<Layout />}
-       >
-         <Route
-           index
-           element={
-             <React.Suspense
-               fallback={
-                 <CircularProgress
-                   sx={{ height: "6.25rem", width: "6.25rem" }}
-                 />
-               }
-             >
-               <AdminAddUser />
-             </React.Suspense>
-           }
-         />
-       </Route> */}
     </Route>,
   ),
 );
