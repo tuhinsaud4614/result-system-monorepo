@@ -1,9 +1,8 @@
 import * as React from "react";
 
-import { Add, Edit, GroupOutlined } from "@mui/icons-material";
+import { Edit, GroupsOutlined } from "@mui/icons-material";
 import {
-  Avatar,
-  Button,
+  Box,
   IconButton,
   Paper,
   Table,
@@ -13,48 +12,26 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
+import { ClassRoom } from "@prisma/client";
 import { Link } from "react-router-dom";
 
-import {
-  LeanPicture,
-  LeanUserWithAvatar,
-  isObjectWithKeys,
-} from "@result-system/shared/utility";
-
-import { useGetUsersQuery } from "../../../app/services/users.api";
+import { useGetClassesQuery } from "../../../app/services/classes.api";
 import AuthenticatePageLoader from "../../../components/common/AuthenticatePageLoader";
 import ErrorBox from "../../../components/common/ErrorBox";
 import NoData from "../../../components/common/NoData";
-import Title from "../../../components/common/Title";
 import THead from "../../../components/common/table/THead";
 import { WEB_PATHS } from "../../../utility/constants";
 import { HeadCell } from "../../../utility/types";
 import DeleteAction from "./DeleteAction";
 
-const cells: HeadCell<keyof LeanUserWithAvatar>[] = [
+const cells: HeadCell<keyof ClassRoom>[] = [
   {
     id: "id",
     label: "ID",
   },
   {
-    id: "firstName",
-    label: "First Name",
-  },
-  {
-    id: "lastName",
-    label: "Last Name",
-  },
-  {
-    id: "username",
-    label: "Username",
-  },
-  {
-    id: "role",
-    label: "Role",
-  },
-  {
-    id: "avatar",
-    label: "Avatar",
+    id: "name",
+    label: "Name",
   },
   {
     id: "createdAt",
@@ -66,17 +43,17 @@ const cells: HeadCell<keyof LeanUserWithAvatar>[] = [
   },
 ];
 
-export default function AdminUsersPage() {
+export default function AllClasses() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const {
-    data: users,
+    data: classes,
     error: fetchError,
     refetch,
     isLoading,
     isFetching,
-  } = useGetUsersQuery(
+  } = useGetClassesQuery(
     { limit: rowsPerPage, page: page + 1 },
     {
       refetchOnMountOrArgChange: true,
@@ -101,44 +78,23 @@ export default function AdminUsersPage() {
   } else if (fetchError) {
     content = (
       <ErrorBox
-        title="Users Fetching Errors"
+        title="Classes Fetching Errors"
         errors={fetchError}
         onRetry={refetch}
       />
     );
-  } else if (!users || users.data.total === 0) {
+  } else if (!classes || classes.data.total === 0) {
     content = (
       <NoData
-        title="No users registered"
-        subtitle="You currently don't have any registered users. Let's initiate the user registration process."
-        icon={<GroupOutlined fontSize="large" color="secondary" />}
-        action={
-          <Button
-            component={Link}
-            to={WEB_PATHS.admin.addUser}
-            variant="outlined"
-            startIcon={<Add />}
-          >
-            New User
-          </Button>
-        }
+        title="No classes added"
+        subtitle="You don't have any classes added yet. Would you like to add a class now?"
+        icon={<GroupsOutlined fontSize="large" color="secondary" />}
       />
     );
   }
-
   return (
-    <>
-      <Title text="Users">
-        <Button
-          variant="contained"
-          component={Link}
-          to={WEB_PATHS.admin.addUser}
-          startIcon={<Add />}
-        >
-          New User
-        </Button>
-      </Title>
-      {content || (
+    content || (
+      <Box sx={{ width: "100%" }}>
         <Paper
           sx={{
             width: "100%",
@@ -159,7 +115,7 @@ export default function AdminUsersPage() {
                 </TableCell>
               </THead>
               <TableBody>
-                {users?.data.data.map((row, index) => {
+                {classes?.data.data.map((row, index) => {
                   return (
                     <TableRow key={row.id}>
                       {cells.map((cell) => {
@@ -169,22 +125,6 @@ export default function AdminUsersPage() {
                         if (cell.id === "id") {
                           content =
                             !isFetching && page * rowsPerPage + index + 1;
-                        } else if (
-                          isObjectWithKeys<LeanPicture>(item, [
-                            "height",
-                            "height",
-                            "width",
-                          ])
-                        ) {
-                          content = (
-                            <Avatar
-                              variant="rounded"
-                              src={`${import.meta.env.VITE_APP_API}/${
-                                item.url
-                              }`}
-                              alt={row["firstName"]}
-                            />
-                          );
                         } else if (
                           cell.id === "createdAt" ||
                           cell.id === "updatedAt"
@@ -225,11 +165,11 @@ export default function AdminUsersPage() {
               </TableBody>
             </Table>
           </TableContainer>
-          {!!users?.data.total && (
+          {!!classes?.data.total && (
             <TablePagination
               rowsPerPageOptions={[10, 15, 20]}
               component="div"
-              count={users.data.total}
+              count={classes.data.total}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}
@@ -237,7 +177,7 @@ export default function AdminUsersPage() {
             />
           )}
         </Paper>
-      )}
-    </>
+      </Box>
+    )
   );
 }
