@@ -49,6 +49,7 @@ export default function AddForm() {
           px: 2,
           py: 1.5,
           display: "flex",
+          alignItems: "flex-start",
           gap: theme.spacing(2),
           maxWidth: "520px",
         })}

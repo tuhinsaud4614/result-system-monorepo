@@ -14,6 +14,7 @@ export default function Title({ text, children }: Props) {
       justifyContent="space-between"
       alignItems="center"
       mb="1rem"
+      sx={{ userSelect: "none" }}
     >
       <Typography
         component="h1"

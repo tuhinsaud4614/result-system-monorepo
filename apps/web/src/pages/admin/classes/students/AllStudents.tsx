@@ -1,8 +1,7 @@
 import * as React from "react";
 
-import { GroupsOutlined, Visibility } from "@mui/icons-material";
+import { GroupsOutlined } from "@mui/icons-material";
 import {
-  IconButton,
   Paper,
   Table,
   TableBody,
@@ -12,16 +11,13 @@ import {
   TableRow,
 } from "@mui/material";
 import { ClassRoom } from "@prisma/client";
-import { Link } from "react-router-dom";
 
-import { useGetClassesQuery } from "../../../app/services/classes.api";
-import AuthenticatePageLoader from "../../../components/common/AuthenticatePageLoader";
-import ErrorBox from "../../../components/common/ErrorBox";
-import NoData from "../../../components/common/NoData";
-import THead from "../../../components/common/table/THead";
-import { WEB_PATHS } from "../../../utility/constants";
-import { HeadCell } from "../../../utility/types";
-import DeleteAction from "./DeleteAction";
+import { useGetClassesQuery } from "../../../../app/services/classes.api";
+import AuthenticatePageLoader from "../../../../components/common/AuthenticatePageLoader";
+import ErrorBox from "../../../../components/common/ErrorBox";
+import NoData from "../../../../components/common/NoData";
+import THead from "../../../../components/common/table/THead";
+import { HeadCell } from "../../../../utility/types";
 
 const cells: HeadCell<keyof ClassRoom>[] = [
   {
@@ -42,7 +38,7 @@ const cells: HeadCell<keyof ClassRoom>[] = [
   },
 ];
 
-export default function AllClasses() {
+export default function AllStudents() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -145,14 +141,7 @@ export default function AllClasses() {
                         gap: 1,
                       }}
                     >
-                      <DeleteAction id={row.id} />
-                      <IconButton
-                        color="info"
-                        component={Link}
-                        to={WEB_PATHS.admin.classStudents.dynamic(row.id)}
-                      >
-                        <Visibility />
-                      </IconButton>
+                      delete
                     </TableCell>
                   </TableRow>
                 );

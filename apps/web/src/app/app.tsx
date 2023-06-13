@@ -26,6 +26,9 @@ const AdminEditUserPage = React.lazy(
   () => import("../pages/admin/users/edit-user"),
 );
 const AdminClassesPage = React.lazy(() => import("../pages/admin/classes"));
+const AdminClassStudentsPage = React.lazy(
+  () => import("../pages/admin/classes/students"),
+);
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -61,7 +64,7 @@ const router = createBrowserRouter(
             }
           />
           <Route
-            path={WEB_PATHS.admin.edit.static}
+            path={WEB_PATHS.admin.editUser.static}
             element={
               <React.Suspense fallback={<AuthenticatePageLoader />}>
                 <AdminEditUserPage />
@@ -73,6 +76,14 @@ const router = createBrowserRouter(
             element={
               <React.Suspense fallback={<AuthenticatePageLoader />}>
                 <AdminClassesPage />
+              </React.Suspense>
+            }
+          />
+          <Route
+            path={WEB_PATHS.admin.classStudents.static}
+            element={
+              <React.Suspense fallback={<AuthenticatePageLoader />}>
+                <AdminClassStudentsPage />
               </React.Suspense>
             }
           />

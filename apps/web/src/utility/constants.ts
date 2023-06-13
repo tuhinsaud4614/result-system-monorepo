@@ -1,4 +1,4 @@
-import { API_ROUTE, LeanUserWithAvatar } from "@result-system/shared/utility";
+import { API_ROUTE, IDParams } from "@result-system/shared/utility";
 
 export const WEB_KEYS = {
   persist: "PERSIST",
@@ -12,10 +12,14 @@ export const WEB_PATHS = {
     users: "/admin/users",
     addUser: "/admin/users/add",
     classes: "/admin/classes",
+    classStudents: {
+      static: "/admin/classes/:id/students",
+      dynamic: (id: IDParams["id"]) => `/admin/classes/${id}/students`,
+    },
     subjects: "/admin/subjects",
-    edit: {
+    editUser: {
       static: "/admin/users/:id/edit",
-      dynamic: (id: LeanUserWithAvatar["id"]) => `/admin/users/${id}/edit`,
+      dynamic: (id: IDParams["id"]) => `/admin/users/${id}/edit`,
     },
   },
 } as const;

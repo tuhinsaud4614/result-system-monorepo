@@ -214,7 +214,7 @@ export default function AdminUsersPage() {
                         <IconButton
                           color="warning"
                           component={Link}
-                          to={WEB_PATHS.admin.edit.dynamic(row.id)}
+                          to={WEB_PATHS.admin.editUser.dynamic(row.id)}
                         >
                           <Edit />
                         </IconButton>
